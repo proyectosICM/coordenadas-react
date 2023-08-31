@@ -1,0 +1,48 @@
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 30px;
+  }
+  
+  .custom-card {
+    width: calc(33.33% - 20px);
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .custom-card .card-body {
+    padding: 20px;
+  }
+  
+  .custom-card .card-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .custom-card .card-subtitle {
+    font-size: 14px;
+    color: #888;
+    margin-top: 5px;
+  }
+  
+  .custom-card .card-text {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 0 20px 20px;
+  }
+  
+  .custom-button {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
