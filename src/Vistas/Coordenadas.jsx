@@ -55,35 +55,74 @@ export function Coordenadas() {
 
   const handleEliminar = (id) => {
     Swal.fire({
-      title: '¿Esta seguro de eliminar este registro?',
-      text: 'Esta acción no se puede deshacer.',
-      icon: 'warning',
+      title: "¿Esta seguro de eliminar este registro?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminarlo',
-      cancelButtonText: 'Cancelar'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminarlo",
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`${coordenadasURL}/${id}`)
+        axios
+          .delete(`${coordenadasURL}/${id}`)
           .then(() => {
             // Filtra los datos para mantener solo los registros que no tienen el ID eliminado
-            const nuevosDatos = datos.filter(coordenada => coordenada.id !== id);
+            const nuevosDatos = datos.filter(
+              (coordenada) => coordenada.id !== id
+            );
             setDatos(nuevosDatos); // Actualiza la variable de estado
-            Swal.fire('Eliminado', 'El registro ha sido eliminado', 'success');
+            Swal.fire("Eliminado", "El registro ha sido eliminado", "success");
           })
           .catch((error) => {
             console.error("Error al eliminar los datos:", error);
-            Swal.fire('Error', 'Hubo un error al eliminar el registro', 'error');
+            Swal.fire(
+              "Error",
+              "Hubo un error al eliminar el registro",
+              "error"
+            );
           });
       }
     });
-  }
+  };
 
   const datosAEditar = (camion) => {
     setDatosEdit(camion);
     setShow(true);
-};
+  };
+
+  const handleEditar = (dato) => {
+    const requestData = {
+      latitud: dato.latitud,
+      longitud: dato.longitud,
+      radio: dato.radio,
+      velocidad: dato.velocidad,
+      sonidoVelocidad: dato.sonidoVelocidad,
+      sonidoGeocerca: dato.sonidoGeocerca,
+      rutasModel: {
+        id: ruta,
+      },
+    };
+  
+    axios
+      .put(`${coordenadasURL}/${dato.id}`, requestData)
+      .then((response) => {
+        // Actualiza los datos localmente en la lista
+        const indice = datos.findIndex((item) => item.id === dato.id);
+        if (indice !== -1) {
+          const nuevosDatos = [...datos];
+          nuevosDatos[indice] = response.data;
+          setDatos(nuevosDatos);
+        }
+  
+        setShow(false);
+      })
+      .catch((error) => {
+        console.error("Error al editar los datos:", error);
+        Swal.fire("Error", "Hubo un error al editar el registro", "error");
+      });
+  };
 
   const generateTextFile = () => {
     const content = datos
@@ -175,6 +214,8 @@ export function Coordenadas() {
         mostrar={show}
         cerrar={handleCerrar}
         guardar={handleGuardar}
+        datosaeditar={datosEdit}
+        editar={handleEditar}
       />
     </>
   );

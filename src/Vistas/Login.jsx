@@ -28,6 +28,7 @@ export function Login() {
         console.log("Estado:", response.status);
 
         localStorage.setItem("empresa", response.data.id);
+        localStorage.setItem("empresaNombre", response.data.nombre);
         navigation("/rutas");
       })
       .catch((error) => {

@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../Styles/CoordenadasModal.css";
+import { Map, Marker } from "google-maps-react";
 
-function CoordenadasModal({ mostrar, cerrar, guardar, datosaeditar, title }) {
+function CoordenadasModal({
+  mostrar,
+  cerrar,
+  guardar,
+  editar,
+  datosaeditar,
+  title,
+}) {
   const [formData, setFormData] = useState({
     latitud: "",
     longitud: "",
@@ -15,16 +22,36 @@ function CoordenadasModal({ mostrar, cerrar, guardar, datosaeditar, title }) {
     sonidoGeocerca: "",
   });
 
+  useEffect(() => {
+    if (datosaeditar) {
+      console.log(datosaeditar)
+      setFormData({ ...datosaeditar });
+      //setEditando(true);
+    } else {
+      limpiar();
+    }
+  }, [datosaeditar]);
+
   const [markerPosition, setMarkerPosition] = useState([0, 0]);
 
   const handleClose = () => {
+
     cerrar();
   };
 
   const handleSave = () => {
     //console.log('Datos del formulario:', formData);
-    guardar(formData);
+    //guardar(formData);
+    if (datosaeditar) {
+      editar(formData);
+    } else {
+      guardar(formData);
+    }
     cerrar();
+    limpiar();
+  };
+
+  const limpiar = () => {
     setFormData({
       latitud: "",
       longitud: "",
@@ -42,15 +69,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, datosaeditar, title }) {
       [name]: value,
     });
   };
-
-  useEffect(() => {
-    if (datosaeditar) {
-      setFormData({ ...datosaeditar });
-      //setEditando(true);
-    } else {
-      // ...
-    }
-  }, [datosaeditar]);
 
   const handleMarkerDragEnd = (e) => {
     setMarkerPosition(e.target.getLatLng());
@@ -132,37 +150,40 @@ function CoordenadasModal({ mostrar, cerrar, guardar, datosaeditar, title }) {
               style={{ width: "150px" }}
             />
           </div>
-          <div>
-            <h5>Mapa</h5>
-            <MapContainer
-              center={markerPosition}
-              zoom={13}
-              style={{ height: "300px", width: "100%" }}
-              doubleClickZoom={false}
-              scrollWheelZoom={true}
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
-              <Marker
-                position={markerPosition}
-                draggable={true}
-                eventHandlers={{
-                  dragend: handleMarkerDragEnd,
-                }}
-              />
-            </MapContainer>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <button variant="secondary" onClick={handleClose}>
-            Cerrar
-          </button>
+
+          {/*
+            <button variant="secondary" onClick={handleClose}>
+              Cerrar
+            </button> 
+            */}
           <button variant="primary" onClick={handleSave}>
             Guardar
           </button>
-        </Modal.Footer>
+
+          <div style={{ height: "220px", margin: "10px" }}>
+            <h5>Mapa</h5>
+
+              <Map
+                google={window.google}
+                zoom={13}
+                style={{ height: "220px", width: "90%" }}
+                initialCenter={{
+                  lat: parseFloat(formData.latitud) || 37.7749, // San Francisco Latitud predeterminada
+                  lng: parseFloat(formData.longitud) || -122.4194, // San Francisco Longitud predeterminada
+                }}
+              >
+                {formData.latitud && formData.longitud ? (
+                  <Marker
+                    position={{
+                      lat: parseFloat(formData.latitud),
+                      lng: parseFloat(formData.longitud),
+                    }}
+                  />
+                ) : null}
+              </Map>
+          </div>
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
       </Modal>
     </>
   );
