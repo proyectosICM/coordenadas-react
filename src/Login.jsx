@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { loginURL } from "./API/apiurls";
 import { useNavigate } from "react-router-dom";
+import { RiUserLine, RiLockPasswordLine } from "react-icons/ri"; // Importa los íconos de usuario y contraseña desde React Icons
+import "./Styles/login.css";
 
 export function Login() {
   const [usuario, setUsuario] = useState("");
@@ -16,46 +18,69 @@ export function Login() {
       usuario: usuario,
       password: contrasena,
     };
-  
-    axios.post(loginURL, dataInicio)
+
+    axios
+      .post(loginURL, dataInicio)
       .then((response) => {
         console.log("Respuesta:", response);
         console.log("Datos:", response.data);
         console.log("Empresa:", response.data.id);
         console.log("Estado:", response.status);
 
-        localStorage.setItem("empresa", response.data.id)
-        navigation('/rutas');
+        localStorage.setItem("empresa", response.data.id);
+        navigation("/rutas");
       })
       .catch((error) => {
         console.error("Error:", error);
-        setError("Error en inicio de sesion ");
+        setError("Error en inicio de sesión");
       });
   };
 
   return (
     <div className="login-container">
-      <h1>Ingreso al Sistema</h1>
+      <div className="underlay-photo"></div>
+      <div className="underlay-black"></div>
       <form onSubmit={handleSubmit} className="login-form">
-        <label htmlFor="usuario">Usuario:</label>
-        <input
-          type="text"
-          id="usuario"
-          value={usuario}
-          onChange={(e) => setUsuario(e.target.value)}
-          required
-        />
-        <label htmlFor="contrasena">Contraseña:</label>
-        <input
-          type="password"
-          id="contrasena"
-          value={contrasena}
-          onChange={(e) => setContrasena(e.target.value)}
-          required
-        />
-        <button type="submit">Ingresar</button>
+        <p className="login-text">
+          <span className="fa-stack fa-lg">
+            <i className="fa fa-circle fa-stack-2x"></i>
+            <i className="fa fa-lock fa-stack-1x"></i>
+          </span>
+        </p>
+        <div className="input-group">
+          <label htmlFor="usuario">
+            <RiUserLine /> Usuario:
+          </label>
+          <input
+            type="text"
+            id="usuario"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+            required
+            placeholder="Email"
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="contrasena">
+            <RiLockPasswordLine /> Contraseña:
+          </label>
+          <input
+            type="password"
+            id="contrasena"
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
+            required
+            placeholder="Password"
+          />
+        </div>
+        <button type="submit" className="login-submit">
+          Login
+        </button>
       </form>
-      <h1>{error}</h1>
+      <a href="#" className="login-forgot-pass">
+        Forgot Password?
+      </a>
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }
