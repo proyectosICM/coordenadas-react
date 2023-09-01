@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { Button, Card } from 'react-bootstrap';
-import { useListarElementos } from './Hooks/CRUDHooks';
-import { rutasURL, rutasxEmpresaURL } from './API/apiurls';
-import './Styles/Rutas.css'
+import '../Styles/Rutas.css';
 import { useNavigate } from 'react-router-dom';
+import { useListarElementos } from '../Hooks/CRUDHooks';
+import { rutasxEmpresaURL } from '../API/apiurls';
+
 export function Rutas() {
     const [datos, setDatos] = useState([]);
     const navigation = useNavigate();
-    useListarElementos(`${rutasxEmpresaURL}`, datos, setDatos);
     const empresaid = localStorage.getItem('empresa')
+    useListarElementos(`${rutasxEmpresaURL}${empresaid}`, datos, setDatos);
+
+    const handleVerCoordenadas = async(dato) => {
+        await localStorage.setItem('nomRuta', dato.nomruta)
+        navigation(`/coordenadas/${dato.id}`);
+    }
+ 
     return (
-        <div>
+        <div className='camionesMenu-contenedor'>
             <h1>Rutas de la empresa {empresaid}</h1>
             <div className="card-container">
                 {datos.map((ruta) => (
@@ -21,7 +28,7 @@ export function Rutas() {
                             <Card.Text>Empresa: {ruta.empresasModel.nombre}</Card.Text>
                             <Card.Text>País: {ruta.paisesModel.nombre}</Card.Text>
                         </Card.Body>
-                        <Button onClick={() => navigation(`/coordenadas/${ruta.id}`)}>Ver Coordenadas</Button>
+                        <Button onClick={() => handleVerCoordenadas(ruta)}>Ver Coordenadas</Button>
                         <Button>Descargar txt</Button>
                     </Card>
                 ))}

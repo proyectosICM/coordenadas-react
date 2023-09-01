@@ -16,7 +16,7 @@
     background-attachment: fixed;
     /* Mantiene la imagen fija en su lugar mientras se desplaza la página */
 }
-
+ 
 
 /* Estilos para el fondo de pantalla y superposición */
 [class*=underlay] {
@@ -48,6 +48,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     text-align: center;
+    
 }
 
 .login-text {
@@ -68,7 +69,7 @@
 
 .input-group label {
     flex: 1;
-    text-align: left;
+    text-align: center;
     margin-right: 10px;
     font-weight: bold;
 }
@@ -84,7 +85,7 @@ input[type="password"] {
     margin: 1rem;
     padding: 0.5rem;
 
-    width: calc(100% - 3rem);
+width: 800px;
 }
 
 /* Estilos para los input en estado enfocado */
@@ -106,27 +107,30 @@ input[type="password"]:focus {
     color: black;
     display: block;
     margin: 1rem auto;
+    width: 100px;
     min-width: 1px;
     padding: 0.25rem;
     transition: 250ms background ease-in;
+    border-radius: 10px;
 }
 
 .login-submit:hover,
 .login-submit:focus {
-    background: white;
-    color: black;
+    background: black;
+    color: white;
     transition: 250ms background ease-in;
+
 }
 
 /* Estilos para el enlace de contraseña olvidada */
 .login-forgot-pass {
-    color: white;
+    color: black;
     cursor: pointer;
     display: block;
     font-size: 75%;
     opacity: 0.6;
     padding: 0.5rem;
-    position: absolute;
+
     bottom: 0;
     left: 0;
     text-align: center;

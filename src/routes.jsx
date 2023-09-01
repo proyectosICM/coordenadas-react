@@ -1,7 +1,8 @@
-import { Agregar } from "./Agregar";
-import { Coordenadas } from "./Coordenadas";
-import { Login } from "./Login";
-import { Rutas } from "./Rutas";
+import { Coordenadas } from "./Vistas/Coordenadas";
+import { Login } from "./Vistas/Login";
+import { Rutas } from "./Vistas/Rutas";
+import { Agregar } from './Vistas/Agregar';
+
 
 export const routes = [
     //Redireccion

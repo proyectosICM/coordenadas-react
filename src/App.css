@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+
+.camionesMenu-contenedor{
+  width: 80%;
+  height: 25%;
+  margin: 2% auto;
+  padding: 2%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #E5E7E9;
+  border-radius: 1%;
+} 
+
+/* Estilo para los campos de entrada pequeños */
+.small-input {
+  width: 100px; /* Ancho deseado para los inputs pequeños */
+}
+

@@ -1,6 +1,5 @@
   import React, { useState } from 'react';
   import './App.css';
-import { Agregar } from './Agregar';
 import { Route,  BrowserRouter as Router, Routes } from 'react-router-dom';
 import { routes } from './routes';
 
@@ -10,7 +9,7 @@ import { routes } from './routes';
       <div className="App">
      <Router>
         {/*token && <NavBarSelect />*/}
-        <div className="App">
+   
           <Routes>
 
             {routes.map((route, index) => (
@@ -22,7 +21,7 @@ import { routes } from './routes';
               />
             ))}
           </Routes>
-        </div>
+
       </Router>
     </div>
     );

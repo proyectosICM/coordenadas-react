@@ -1,0 +1,54 @@
+/* Estilos para los input en estado normal (no enfocado) */
+input[type="text"],
+input[type="password"] {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(7, 7, 7, 0.5);
+  color: black;
+  display: block;
+  margin: 1rem;
+  padding: 0.5rem;
+  width: 300px;
+}
+
+/* Estilos para los input en estado enfocado */
+input[type="text"]:focus,
+input[type="password"]:focus {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid black;
+  /* Cambia el color del borde */
+  color: black;
+  /* Cambia el color del texto */
+  transition: 250ms border-color ease-in, 250ms color ease-in;
+}
+
+/* Estilos para el contenedor del modal */
+.modal-container {
+  max-width: 600px; /* Ancho máximo del modal */
+  margin: 0 auto; /* Centra el modal horizontalmente */
+}
+
+/* Estilo para el mapa */
+.map-container {
+  height: 300px; /* Altura del mapa */
+  width: 100%; /* Ancho del mapa al 100% del contenedor */
+  margin-bottom: 10px; /* Margen inferior del mapa */
+}
+
+/* Estilo para los botones */
+.modal-footer button {
+  margin-right: 10px; /* Margen derecho entre los botones en el pie de página */
+}
+
+/* Estilos para la disposición en filas y columnas */
+.input-row {
+  display: flex; /* Muestra los campos de entrada en una fila */
+  justify-content: space-between; /* Espacio entre los campos de entrada */
+  margin-bottom: 10px; /* Margen inferior entre las filas */
+}
+
+.input-column {
+  flex: 1; /* Divide el espacio en columnas iguales */
+  margin-right: 10px; /* Margen derecho entre las columnas */
+}

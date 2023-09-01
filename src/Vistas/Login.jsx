@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { loginURL } from "./API/apiurls";
 import { useNavigate } from "react-router-dom";
 import { RiUserLine, RiLockPasswordLine } from "react-icons/ri"; // Importa los íconos de usuario y contraseña desde React Icons
-import "./Styles/login.css";
+import "../Styles/login.css";
+import { loginURL } from "../API/apiurls";
 
 export function Login() {
   const [usuario, setUsuario] = useState("");
@@ -73,14 +73,14 @@ export function Login() {
             placeholder="Password"
           />
         </div>
+        <a href="#" className="login-forgot-pass">
+          Olvido su contraseña?
+        </a>
+        {error && <div className="error-message">{error}</div>}
         <button type="submit" className="login-submit">
           Login
         </button>
       </form>
-      <a href="#" className="login-forgot-pass">
-        Forgot Password?
-      </a>
-      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }

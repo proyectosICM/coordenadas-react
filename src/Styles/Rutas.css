@@ -1,3 +1,7 @@
+.contenedor-Ruta{
+  background-color: black;
+}
+
 .card-container {
     display: flex;
     flex-wrap: wrap;

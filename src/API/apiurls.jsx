@@ -4,7 +4,7 @@ export const loginURL = `${base}/empresas/login`
 
 // Ruta
 export const rutasURL = `${base}/rutas`;
-export const rutasxEmpresaURL = `${rutasURL}/xempresa/1`
+export const rutasxEmpresaURL = `${rutasURL}/xempresa/`
 
 // Coordenadas
 export const coordenadasURL = `${base}/coordenadas`
