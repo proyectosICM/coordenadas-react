@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
-import "leaflet/dist/leaflet.css";
-import "../Styles/CoordenadasModal.css";
 import { Map, Marker } from "google-maps-react";
+import { useListarElementos } from "../Hooks/CRUDHooks";
+import { sonidosVelocidadURL } from "../API/apiurls";
+import axios from "axios";
+import ReactAudioPlayer from "react-audio-player";
 
 function CoordenadasModal({
   mostrar,
@@ -13,35 +15,59 @@ function CoordenadasModal({
   datosaeditar,
   title,
 }) {
+  // Variables de estado para los campos de entrada y las coordenadas del marcador
   const [formData, setFormData] = useState({
     latitud: "",
     longitud: "",
     radio: "",
     velocidad: "10",
+    velocidadValor: "",
     sonidoVelocidad: "",
     sonidoGeocerca: "",
   });
 
+  const [velocidades, setVelocidades] = useState([]);
+  useListarElementos(`${sonidosVelocidadURL}`, velocidades, setVelocidades);
+
+  const [idvelocidad, setIdvelocidad] = useState([]);
+  const [velocidadesS, setVelocidadesS] = useState([]);
+  const [audio, setAudio] = useState([]);
+
   useEffect(() => {
     if (datosaeditar) {
-      console.log(datosaeditar)
-      setFormData({ ...datosaeditar });
-      //setEditando(true);
-    } else {
-      limpiar();
-    }
+      setFormData({
+        id: datosaeditar.id,
+        latitud: datosaeditar.latitud,
+        longitud: datosaeditar.longitud,
+        radio: datosaeditar.radio,
+        velocidad: datosaeditar.sonidosVelocidadModel.id,
+        velocidadValor: datosaeditar.sonidosVelocidadModel.id,
+        sonidoVelocidad: datosaeditar.sonidosVelocidadModel.nombre / 10,
+        sonidoGeocerca: datosaeditar.sonidoGeocerca,
+      });
+      const ListarDatos = async () => {
+        try {
+          const response = await axios.get(
+            `${sonidosVelocidadURL}/${datosaeditar.sonidosVelocidadModel.id}`
+          );
+          console.log(response.data);
+          setVelocidadesS(response.data);
+        } catch (error) {
+          console.error("Error al obtener los datos:", error);
+        }
+      };
+      ListarDatos();
+    } 
   }, [datosaeditar]);
 
-  const [markerPosition, setMarkerPosition] = useState([0, 0]);
+  const [markerPosition, setMarkerPosition] = useState({ lat: 0, lng: 0 });
 
   const handleClose = () => {
-
+    limpiar();
     cerrar();
   };
 
   const handleSave = () => {
-    //console.log('Datos del formulario:', formData);
-    //guardar(formData);
     if (datosaeditar) {
       editar(formData);
     } else {
@@ -57,9 +83,11 @@ function CoordenadasModal({
       longitud: "",
       radio: "",
       velocidad: "10",
+      velocidadValor: "",
       sonidoVelocidad: "",
       sonidoGeocerca: "",
     });
+    setVelocidadesS("");
   };
 
   const handleInputChange = (e) => {
@@ -70,10 +98,41 @@ function CoordenadasModal({
     });
   };
 
-  const handleMarkerDragEnd = (e) => {
-    setMarkerPosition(e.target.getLatLng());
+  const handleseleccionarAudio = async (e) => {
+    const { value, options } = e.target;
+    const selectedOption = options[options.selectedIndex];
+    setFormData({
+      ...formData,
+      sonidoVelocidad: selectedOption.text / 10,
+      velocidad: value,
+      velocidadValor: selectedOption.text,
+    });
+    setIdvelocidad(value);
+
+    try {
+      const response = await axios.get(`${sonidosVelocidadURL}/${value}`);
+      setVelocidadesS(response.data);
+    } catch (error) {
+      console.error("Error al obtener los datos:", error);
+    }
   };
 
+  // Controlador de eventos para hacer clic en el mapa
+  const handleMapClick = (mapProps, map, clickEvent) => {
+    const clickedLat = clickEvent.latLng.lat();
+    const clickedLng = clickEvent.latLng.lng();
+
+    // Actualiza las coordenadas en las variables de estado
+    setFormData({
+      ...formData,
+      latitud: clickedLat,
+      longitud: clickedLng,
+    });
+
+    // Actualiza la posición del marcador en el mapa
+    setMarkerPosition({ lat: clickedLat, lng: clickedLng });
+  };
+  console.log(velocidadesS);
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
@@ -119,27 +178,35 @@ function CoordenadasModal({
               <select
                 name="velocidad"
                 value={formData.velocidad}
-                onChange={handleInputChange}
+                onChange={handleseleccionarAudio}
                 style={{ width: "200px", height: "40px", margin: "10px" }}
               >
-                {Array.from({ length: 10 }, (_, i) => (
-                  <option key={i} value={(i + 1) * 10}>
-                    {(i + 1) * 10}
+                <option value="">Seleccione una velocidad</option>
+                {velocidades.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.nombre}
                   </option>
                 ))}
               </select>
             </div>
+
             <div className="input-column">
               <h5>Sonido Velocidad</h5>
               <input
                 type="text"
                 name="sonidoVelocidad"
                 value={formData.sonidoVelocidad}
-                onChange={handleInputChange}
+                onChange={handleseleccionarAudio}
                 style={{ width: "150px" }}
               />
             </div>
           </div>
+          {velocidadesS.nombre && (
+            <div>
+              <ReactAudioPlayer src={velocidadesS.sonidoVelocidad} controls />
+            </div>
+          )}
+
           <div>
             <h5>Sonido Geocerca</h5>
             <input
@@ -151,11 +218,6 @@ function CoordenadasModal({
             />
           </div>
 
-          {/*
-            <button variant="secondary" onClick={handleClose}>
-              Cerrar
-            </button> 
-            */}
           <button variant="primary" onClick={handleSave}>
             Guardar
           </button>
@@ -163,24 +225,25 @@ function CoordenadasModal({
           <div style={{ height: "220px", margin: "10px" }}>
             <h5>Mapa</h5>
 
-              <Map
-                google={window.google}
-                zoom={13}
-                style={{ height: "220px", width: "90%" }}
-                initialCenter={{
-                  lat: parseFloat(formData.latitud) || 37.7749, // San Francisco Latitud predeterminada
-                  lng: parseFloat(formData.longitud) || -122.4194, // San Francisco Longitud predeterminada
-                }}
-              >
-                {formData.latitud && formData.longitud ? (
-                  <Marker
-                    position={{
-                      lat: parseFloat(formData.latitud),
-                      lng: parseFloat(formData.longitud),
-                    }}
-                  />
-                ) : null}
-              </Map>
+            <Map
+              google={window.google}
+              zoom={13}
+              style={{ height: "220px", width: "90%" }}
+              initialCenter={{
+                lat: parseFloat(formData.latitud) || 37.7749,
+                lng: parseFloat(formData.longitud) || -122.4194,
+              }}
+              onClick={handleMapClick} // Agrega el controlador de eventos onClick
+            >
+              {formData.latitud && formData.longitud ? (
+                <Marker
+                  position={{
+                    lat: parseFloat(formData.latitud),
+                    lng: parseFloat(formData.longitud),
+                  }}
+                />
+              ) : null}
+            </Map>
           </div>
         </Modal.Body>
         <Modal.Footer></Modal.Footer>

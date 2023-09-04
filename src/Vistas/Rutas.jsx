@@ -126,14 +126,14 @@ export function Rutas() {
   };
 
   return (
-    <div className="camionesMenu-contenedor">
+    <div >
       <h1>Rutas de la empresa {empresaid}</h1>
       <Button style={{ margin: "10px" }} onClick={() => handleAbrir()}>
         Crear nueva ruta
       </Button>
-      <div className="card-container">
+      <div className="camionesMenu-contenedor"SS>
         {datos.map((ruta) => (
-          <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px" }}>
+          <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px" }}>
             <Card.Body>
               <Card.Title>ID: {ruta.id}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
