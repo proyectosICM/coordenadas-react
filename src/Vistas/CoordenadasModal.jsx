@@ -95,8 +95,10 @@ function CoordenadasModal({
       velocidadValor: "",
       sonidoVelocidad: "",
       sonidoGeocerca: "",
+      imagenGeocerca: "",
     });
     setVelocidadesS("");
+    setGeocercaD("");
   };
 
   const handleInputChange = (e) => {
@@ -107,7 +109,7 @@ function CoordenadasModal({
     });
   };
 
-  const handleseleccionarAudio = async (e) => {
+  const handleSeleccionarAudio = async (e) => {
     const { value, options } = e.target;
     const selectedOption = options[options.selectedIndex];
     setFormData({
@@ -126,12 +128,12 @@ function CoordenadasModal({
     }
   };
 
-  const handleseleccionarGeocerca = async (e) => {
+  const handleSeleccionarGeocerca = async (e) => {
     const { value, options } = e.target;
     const selectedOption = options[options.selectedIndex];
     setFormData({
       ...formData,
-      sonidoGeocerca: selectedOption.text,
+      sonidoGeocerca: selectedOption.value,
       imagenGeocerca: selectedOption.value,
     });
 
@@ -211,7 +213,7 @@ function CoordenadasModal({
               <select
                 name="velocidad"
                 value={formData.velocidad}
-                onChange={handleseleccionarAudio}
+                onChange={handleSeleccionarAudio}
                 style={{ width: "200px", height: "40px", margin: "10px" }}
               >
                 <option value="">Seleccione una velocidad</option>
@@ -222,29 +224,22 @@ function CoordenadasModal({
                 ))}
               </select>
             </div>
-
             <div className="input-column">
-              <h5>
-                <AiFillSound /> Sonido Velocidad
-              </h5>
-              <input
-                type="text"
-                name="sonidoVelocidad"
-                value={formData.sonidoVelocidad}
-                onChange={handleseleccionarAudio}
-                style={{ width: "150px" }}
-              />
+              <AiFillSound style={{ marginRight: "10px" }} />
+              {velocidadesS.nombre && (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <ReactAudioPlayer
+                    src={velocidadesS.sonidoVelocidad}
+                    controls
+                    style={{ width: "200px", marginTop: "15px" }} 
+                  />
+                </div>
+              )}
             </div>
           </div>
-          {velocidadesS.nombre && (
-            <>
-              <AiFillSound />
-              <div>
-                <ReactAudioPlayer src={velocidadesS.sonidoVelocidad} controls />
-              </div>
-            </>
-          )}
+
           <div className="input-row">
+            {/*
             <div className="input-column">
               <h5>
                 <BsFillSignpost2Fill /> Sonido Geocerca
@@ -257,6 +252,7 @@ function CoordenadasModal({
                 style={{ width: "150px" }}
               />
             </div>
+              */}
 
             <div className="input-column">
               <h5>
@@ -265,7 +261,7 @@ function CoordenadasModal({
               <select
                 name="geocerca"
                 value={formData.imagenGeocerca}
-                onChange={handleseleccionarGeocerca}
+                onChange={handleSeleccionarGeocerca}
                 style={{ width: "200px", height: "40px", margin: "10px" }}
               >
                 <option value="">Seleccione una velocidad</option>
@@ -276,23 +272,29 @@ function CoordenadasModal({
                 ))}
               </select>
             </div>
+
+            <div className="input-column">
+            {geocercaD.nombre && (
+            <>
+              <AiFillSound />
+              <div>
+                <ReactAudioPlayer src={geocercaD.urlSonido} controls                     style={{ width: "200px", marginTop: "15px" }} />
+              </div>
+            </>
+          )}
+            </div>
           </div>
 
           {geocercaD.nombre && (
             <>
               <AiFillSound />
-              <div>
+              <div className="input-column">
                 <img
                   src={geocercaD.urlImagen}
                   alt="Logo Inicio"
-                  style={{ width: "30%", height: "30%" }}
+                  style={{ width: "30%", height: "30%", marginLeft: "35%" }}
                   className="imgl"
                 />
-              </div>
-
-              <AiFillSound />
-              <div>
-                <ReactAudioPlayer src={geocercaD.urlSonido} controls />
               </div>
             </>
           )}
