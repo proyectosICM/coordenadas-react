@@ -3,9 +3,13 @@ import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
 import { Map, Marker } from "google-maps-react";
 import { useListarElementos } from "../Hooks/CRUDHooks";
-import { sonidosVelocidadURL } from "../API/apiurls";
+import { GeocercaURL, sonidosVelocidadURL } from "../API/apiurls";
 import axios from "axios";
 import ReactAudioPlayer from "react-audio-player";
+import { SiGooglemaps } from "react-icons/si";
+import { BsSpeedometer2 } from "react-icons/bs";
+import { AiFillSound } from "react-icons/ai";
+import { BsFillSignpost2Fill } from "react-icons/bs";
 
 function CoordenadasModal({
   mostrar,
@@ -24,13 +28,18 @@ function CoordenadasModal({
     velocidadValor: "",
     sonidoVelocidad: "",
     sonidoGeocerca: "",
+    imagenGeocerca: "",
   });
 
   const [velocidades, setVelocidades] = useState([]);
   useListarElementos(`${sonidosVelocidadURL}`, velocidades, setVelocidades);
 
+  const [geocercas, setGeocercas] = useState([]);
+  useListarElementos(`${GeocercaURL}`, geocercas, setGeocercas);
+
   const [idvelocidad, setIdvelocidad] = useState([]);
   const [velocidadesS, setVelocidadesS] = useState([]);
+  const [geocercaD, setGeocercaD] = useState([]);
   const [audio, setAudio] = useState([]);
 
   useEffect(() => {
@@ -57,7 +66,7 @@ function CoordenadasModal({
         }
       };
       ListarDatos();
-    } 
+    }
   }, [datosaeditar]);
 
   const [markerPosition, setMarkerPosition] = useState({ lat: 0, lng: 0 });
@@ -117,6 +126,23 @@ function CoordenadasModal({
     }
   };
 
+  const handleseleccionarGeocerca = async (e) => {
+    const { value, options } = e.target;
+    const selectedOption = options[options.selectedIndex];
+    setFormData({
+      ...formData,
+      sonidoGeocerca: selectedOption.text,
+      imagenGeocerca: selectedOption.value,
+    });
+
+    try {
+      const response = await axios.get(`${GeocercaURL}/${value}`);
+      setGeocercaD(response.data);
+    } catch (error) {
+      console.error("Error al obtener los datos:", error);
+    }
+  };
+
   // Controlador de eventos para hacer clic en el mapa
   const handleMapClick = (mapProps, map, clickEvent) => {
     const clickedLat = clickEvent.latLng.lat();
@@ -132,7 +158,7 @@ function CoordenadasModal({
     // Actualiza la posición del marcador en el mapa
     setMarkerPosition({ lat: clickedLat, lng: clickedLng });
   };
-  console.log(velocidadesS);
+
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
@@ -142,7 +168,10 @@ function CoordenadasModal({
         <Modal.Body>
           <div className="input-row">
             <div className="input-column">
-              <h5>Latitud</h5>
+              <h5>
+                {" "}
+                <SiGooglemaps /> Latitud
+              </h5>
               <input
                 type="text"
                 name="latitud"
@@ -152,7 +181,9 @@ function CoordenadasModal({
               />
             </div>
             <div className="input-column">
-              <h5>Longitud</h5>
+              <h5>
+                <SiGooglemaps /> Longitud
+              </h5>
               <input
                 type="text"
                 name="longitud"
@@ -174,7 +205,9 @@ function CoordenadasModal({
           </div>
           <div className="input-row">
             <div className="input-column">
-              <h5>Velocidad</h5>
+              <h5>
+                <BsSpeedometer2 /> Velocidad
+              </h5>
               <select
                 name="velocidad"
                 value={formData.velocidad}
@@ -191,7 +224,9 @@ function CoordenadasModal({
             </div>
 
             <div className="input-column">
-              <h5>Sonido Velocidad</h5>
+              <h5>
+                <AiFillSound /> Sonido Velocidad
+              </h5>
               <input
                 type="text"
                 name="sonidoVelocidad"
@@ -202,22 +237,65 @@ function CoordenadasModal({
             </div>
           </div>
           {velocidadesS.nombre && (
-            <div>
-              <ReactAudioPlayer src={velocidadesS.sonidoVelocidad} controls />
-            </div>
+            <>
+              <AiFillSound />
+              <div>
+                <ReactAudioPlayer src={velocidadesS.sonidoVelocidad} controls />
+              </div>
+            </>
           )}
+          <div className="input-row">
+            <div className="input-column">
+              <h5>
+                <BsFillSignpost2Fill /> Sonido Geocerca
+              </h5>
+              <input
+                type="text"
+                name="sonidoGeocerca"
+                value={formData.sonidoGeocerca}
+                onChange={handleInputChange}
+                style={{ width: "150px" }}
+              />
+            </div>
 
-          <div>
-            <h5>Sonido Geocerca</h5>
-            <input
-              type="text"
-              name="sonidoGeocerca"
-              value={formData.sonidoGeocerca}
-              onChange={handleInputChange}
-              style={{ width: "150px" }}
-            />
+            <div className="input-column">
+              <h5>
+                <BsSpeedometer2 /> Geocerca
+              </h5>
+              <select
+                name="geocerca"
+                value={formData.imagenGeocerca}
+                onChange={handleseleccionarGeocerca}
+                style={{ width: "200px", height: "40px", margin: "10px" }}
+              >
+                <option value="">Seleccione una velocidad</option>
+                {geocercas.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
+          {geocercaD.nombre && (
+            <>
+              <AiFillSound />
+              <div>
+                <img
+                  src={geocercaD.urlImagen}
+                  alt="Logo Inicio"
+                  style={{ width: "30%", height: "30%" }}
+                  className="imgl"
+                />
+              </div>
+
+              <AiFillSound />
+              <div>
+                <ReactAudioPlayer src={geocercaD.urlSonido} controls />
+              </div>
+            </>
+          )}
           <button variant="primary" onClick={handleSave}>
             Guardar
           </button>

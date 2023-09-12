@@ -8,6 +8,8 @@ import { BsXCircleFill, BsPlusCircleFill } from "react-icons/bs";
 import CoordenadasModal from "./CoordenadasModal";
 import axios from "axios";
 import Swal from "sweetalert2";
+import NavBar from "../Common/NavBar";
+import { FaDownload } from 'react-icons/fa';
 
 export function Coordenadas() {
   const [datos, setDatos] = useState([]);
@@ -158,6 +160,7 @@ export function Coordenadas() {
 
   return (
     <>
+    <NavBar />
       <div className="camionesMenu-contenedor">
         <Button style={{ width: "100%" }} onClick={() => navigation("/rutas")}>
           Atras
@@ -213,7 +216,7 @@ export function Coordenadas() {
             ))}
           </tbody>
         </Table>
-        <Button onClick={generateTextFile}>Descargar txt</Button>
+        <Button onClick={generateTextFile}><FaDownload /> Descargar txt</Button>
       </div>
       <CoordenadasModal
         mostrar={show}

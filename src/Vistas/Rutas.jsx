@@ -10,7 +10,9 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import RutasModal from "./RutasModal";
 import { paisesURL } from "./../API/apiurls";
-
+import NavBar from "../Common/NavBar";
+import { FaDownload } from "react-icons/fa";
+import { AiFillProfile } from "react-icons/ai";
 export function Rutas() {
   const [datos, setDatos] = useState([]);
   const navigation = useNavigate();
@@ -78,7 +80,7 @@ export function Rutas() {
       },
       paisesModel: {
         id: datosFormulario.paisId,
-        nombre: datosFormulario.paisNombre
+        nombre: datosFormulario.paisNombre,
       },
     };
 
@@ -94,18 +96,18 @@ export function Rutas() {
   };
 
   const handleEditar = (dato) => {
-    console.log(dato)
+    console.log(dato);
     const requestData = {
-        nomruta: dato.nomruta,
-        empresasModel: {
-          id: empresaid,
-        },
-        paisesModel: {
-          id: dato.paisId,
-          nombre: dato.paisNombre
-        },
-      };
-  
+      nomruta: dato.nomruta,
+      empresasModel: {
+        id: empresaid,
+      },
+      paisesModel: {
+        id: dato.paisId,
+        nombre: dato.paisNombre,
+      },
+    };
+
     axios
       .put(`${rutasURL}/${dato.id}`, requestData)
       .then((response) => {
@@ -116,7 +118,7 @@ export function Rutas() {
           nuevosDatos[indice] = response.data;
           setDatos(nuevosDatos);
         }
-  
+
         setShow(false);
       })
       .catch((error) => {
@@ -126,14 +128,23 @@ export function Rutas() {
   };
 
   return (
-    <div >
+    <div>
+      <NavBar />
       <h1>Rutas de la empresa {empresaid}</h1>
       <Button style={{ margin: "10px" }} onClick={() => handleAbrir()}>
         Crear nueva ruta
       </Button>
-      <div className="camionesMenu-contenedor"SS>
+      <div className="camionesMenu-contenedor" SS>
         {datos.map((ruta) => (
-          <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px" }}>
+          <Card
+            key={ruta.id}
+            style={{
+              width: "18rem",
+              marginBottom: "20px",
+              margin: "20px",
+              padding: "10px",
+            }}
+          >
             <Card.Body>
               <Card.Title>ID: {ruta.id}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
@@ -142,16 +153,41 @@ export function Rutas() {
               <Card.Text>Empresa: {empresaNombre}</Card.Text>
               <Card.Text>País: {ruta.paisesModel.nombre}</Card.Text>
             </Card.Body>
-            <Button onClick={() => handleVerCoordenadas(ruta)}>
-              Ver Coordenadas
+            <Button
+              onClick={() => handleVerCoordenadas(ruta)}
+              style={{
+                backgroundColor: "#40609F",
+                borderColor: "black",
+                color: "white",
+              }}
+            >
+              <AiFillProfile /> Ver Coordenadas
             </Button>
-            <Button>Descargar txt</Button>
-            <ButtonGroup>
-              <Button variant="warning" onClick={() => datosAEditar(ruta)}>
+            <Button variant="success" style={{ marginTop: "10px" }}>
+              {" "}
+              <FaDownload /> Descargar txt
+            </Button>
+            <ButtonGroup style={{ marginTop: "10px" }}>
+              <Button
+                variant="warning"
+                onClick={() => datosAEditar(ruta)}
+                style={{
+                  backgroundColor: "#727273",
+                  borderColor: "black",
+                  marginRight: "5px",
+                }}
+              >
                 <GrEdit /> Editar
               </Button>
-              <Button variant="danger" onClick={() => handleEliminar(ruta.id)}>
-                {" "}
+              <Button
+                variant="danger"
+                onClick={() => handleEliminar(ruta.id)}
+                style={{
+                  backgroundColor: "#727273",
+                  borderColor: "black",
+                  color: "black",
+                }}
+              >
                 <BsXCircleFill /> Eliminar
               </Button>
             </ButtonGroup>
