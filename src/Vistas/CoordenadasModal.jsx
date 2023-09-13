@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
 import { Map, Marker } from "google-maps-react";
 import { useListarElementos } from "../Hooks/CRUDHooks";
-import { GeocercaURL, sonidosVelocidadURL } from "../API/apiurls";
+import { GeocercaURL, GeocercaxPaisURL, sonidosVelocidadURL } from "../API/apiurls";
 import axios from "axios";
 import ReactAudioPlayer from "react-audio-player";
 import { SiGooglemaps } from "react-icons/si";
@@ -17,6 +17,7 @@ function CoordenadasModal({
   guardar,
   editar,
   datosaeditar,
+  limp,
   title,
 }) {
   // Variables de estado para los campos de entrada y las coordenadas del marcador
@@ -34,8 +35,9 @@ function CoordenadasModal({
   const [velocidades, setVelocidades] = useState([]);
   useListarElementos(`${sonidosVelocidadURL}`, velocidades, setVelocidades);
 
+  const pais = localStorage.getItem("pais");
   const [geocercas, setGeocercas] = useState([]);
-  useListarElementos(`${GeocercaURL}`, geocercas, setGeocercas);
+  useListarElementos(`${GeocercaxPaisURL}${pais}`, geocercas, setGeocercas);
 
   const [idvelocidad, setIdvelocidad] = useState([]);
   const [velocidadesS, setVelocidadesS] = useState([]);
@@ -69,12 +71,18 @@ function CoordenadasModal({
     }
   }, [datosaeditar]);
 
+  useEffect(()=> {
+    if(limp){
+      limpiar();
+    }
+  }, [limp])
+
   const [markerPosition, setMarkerPosition] = useState({ lat: 0, lng: 0 });
 
   const handleClose = () => {
-    limpiar();
     cerrar();
   };
+
 
   const handleSave = () => {
     if (datosaeditar) {
@@ -301,20 +309,22 @@ function CoordenadasModal({
               </div>
             </>
           )}
+
           <button variant="primary" onClick={handleSave}>
             Guardar
           </button>
 
           <div style={{ height: "220px", margin: "10px" }}>
             <h5>Mapa</h5>
+      
 
             <Map
               google={window.google}
-              zoom={13}
+              zoom={2}
               style={{ height: "220px", width: "90%" }}
               initialCenter={{
-                lat: parseFloat(formData.latitud) || 37.7749,
-                lng: parseFloat(formData.longitud) || -122.4194,
+                lat: -12.0415785 ,
+                lng:    -77.0252425 ,
               }}
               onClick={handleMapClick} // Agrega el controlador de eventos onClick
             >

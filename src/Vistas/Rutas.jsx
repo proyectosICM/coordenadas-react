@@ -24,6 +24,7 @@ export function Rutas() {
 
   const handleVerCoordenadas = async (dato) => {
     await localStorage.setItem("nomRuta", dato.nomruta);
+    await localStorage.setItem("pais", dato.paisesModel.id)
     navigation(`/coordenadas/${dato.id}`);
   };
 

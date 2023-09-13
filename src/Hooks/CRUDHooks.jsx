@@ -12,7 +12,7 @@ export function useListarElementos(url, dato, setDatos) {
         const response = await axios.get(url);
         setDatos(response.data);
       } catch (error) {
-        console.error("Error al obtener los datos:", error);
+        console.error("Error al obtener los datos:", error , url);
       }
     }else{
       navigation("/");

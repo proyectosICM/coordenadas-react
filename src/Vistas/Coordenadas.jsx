@@ -17,21 +17,24 @@ export function Coordenadas() {
   const { ruta } = useParams();
   const [show, setShow] = useState(false);
   const [datosEdit, setDatosEdit] = useState(null);
+  const [limp, setLimp] = useState(false);
   const nomRuta = localStorage.getItem("nomRuta");
 
   useListarElementos(`${coordenadaxRutaURL}${ruta}`, datos, setDatos);
 
-  const handleShowModal = () => {
+  const handleShowModal = (t) => {
     setShow(true);
+    if(t == "Nuevo"){
+      setLimp(true);
+    }
   };
 
   const handleCerrar = () => {
     setShow(false);
+    setLimp(false);
   };
 
   const handleGuardar = (datosFormulario) => {
-    console.log("La ruta es: " + ruta);
-    console.log(datosFormulario);
     const requestData = {
       latitud: datosFormulario.latitud,
       longitud: datosFormulario.longitud,
@@ -169,7 +172,7 @@ export function Coordenadas() {
         <Button
           variant="success"
           style={{ margin: "30px" }}
-          onClick={() => handleShowModal()}
+          onClick={() => handleShowModal("Nuevo")}
         >
           <BsPlusCircleFill /> Agregar
         </Button>
@@ -224,6 +227,7 @@ export function Coordenadas() {
         guardar={handleGuardar}
         datosaeditar={datosEdit}
         editar={handleEditar}
+        limp={limp}
       />
     </>
   );

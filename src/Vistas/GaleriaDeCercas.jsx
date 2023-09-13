@@ -1,19 +1,68 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../Common/NavBar";
 import { useListarElementos } from "../Hooks/CRUDHooks";
-import { GeocercaURL, TipoSURL, paisesURL } from "../API/apiurls";
+import { GeocercaURL, GeocercaxPaisxTipoURL, GeocercaxTipoSURL, TipoSURL, paisesURL } from "../API/apiurls";
 import { Form, Col } from "react-bootstrap";
+import axios from "axios";
+import { GeocercaxPaisURL } from "./../API/apiurls";
 
 export function GaleriaDeCercas() {
   const [cercas, setCercas] = useState([]);
   const [paises, setPaises] = useState([]);
   const [tipoS, setTipoS] = useState([]);
   const [filtroPais, setFiltroPais] = useState("");
-  const [filtroCategoria, setFiltroCategoria] = useState("Todas"); // Estado para el filtro de categoría
+  const [filtroCategoria, setFiltroCategoria] = useState(""); // Estado para el filtro de categoría
 
   useListarElementos(GeocercaURL, cercas, setCercas);
   useListarElementos(paisesURL, paises, setPaises);
   useListarElementos(TipoSURL, tipoS, setTipoS);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (filtroPais && !filtroCategoria) {
+        setCercas("");
+        try {
+          const response = await axios.get(`${GeocercaxPaisURL}${filtroPais}`);
+          setCercas(response.data);
+        } catch (error) {
+          console.error(
+            "Error al cargar datos:",
+            error,
+            `${GeocercaxPaisURL}${filtroPais}`
+          );
+        }
+      } else if (!filtroPais && filtroCategoria) {
+        setCercas("");
+        try {
+          const response = await axios.get(`${GeocercaxTipoSURL}${filtroCategoria}`);
+          setCercas(response.data);
+        } catch (error) {
+          console.error(
+            "Error al cargar datos:",
+            error,
+            `${GeocercaxPaisURL}${filtroCategoria}`
+          );
+        }
+      } else if (filtroPais && filtroCategoria) {
+        setCercas("");
+        try {
+          const response = await axios.get(`${GeocercaxPaisxTipoURL}${filtroPais}/${filtroCategoria}`);
+          setCercas(response.data);
+        } catch (error) {
+          console.error(
+            "Error al cargar datos:",
+            error,
+            `${GeocercaxPaisURL}${filtroPais}`
+          );
+        }
+      } else {
+        const response = await axios.get(`${GeocercaURL}`);
+        setCercas(response.data);
+      }
+    };
+
+    fetchData();
+  }, [filtroPais, filtroCategoria]);
 
   const categorias = [
     "Todas",
@@ -22,9 +71,7 @@ export function GaleriaDeCercas() {
     "Señales de Prevención",
   ];
 
-  useEffect(() => {
-    // Aquí puedes implementar la lógica para filtrar las cercas según la categoría seleccionada.
-  }, [filtroCategoria]);
+  useEffect(() => {}, [filtroCategoria]);
 
   return (
     <div>
@@ -42,7 +89,7 @@ export function GaleriaDeCercas() {
           >
             <option value="">Todos los países</option>
             {paises.map((pais) => (
-              <option key={pais.id} value={pais.nombre}>
+              <option key={pais.id} value={pais.id}>
                 {pais.nombre}
               </option>
             ))}
@@ -56,15 +103,15 @@ export function GaleriaDeCercas() {
             value={filtroCategoria}
             onChange={(e) => setFiltroCategoria(e.target.value)}
           >
-            {categorias.map((categoria) => (
-              <option key={categoria} value={categoria}>
-                {categoria}
+            <option value={""}>Todas</option>
+            {tipoS.map((categoria) => (
+              <option key={categoria.id} value={categoria.id}>
+                Señales {categoria.nombre}
               </option>
             ))}
           </Form.Control>
         </Form.Group>
       </div>
-
       {/* Galería de Cercas */}
       <div
         style={{

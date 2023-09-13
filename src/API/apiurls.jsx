@@ -1,4 +1,4 @@
-export const base = 'http://localhost:8080/api';
+export const base = 'http://localhost:8081/api';
 //export const base = 'http://192.168.1.232:8080/api';
 export const loginURL = `${base}/empresas/login`
 
@@ -18,6 +18,9 @@ export const sonidosVelocidadURL = `${base}/sonidosVelocidad`
 
 // GeoCerca
 export const GeocercaURL = `${base}/SonidoGeo`
+export const GeocercaxPaisURL = `${base}/SonidoGeo/xpais/`
+export const GeocercaxTipoSURL = `${base}/SonidoGeo/xtipoS/`
+export const GeocercaxPaisxTipoURL = `${base}/SonidoGeo/xpaisxtipo/`
 
 // TipoS
 export const TipoSURL = `${base}/tipoS`
