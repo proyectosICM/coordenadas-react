@@ -18,3 +18,6 @@ export const sonidosVelocidadURL = `${base}/sonidosVelocidad`
 
 // GeoCerca
 export const GeocercaURL = `${base}/SonidoGeo`
+
+// TipoS
+export const TipoSURL = `${base}/tipoS`

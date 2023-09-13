@@ -145,20 +145,19 @@ function CoordenadasModal({
     }
   };
 
-  // Controlador de eventos para hacer clic en el mapa
   const handleMapClick = (mapProps, map, clickEvent) => {
-    const clickedLat = clickEvent.latLng.lat();
-    const clickedLng = clickEvent.latLng.lng();
-
+    const clickedLat = clickEvent.latLng.lat().toFixed(7);
+    const clickedLng = clickEvent.latLng.lng().toFixed(7);
+  
     // Actualiza las coordenadas en las variables de estado
     setFormData({
       ...formData,
       latitud: clickedLat,
       longitud: clickedLng,
     });
-
+  
     // Actualiza la posición del marcador en el mapa
-    setMarkerPosition({ lat: clickedLat, lng: clickedLng });
+    setMarkerPosition({ lat: parseFloat(clickedLat), lng: parseFloat(clickedLng) });
   };
 
   return (
@@ -231,7 +230,7 @@ function CoordenadasModal({
                   <ReactAudioPlayer
                     src={velocidadesS.sonidoVelocidad}
                     controls
-                    style={{ width: "200px", marginTop: "15px" }} 
+                    style={{ width: "200px", marginTop: "15px" }}
                   />
                 </div>
               )}
@@ -274,14 +273,18 @@ function CoordenadasModal({
             </div>
 
             <div className="input-column">
-            {geocercaD.nombre && (
-            <>
-              <AiFillSound />
-              <div>
-                <ReactAudioPlayer src={geocercaD.urlSonido} controls                     style={{ width: "200px", marginTop: "15px" }} />
-              </div>
-            </>
-          )}
+              {geocercaD.nombre && (
+                <>
+                  <AiFillSound />
+                  <div>
+                    <ReactAudioPlayer
+                      src={geocercaD.urlSonido}
+                      controls
+                      style={{ width: "200px", marginTop: "15px" }}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
