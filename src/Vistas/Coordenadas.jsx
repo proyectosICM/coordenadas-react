@@ -43,12 +43,14 @@ export function Coordenadas() {
         id: datosFormulario.velocidad,
         nombre: datosFormulario.velocidadValor,
       },
-      sonidoGeocerca: datosFormulario.sonidoGeocerca,
+      sonidosGeocercaModel: {
+        id: datosFormulario.sonidoGeocerca,
+        codsonido: datosFormulario.codsonidoG,
+      },
       rutasModel: {
         id: ruta,
       },
     };
-  
     axios
       .post(`${coordenadasURL}`, requestData)
       .then((response) => {
@@ -109,30 +111,36 @@ export function Coordenadas() {
         id: dato.velocidad,
         nombre: dato.velocidadValor,
       },
-      sonidoGeocerca: dato.sonidoGeocerca,
+      sonidosGeocercaModel: {
+        id: dato.sonidoGeocerca,
+        codsonido: dato.codsonidoG,
+      },
       rutasModel: {
         id: ruta,
       },
     };
     console.log(requestData)
     axios
-      .put(`${coordenadasURL}/${dato.id}`, requestData)
-      .then((response) => {
-        // Actualiza los datos localmente en la lista
-        const indice = datos.findIndex((item) => item.id === dato.id);
-        if (indice !== -1) {
-          const nuevosDatos = [...datos];
-          nuevosDatos[indice] = response.data;
-          setDatos(nuevosDatos);
-        }
-  
-        setShow(false);
-      })
-      .catch((error) => {
-        console.error("Error al editar los datos:", error);
-        Swal.fire("Error", "Hubo un error al editar el registro", "error");
-      });
-  };
+    .put(`${coordenadasURL}/${dato.id}`, requestData)
+    .then((response) => {
+      // Actualiza los datos localmente en la lista
+      const indice = datos.findIndex((item) => item.id === dato.id);
+      if (indice !== -1) {
+        const nuevosDatos = [...datos];
+        nuevosDatos[indice] = response.data;
+        setDatos(nuevosDatos);
+      }
+
+      setShow(false);
+    })
+    .catch((error) => {
+      console.error("Error al editar los datos:", error);
+      Swal.fire("Error", "Hubo un error al editar el registro", "error");
+    });
+};
+
+
+
 
   const generateTextFile = () => {
     const content = datos
@@ -198,7 +206,7 @@ export function Coordenadas() {
                 <td>{coordenada.radio}</td>
                 <td>{coordenada.sonidosVelocidadModel.nombre}</td>
                 <td>{coordenada.sonidosVelocidadModel.id + 1}</td>
-                <td>{coordenada.sonidoGeocerca}</td>
+                <td>{coordenada.sonidosGeocercaModel.codsonido}</td>
                 <td>
                   <Button
                     variant="warning"

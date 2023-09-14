@@ -30,6 +30,7 @@ function CoordenadasModal({
     sonidoVelocidad: "",
     sonidoGeocerca: "",
     imagenGeocerca: "",
+    codsonidoG:""
   });
 
   const [velocidades, setVelocidades] = useState([]);
@@ -54,7 +55,9 @@ function CoordenadasModal({
         velocidad: datosaeditar.sonidosVelocidadModel.id,
         velocidadValor: datosaeditar.sonidosVelocidadModel.id,
         sonidoVelocidad: datosaeditar.sonidosVelocidadModel.nombre / 10,
-        sonidoGeocerca: datosaeditar.sonidoGeocerca,
+        sonidoGeocerca: datosaeditar.sonidosGeocercaModel.id,
+        codsonidoG: datosaeditar.sonidosGeocercaModel.codsonido,
+        imagenGeocerca: datosaeditar.sonidosGeocercaModel.id,
       });
       const ListarDatos = async () => {
         try {
@@ -63,6 +66,8 @@ function CoordenadasModal({
           );
           console.log(response.data);
           setVelocidadesS(response.data);
+          const responseGeocercaD = await axios.get(`${GeocercaURL}/${datosaeditar.sonidosGeocercaModel.id}`);
+          setGeocercaD(responseGeocercaD.data);
         } catch (error) {
           console.error("Error al obtener los datos:", error);
         }
@@ -76,6 +81,8 @@ function CoordenadasModal({
       limpiar();
     }
   }, [limp])
+  
+
 
   const [markerPosition, setMarkerPosition] = useState({ lat: 0, lng: 0 });
 
@@ -104,6 +111,7 @@ function CoordenadasModal({
       sonidoVelocidad: "",
       sonidoGeocerca: "",
       imagenGeocerca: "",
+      codsonidoG: "",
     });
     setVelocidadesS("");
     setGeocercaD("");
@@ -136,18 +144,27 @@ function CoordenadasModal({
     }
   };
 
+
+  const [codsonidoG, setSonidoG] = useState();
   const handleSeleccionarGeocerca = async (e) => {
     const { value, options } = e.target;
     const selectedOption = options[options.selectedIndex];
-    setFormData({
-      ...formData,
-      sonidoGeocerca: selectedOption.value,
-      imagenGeocerca: selectedOption.value,
-    });
-
+  
     try {
       const response = await axios.get(`${GeocercaURL}/${value}`);
-      setGeocercaD(response.data);
+      const codsonido = response.data.codsonido; // Obtener 'codsonido' del objeto de respuesta
+  
+      setSonidoG(response.data);
+  
+      setFormData({
+        ...formData,
+        sonidoGeocerca: selectedOption.value,
+        imagenGeocerca: selectedOption.value,
+        codsonidoG: codsonido, // Asignar 'codsonido' a 'codsonidoG'
+      });
+  
+      const responseGeocercaD = await axios.get(`${GeocercaURL}/${value}`);
+      setGeocercaD(responseGeocercaD.data);
     } catch (error) {
       console.error("Error al obtener los datos:", error);
     }
@@ -271,7 +288,7 @@ function CoordenadasModal({
                 onChange={handleSeleccionarGeocerca}
                 style={{ width: "200px", height: "40px", margin: "10px" }}
               >
-                <option value="">Seleccione una velocidad</option>
+                <option value="">Seleccione una geocerca</option>
                 {geocercas.map((v) => (
                   <option key={v.id} value={v.id}>
                     {v.nombre}
