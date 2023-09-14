@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function useListarElementos(url, dato, setDatos) {
@@ -22,7 +22,7 @@ export function useListarElementos(url, dato, setDatos) {
 
   useEffect(() => {
     ListarCarriles();
-  }, []);
+  },[]);
 
   return dato;
 }

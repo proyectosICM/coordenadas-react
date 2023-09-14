@@ -1,39 +1,23 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
 import "leaflet/dist/leaflet.css";
 import "../Styles/CoordenadasModal.css";
-import { Map, Marker } from "google-maps-react";
 import { paisesURL } from "../API/apiurls";
 import { useListarElementos } from "../Hooks/CRUDHooks";
 
-function RutasModal({
-  mostrar,
-  cerrar,
-  guardar,
-  editar,
-  datosaeditar,
-  title,
-  paises, // Lista de países pasada como prop
-}) {
+function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
   const [formData, setFormData] = useState({
     nomruta: "",
-    paisId: "", // Cambiado a paisId para almacenar el ID del país
-    paisNombre: "", // Agregado para almacenar el nombre del país
+    paisId: "", 
+    paisNombre: "", 
   });
 
   const [pais, setPais] = useState([]);
   useListarElementos(`${paisesURL}`, pais, setPais);
 
-  const [markerPosition, setMarkerPosition] = useState([0, 0]);
-
-  const handleClose = () => {
-    cerrar();
-  };
+  const handleClose = () => { cerrar(); limpiar(); };
 
   const handleSave = () => {
-    //console.log('Datos del formulario:', formData);
-    //guardar(formData);
     if (datosaeditar) {
       editar(formData);
     } else {
@@ -46,7 +30,7 @@ function RutasModal({
   const limpiar = () => {
     setFormData({
       nomruta: "",
-      paisId: "", // Limpiando también los valores de paisId y paisNombre
+      paisId: "", 
       paisNombre: "",
     });
   };
@@ -65,7 +49,7 @@ function RutasModal({
     setFormData({
       ...formData,
       paisId: value,
-      paisNombre: selectedOption.text, // Almacenando el nombre del país
+      paisNombre: selectedOption.text, 
     });
   };
 
@@ -84,10 +68,6 @@ function RutasModal({
     }
   }, [datosaeditar]);
 
-  const handleMarkerDragEnd = (e) => {
-    setMarkerPosition(e.target.getLatLng());
-  };
-
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
@@ -98,22 +78,11 @@ function RutasModal({
           <div className="input-row">
             <div className="input-column">
               <h5>Nombre de Ruta</h5>
-              <input
-                type="text"
-                name="nomruta"
-                value={formData.nomruta}
-                onChange={handleInputChange}
-                style={{ width: "150px" }}
-              />
+              <input type="text" name="nomruta" value={formData.nomruta} onChange={handleInputChange} style={{ width: "150px" }} />
             </div>
             <div className="input-column">
               <h5>País</h5>
-              <select
-                name="paisId"
-                value={formData.paisId}
-                onChange={handleSelectChange}
-                style={{ width: "200px", height: "40px", margin: "10px" }}
-              >
+              <select name="paisId" value={formData.paisId} onChange={handleSelectChange} style={{ width: "200px", height: "40px", margin: "10px" }}>
                 <option value="">Seleccione un país</option>
                 {pais.map((pais) => (
                   <option key={pais.id} value={pais.id}>

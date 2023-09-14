@@ -11,15 +11,7 @@ import { BsSpeedometer2 } from "react-icons/bs";
 import { AiFillSound } from "react-icons/ai";
 import { BsFillSignpost2Fill } from "react-icons/bs";
 
-function CoordenadasModal({
-  mostrar,
-  cerrar,
-  guardar,
-  editar,
-  datosaeditar,
-  limp,
-  title,
-}) {
+function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp, title }) {
   // Variables de estado para los campos de entrada y las coordenadas del marcador
   const [formData, setFormData] = useState({
     latitud: "",
@@ -30,7 +22,7 @@ function CoordenadasModal({
     sonidoVelocidad: "",
     sonidoGeocerca: "",
     imagenGeocerca: "",
-    codsonidoG:""
+    codsonidoG: "",
   });
 
   const [velocidades, setVelocidades] = useState([]);
@@ -61,9 +53,7 @@ function CoordenadasModal({
       });
       const ListarDatos = async () => {
         try {
-          const response = await axios.get(
-            `${sonidosVelocidadURL}/${datosaeditar.sonidosVelocidadModel.id}`
-          );
+          const response = await axios.get(`${sonidosVelocidadURL}/${datosaeditar.sonidosVelocidadModel.id}`);
           console.log(response.data);
           setVelocidadesS(response.data);
           const responseGeocercaD = await axios.get(`${GeocercaURL}/${datosaeditar.sonidosGeocercaModel.id}`);
@@ -76,20 +66,18 @@ function CoordenadasModal({
     }
   }, [datosaeditar]);
 
-  useEffect(()=> {
-    if(limp){
+  useEffect(() => {
+    if (limp) {
       limpiar();
     }
-  }, [limp])
-  
-
+  }, [limp]);
 
   const [markerPosition, setMarkerPosition] = useState({ lat: 0, lng: 0 });
 
   const handleClose = () => {
     cerrar();
+    limpiar();
   };
-
 
   const handleSave = () => {
     if (datosaeditar) {
@@ -144,25 +132,24 @@ function CoordenadasModal({
     }
   };
 
-
   const [codsonidoG, setSonidoG] = useState();
   const handleSeleccionarGeocerca = async (e) => {
     const { value, options } = e.target;
     const selectedOption = options[options.selectedIndex];
-  
+
     try {
       const response = await axios.get(`${GeocercaURL}/${value}`);
       const codsonido = response.data.codsonido; // Obtener 'codsonido' del objeto de respuesta
-  
+
       setSonidoG(response.data);
-  
+
       setFormData({
         ...formData,
         sonidoGeocerca: selectedOption.value,
         imagenGeocerca: selectedOption.value,
         codsonidoG: codsonido, // Asignar 'codsonido' a 'codsonidoG'
       });
-  
+
       const responseGeocercaD = await axios.get(`${GeocercaURL}/${value}`);
       setGeocercaD(responseGeocercaD.data);
     } catch (error) {
@@ -173,16 +160,19 @@ function CoordenadasModal({
   const handleMapClick = (mapProps, map, clickEvent) => {
     const clickedLat = clickEvent.latLng.lat().toFixed(7);
     const clickedLng = clickEvent.latLng.lng().toFixed(7);
-  
+
     // Actualiza las coordenadas en las variables de estado
     setFormData({
       ...formData,
       latitud: clickedLat,
       longitud: clickedLng,
     });
-  
+
     // Actualiza la posición del marcador en el mapa
-    setMarkerPosition({ lat: parseFloat(clickedLat), lng: parseFloat(clickedLng) });
+    setMarkerPosition({
+      lat: parseFloat(clickedLat),
+      lng: parseFloat(clickedLng),
+    });
   };
 
   return (
@@ -198,36 +188,18 @@ function CoordenadasModal({
                 {" "}
                 <SiGooglemaps /> Latitud
               </h5>
-              <input
-                type="text"
-                name="latitud"
-                value={formData.latitud}
-                onChange={handleInputChange}
-                style={{ width: "150px" }}
-              />
+              <input type="text" name="latitud" value={formData.latitud} onChange={handleInputChange} style={{ width: "150px" }} />
             </div>
             <div className="input-column">
               <h5>
                 <SiGooglemaps /> Longitud
               </h5>
-              <input
-                type="text"
-                name="longitud"
-                value={formData.longitud}
-                onChange={handleInputChange}
-                style={{ width: "150px" }}
-              />
+              <input type="text" name="longitud" value={formData.longitud} onChange={handleInputChange} style={{ width: "150px" }} />
             </div>
           </div>
           <div>
             <h5>Radio</h5>
-            <input
-              type="text"
-              name="radio"
-              value={formData.radio}
-              onChange={handleInputChange}
-              style={{ width: "420px" }}
-            />
+            <input type="text" name="radio" value={formData.radio} onChange={handleInputChange} style={{ width: "420px" }} />
           </div>
           <div className="input-row">
             <div className="input-column">
@@ -252,11 +224,7 @@ function CoordenadasModal({
               <AiFillSound style={{ marginRight: "10px" }} />
               {velocidadesS.nombre && (
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <ReactAudioPlayer
-                    src={velocidadesS.sonidoVelocidad}
-                    controls
-                    style={{ width: "200px", marginTop: "15px" }}
-                  />
+                  <ReactAudioPlayer src={velocidadesS.sonidoVelocidad} controls style={{ width: "200px", marginTop: "15px" }} />
                 </div>
               )}
             </div>
@@ -302,11 +270,7 @@ function CoordenadasModal({
                 <>
                   <AiFillSound />
                   <div>
-                    <ReactAudioPlayer
-                      src={geocercaD.urlSonido}
-                      controls
-                      style={{ width: "200px", marginTop: "15px" }}
-                    />
+                    <ReactAudioPlayer src={geocercaD.urlSonido} controls style={{ width: "200px", marginTop: "15px" }} />
                   </div>
                 </>
               )}
@@ -317,12 +281,7 @@ function CoordenadasModal({
             <>
               <AiFillSound />
               <div className="input-column">
-                <img
-                  src={geocercaD.urlImagen}
-                  alt="Logo Inicio"
-                  style={{ width: "30%", height: "30%", marginLeft: "35%" }}
-                  className="imgl"
-                />
+                <img src={geocercaD.urlImagen} alt="Logo Inicio" style={{ width: "30%", height: "30%", marginLeft: "35%" }} className="imgl" />
               </div>
             </>
           )}
@@ -333,15 +292,14 @@ function CoordenadasModal({
 
           <div style={{ height: "220px", margin: "10px" }}>
             <h5>Mapa</h5>
-      
 
             <Map
               google={window.google}
               zoom={2}
               style={{ height: "220px", width: "90%" }}
               initialCenter={{
-                lat: -12.0415785 ,
-                lng:    -77.0252425 ,
+                lat: -12.0415785,
+                lng: -77.0252425,
               }}
               onClick={handleMapClick} // Agrega el controlador de eventos onClick
             >

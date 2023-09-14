@@ -3,16 +3,16 @@ import { Button, ButtonGroup, Card } from "react-bootstrap";
 import "../Styles/Rutas.css";
 import { useNavigate } from "react-router-dom";
 import { useListarElementos } from "../Hooks/CRUDHooks";
-import { rutasURL, rutasxEmpresaURL } from "../API/apiurls";
+import { coordenadasURL, coordenadaxRutaURL, rutasURL, rutasxEmpresaURL } from "../API/apiurls";
 import { BsXCircleFill } from "react-icons/bs";
 import { GrEdit } from "react-icons/gr";
 import Swal from "sweetalert2";
 import axios from "axios";
 import RutasModal from "./RutasModal";
-import { paisesURL } from "./../API/apiurls";
 import NavBar from "../Common/NavBar";
 import { FaDownload } from "react-icons/fa";
 import { AiFillProfile } from "react-icons/ai";
+
 export function Rutas() {
   const [datos, setDatos] = useState([]);
   const navigation = useNavigate();
@@ -24,7 +24,7 @@ export function Rutas() {
 
   const handleVerCoordenadas = async (dato) => {
     await localStorage.setItem("nomRuta", dato.nomruta);
-    await localStorage.setItem("pais", dato.paisesModel.id)
+    await localStorage.setItem("pais", dato.paisesModel.id);
     navigation(`/coordenadas/${dato.id}`);
   };
 
@@ -43,18 +43,13 @@ export function Rutas() {
         axios
           .delete(`${rutasURL}/${id}`)
           .then(() => {
-            // Filtra los datos para mantener solo los registros que no tienen el ID eliminado
             const nuevosDatos = datos.filter((ruta) => ruta.id !== id);
-            setDatos(nuevosDatos); // Actualiza la variable de estado
+            setDatos(nuevosDatos);
             Swal.fire("Eliminado", "La ruta ha sido eliminada", "success");
           })
           .catch((error) => {
             console.error("Error al eliminar los datos:", error);
-            Swal.fire(
-              "Error",
-              "Hubo un error al eliminar el registro",
-              "error"
-            );
+            Swal.fire("Error", "Hubo un error al eliminar el registro", "error");
           });
       }
     });
@@ -66,6 +61,7 @@ export function Rutas() {
 
   const handleCerrar = () => {
     setShow(false);
+    setDatosEdit(null);
   };
 
   const datosAEditar = (camion) => {
@@ -112,20 +108,100 @@ export function Rutas() {
     axios
       .put(`${rutasURL}/${dato.id}`, requestData)
       .then((response) => {
-        // Actualiza los datos localmente en la lista
         const indice = datos.findIndex((item) => item.id === dato.id);
         if (indice !== -1) {
           const nuevosDatos = [...datos];
           nuevosDatos[indice] = response.data;
           setDatos(nuevosDatos);
         }
-
         setShow(false);
       })
       .catch((error) => {
         console.error("Error al editar los datos:", error);
         Swal.fire("Error", "Hubo un error al editar el registro", "error");
       });
+  };
+  const [datotxt, setDatotxt] = useState([]);
+
+  const generateTextFile = () => {
+    alert(datotxt.length);
+    if (datotxt.length > 0) {
+      const content = datotxt
+        .map(
+          (coordenada) =>
+            `${coordenada.latitud} ${coordenada.longitud} ${coordenada.radio} ${coordenada.sonidosVelocidadModel.nombre / 10} ${
+              coordenada.sonidosVelocidadModel.id + 1
+            } ${coordenada.sonidosGeocercaModel.codsonido}\n`
+        )
+        .join("");
+
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.download = "datos_coordenadas.txt";
+
+      const event = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      });
+
+      link.dispatchEvent(event);
+
+      URL.revokeObjectURL(link.href);
+    } else {
+      alert("La ruta seleccionada no contiene coordenadas, por favor agregue coordenadas para poder descargar el archivo");
+    }
+  };
+
+  const handleDownloand = async (dato) => {
+    try {
+      // Hacer la solicitud para obtener los datos
+      const response = await axios.get(`${coordenadaxRutaURL}${dato}`);
+      setDatotxt(response.data);
+
+      // Verificar si los datos se han cargado correctamente
+      if (response.data.length > 0) {
+        // Generar y descargar el archivo de texto
+        const content = response.data
+          .map(
+            (coordenada) =>
+              `${coordenada.latitud} ${coordenada.longitud} ${coordenada.radio} ${coordenada.sonidosVelocidadModel.nombre / 10} ${
+                coordenada.sonidosVelocidadModel.id + 1
+              } ${coordenada.sonidosGeocercaModel.codsonido}\n`
+          )
+          .join("");
+
+        const blob = new Blob([content], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.target = "_blank";
+        link.download = "datos_coordenadas.txt";
+
+        const event = new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        });
+
+        link.dispatchEvent(event);
+
+        URL.revokeObjectURL(link.href);
+      } else {
+        Swal.fire(
+          "Advertencia",
+          "La ruta seleccionada no contiene coordenadas, por favor agregue coordenadas para poder descargar el archivo",
+          "warning"
+        );
+      }
+    } catch (error) {
+      console.error("Error al descargar datos:", error);
+    }
   };
 
   return (
@@ -135,59 +211,33 @@ export function Rutas() {
       <Button style={{ margin: "10px" }} onClick={() => handleAbrir()}>
         Crear nueva ruta
       </Button>
-      <div className="camionesMenu-contenedor" SS>
-        {datos.map((ruta) => (
-          <Card
-            key={ruta.id}
-            style={{
-              width: "18rem",
-              marginBottom: "20px",
-              margin: "20px",
-              padding: "10px",
-            }}
-          >
+      <div className="camionesMenu-contenedor">
+        {datos.map((ruta, index) => (
+          <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
             <Card.Body>
-              <Card.Title>ID: {ruta.id}</Card.Title>
-              <Card.Subtitle className="mb-2 text-muted">
-                Nombre de Ruta: {ruta.nomruta}
-              </Card.Subtitle>
+              <Card.Title>{index + 1}</Card.Title>
+              <Card.Subtitle className="mb-2 text-muted">Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
               <Card.Text>Empresa: {empresaNombre}</Card.Text>
               <Card.Text>País: {ruta.paisesModel.nombre}</Card.Text>
             </Card.Body>
-            <Button
-              onClick={() => handleVerCoordenadas(ruta)}
-              style={{
-                backgroundColor: "#40609F",
-                borderColor: "black",
-                color: "white",
-              }}
-            >
+            <Button onClick={() => handleVerCoordenadas(ruta)} style={{ backgroundColor: "#40609F", borderColor: "black", color: "white" }}>
               <AiFillProfile /> Ver Coordenadas
             </Button>
-            <Button variant="success" style={{ marginTop: "10px" }}>
-              {" "}
+            <Button variant="success" style={{ marginTop: "10px" }} onClick={() => handleDownloand(ruta.id)}>
               <FaDownload /> Descargar txt
             </Button>
             <ButtonGroup style={{ marginTop: "10px" }}>
               <Button
                 variant="warning"
                 onClick={() => datosAEditar(ruta)}
-                style={{
-                  backgroundColor: "#727273",
-                  borderColor: "black",
-                  marginRight: "5px",
-                }}
+                style={{ backgroundColor: "#727273", borderColor: "black", marginRight: "5px" }}
               >
                 <GrEdit /> Editar
               </Button>
               <Button
                 variant="danger"
                 onClick={() => handleEliminar(ruta.id)}
-                style={{
-                  backgroundColor: "#727273",
-                  borderColor: "black",
-                  color: "black",
-                }}
+                style={{ backgroundColor: "#727273", borderColor: "black", color: "black" }}
               >
                 <BsXCircleFill /> Eliminar
               </Button>
@@ -195,13 +245,7 @@ export function Rutas() {
           </Card>
         ))}
       </div>
-      <RutasModal
-        mostrar={show}
-        cerrar={() => handleCerrar()}
-        guardar={handleGuardar}
-        datosaeditar={datosEdit}
-        editar={handleEditar}
-      />
+      <RutasModal mostrar={show} cerrar={() => handleCerrar()} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} />
     </div>
   );
 }
