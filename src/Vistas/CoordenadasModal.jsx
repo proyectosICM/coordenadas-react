@@ -259,7 +259,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
                 <option value="">Seleccione una geocerca</option>
                 {geocercas.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.nombre}
+                    {v.nombre} {v.detalle && v.detalle}
                   </option>
                 ))}
               </select>

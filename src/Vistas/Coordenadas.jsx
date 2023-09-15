@@ -146,7 +146,7 @@ export function Coordenadas() {
     const content = datos
       .map(
         (coordenada) =>
-          `${coordenada.latitud} ${coordenada.longitud} ${coordenada.radio} ${coordenada.sonidosVelocidadModel.nombre/10} ${coordenada.sonidosVelocidadModel.id + 1} ${coordenada.sonidoGeocerca}\n`
+          `${coordenada.latitud} ${coordenada.longitud} ${coordenada.radio} ${coordenada.sonidosVelocidadModel.nombre/10} ${coordenada.sonidosVelocidadModel.id + 1} ${coordenada.sonidosGeocercaModel.codsonido}\n`
       )
       .join("");
 

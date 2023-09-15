@@ -117,10 +117,11 @@ export function GaleriaDeCercas() {
         style={{
           display: "flex",
           width: "80%",
-          height: "80%",
+          height: "600px",
           flexWrap: "wrap",
-          margin: "0 auto",
+          margin: "20px auto",
           justifyContent: "center",
+          overflow: "scroll"
         }}
       >
         {cercas &&
@@ -128,8 +129,8 @@ export function GaleriaDeCercas() {
             <div
               key={cerca.id}
               style={{
-                width: "250px",
-                height: "250px",
+                width: "300px",
+                height: "300px",
                 border: "2px solid black",
                 margin: "2%",
                 padding: "2%",
@@ -141,6 +142,8 @@ export function GaleriaDeCercas() {
                 alt="Imagen de Cerca"
                 style={{ width: "150px", height: "150px" }}
               />
+              <p style={{ margin:"0" }}>Codigo de sonido: {cerca.codsonido}</p>
+              <p>Nombre: {cerca.detalle && cerca.detalle}</p>
             </div>
           ))}
       </div>
