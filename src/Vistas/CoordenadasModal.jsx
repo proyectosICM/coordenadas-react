@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
 import { Map, Marker } from "google-maps-react";
 import { useListarElementos } from "../Hooks/CRUDHooks";
-import { GeocercaURL, GeocercaxPaisURL, sonidosVelocidadURL } from "../API/apiurls";
+import { GeocercaURL, GeocercaxPaisURL, GeocercaxPaisxTipoURL, sonidosVelocidadURL } from "../API/apiurls";
 import axios from "axios";
 import ReactAudioPlayer from "react-audio-player";
 import { SiGooglemaps } from "react-icons/si";
@@ -25,12 +25,59 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     codsonidoG: "",
   });
 
+  const [geocercaTipo, setGeocercaTipo] = useState("Todas");
+
   const [velocidades, setVelocidades] = useState([]);
   useListarElementos(`${sonidosVelocidadURL}`, velocidades, setVelocidades);
 
   const pais = localStorage.getItem("pais");
   const [geocercas, setGeocercas] = useState([]);
-  useListarElementos(`${GeocercaxPaisURL}${pais}`, geocercas, setGeocercas);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (pais && geocercaTipo == "Todas") {
+        setGeocercas("");
+        try {
+          const response = await axios.get(`${GeocercaxPaisURL}${pais}`);
+          setGeocercas(response.data);
+        } catch (error) {
+          console.error(
+            "Error al cargar datos:",
+            error,
+            `${GeocercaxPaisURL}${pais}`
+          );
+        }
+      } else if (pais && geocercaTipo !== "Todas") {
+        setGeocercas("");
+
+        try {
+          let tc;
+          if(geocercaTipo == "Reglamentarias"){
+            tc = 1;
+          }else if(geocercaTipo == "Preventivas"){
+            tc = 2;
+          } else if(geocercaTipo == "Informativas"){
+            tc = 3;
+          }
+          const response = await axios.get(`${GeocercaxPaisxTipoURL}${pais}/${tc}`);
+          setGeocercas(response.data);
+        } catch (error) {
+          console.error(
+            "Error al cargar datos:",
+            error,
+            `${GeocercaxPaisURL}${pais}`
+          );
+        }
+      } else {
+        const response = await axios.get(`${GeocercaURL}`);
+        setGeocercas(response.data);
+      }
+    };
+
+    fetchData();
+  }, [pais, geocercaTipo]);
+
+
 
   const [idvelocidad, setIdvelocidad] = useState([]);
   const [velocidadesS, setVelocidadesS] = useState([]);
@@ -198,7 +245,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             </div>
           </div>
           <div>
-            <h5>Radio</h5>
+            <h5>Radio en KM</h5>
             <input type="text" name="radio" value={formData.radio} onChange={handleInputChange} style={{ width: "420px" }} />
           </div>
           <div className="input-row">
@@ -230,6 +277,48 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             </div>
           </div>
 
+                    {/* Agregar los radio buttons */}
+                    <div className="input-row">
+            <div className="input-column">
+              <h5>Tipo de Geocerca</h5>
+              <label className="rbstyle">
+                <input type="radio" name="geocercaTipo" value="Todas" checked={geocercaTipo === "Todas"} onChange={() => setGeocercaTipo("Todas")} />
+                Todas 
+              </label>
+              <label className="rbstyle">
+                <input
+                  type="radio"
+                  name="geocercaTipo"
+                  value="Reglamentarias"
+                  checked={geocercaTipo === "Reglamentarias"}
+                  onChange={() => setGeocercaTipo("Reglamentarias")}
+                />
+                Reglamentarias
+              </label>
+              <label className="rbstyle">
+                <input
+                  type="radio"
+                  name="geocercaTipo"
+                  value="Preventivas"
+                  checked={geocercaTipo === "Preventivas"}
+                  onChange={() => setGeocercaTipo("Preventivas")}
+                />
+                Preventivas
+              </label>
+              <label className="rbstyle">
+                <input
+                  type="radio"
+                  name="geocercaTipo"
+                  value="Informativas"
+                  checked={geocercaTipo === "Informativas"}
+                  onChange={() => setGeocercaTipo("Informativas")}
+                />
+                Informativas
+              </label>
+            </div>
+          </div>
+
+
           <div className="input-row">
             {/*
             <div className="input-column">
@@ -246,6 +335,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             </div>
               */}
 
+
             <div className="input-column">
               <h5>
                 <BsSpeedometer2 /> Geocerca
@@ -257,7 +347,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
                 style={{ width: "200px", height: "40px", margin: "10px" }}
               >
                 <option value="">Seleccione una geocerca</option>
-                {geocercas.map((v) => (
+                {geocercas  && geocercas.map((v) => (
                   <option key={v.id} value={v.id}>
                     {v.nombre} {v.detalle && v.detalle}
                   </option>
@@ -276,6 +366,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
               )}
             </div>
           </div>
+
 
           {geocercaD.nombre && (
             <>

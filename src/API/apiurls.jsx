@@ -1,5 +1,6 @@
-export const base = 'http://localhost:8081/api';
-//export const base = 'http://192.168.1.232:8080/api';
+//export const base = 'http://localhost:8087/api';
+//export const base = 'http://192.168.1.232:8081/api';
+export const base = "http://192.168.1.202:8081/api";
 export const loginURL = `${base}/empresas/login`
 
 // Ruta

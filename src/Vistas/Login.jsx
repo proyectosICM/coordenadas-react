@@ -20,6 +20,7 @@ export function Login() {
   },[navigation])
 
   const handleSubmit = (e) => {
+
     e.preventDefault();
     const dataInicio = {
       usuario: usuario,
@@ -32,11 +33,13 @@ export function Login() {
         localStorage.setItem("empresa", response.data.id);
         localStorage.setItem("empresaNombre", response.data.nombre);
         navigation("/rutas");
+        console.log("hol")
       })
       .catch((error) => {
         console.error("Error:", error);
         setError("Error en inicio de sesión");
       });
+
   };
 
   return (
