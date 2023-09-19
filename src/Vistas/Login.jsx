@@ -49,7 +49,7 @@ export function Login() {
           <label htmlFor="usuario">
             <RiUserLine /> Usuario:
           </label>
-          <input type="text" id="usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} required placeholder="Email" />
+          <input type="text" id="usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} required placeholder="Usuario" />
         </div>
         <div className="input-group">
           <label htmlFor="contrasena">

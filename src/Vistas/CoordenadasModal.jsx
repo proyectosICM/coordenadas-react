@@ -245,8 +245,8 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             </div>
           </div>
           <div>
-            <h5>Radio en KM</h5>
-            <input type="text" name="radio" value={formData.radio} onChange={handleInputChange} style={{ width: "420px" }} />
+            <h5>Radio</h5>
+            <input type="number" name="radio" value={formData.radio} onChange={handleInputChange} style={{ width: "420px" }} />
           </div>
           <div className="input-row">
             <div className="input-column">

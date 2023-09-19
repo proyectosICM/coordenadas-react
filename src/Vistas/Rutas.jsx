@@ -204,15 +204,16 @@ export function Rutas() {
     }
   };
 
+
   return (
     <div>
       <NavBar />
-      <h1>Rutas de la empresa {empresaid}</h1>
+      <h1>Rutas de la empresa</h1>
       <Button style={{ margin: "10px" }} onClick={() => handleAbrir()}>
         Crear nueva ruta
       </Button>
       <div className="camionesMenu-contenedor">
-        {datos.map((ruta, index) => (
+        {datos && datos.map((ruta, index) => (
           <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
             <Card.Body>
               <Card.Title>{index + 1}</Card.Title>
@@ -244,6 +245,9 @@ export function Rutas() {
             </ButtonGroup>
           </Card>
         ))}
+        {datos.length ==  0 && (
+          <h1 style={{textAlign: "center"}}>Su empresa no tiene rutas, por favor agregue una</h1>
+        ) }
       </div>
       <RutasModal mostrar={show} cerrar={() => handleCerrar()} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} />
     </div>
