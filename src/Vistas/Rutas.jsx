@@ -129,9 +129,7 @@ export function Rutas() {
       const content = datotxt
         .map(
           (coordenada) =>
-            `${coordenada.latitud} ${coordenada.longitud} ${coordenada.radio} ${coordenada.sonidosVelocidadModel.nombre / 10} ${
-              coordenada.sonidosVelocidadModel.id + 1
-            } ${coordenada.sonidosGeocercaModel.codsonido}\n`
+            `${coordenada.latitud}, ${coordenada.longitud}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
         )
         .join("");
 
@@ -167,13 +165,11 @@ export function Rutas() {
       if (response.data.length > 0) {
         // Generar y descargar el archivo de texto
         const content = response.data
-          .map(
-            (coordenada) =>
-              `${coordenada.latitud} ${coordenada.longitud} ${coordenada.radio} ${coordenada.sonidosVelocidadModel.nombre / 10} ${
-                coordenada.sonidosVelocidadModel.id + 1
-              } ${coordenada.sonidosGeocercaModel.codsonido}\n`
-          )
-          .join("");
+        .map(
+          (coordenada) =>
+            `${coordenada.latitud}, ${coordenada.longitud}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
+        )
+        .join("");
 
         const blob = new Blob([content], { type: "text/plain" });
         const url = URL.createObjectURL(blob);
@@ -204,7 +200,6 @@ export function Rutas() {
     }
   };
 
-
   return (
     <div>
       <NavBar />
@@ -213,41 +208,40 @@ export function Rutas() {
         Crear nueva ruta
       </Button>
       <div className="camionesMenu-contenedor">
-        {datos && datos.map((ruta, index) => (
-          <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
-            <Card.Body>
-              <Card.Title>{index + 1}</Card.Title>
-              <Card.Subtitle className="mb-2 text-muted">Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
-              <Card.Text>Empresa: {empresaNombre}</Card.Text>
-              <Card.Text>País: {ruta.paisesModel.nombre}</Card.Text>
-            </Card.Body>
-            <Button onClick={() => handleVerCoordenadas(ruta)} style={{ backgroundColor: "#40609F", borderColor: "black", color: "white" }}>
-              <AiFillProfile /> Ver Coordenadas
-            </Button>
-            <Button variant="success" style={{ marginTop: "10px" }} onClick={() => handleDownloand(ruta.id)}>
-              <FaDownload /> Descargar txt
-            </Button>
-            <ButtonGroup style={{ marginTop: "10px" }}>
-              <Button
-                variant="warning"
-                onClick={() => datosAEditar(ruta)}
-                style={{ backgroundColor: "#727273", borderColor: "black", marginRight: "5px" }}
-              >
-                <GrEdit /> Editar
+        {datos &&
+          datos.map((ruta, index) => (
+            <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
+              <Card.Body>
+                <Card.Title>{index + 1}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
+                <Card.Text>Empresa: {empresaNombre}</Card.Text>
+                <Card.Text>País: {ruta.paisesModel.nombre}</Card.Text>
+              </Card.Body>
+              <Button onClick={() => handleVerCoordenadas(ruta)} style={{ backgroundColor: "#40609F", borderColor: "black", color: "white" }}>
+                <AiFillProfile /> Ver Coordenadas
               </Button>
-              <Button
-                variant="danger"
-                onClick={() => handleEliminar(ruta.id)}
-                style={{ backgroundColor: "#727273", borderColor: "black", color: "black" }}
-              >
-                <BsXCircleFill /> Eliminar
+              <Button variant="success" style={{ marginTop: "10px" }} onClick={() => handleDownloand(ruta.id)}>
+                <FaDownload /> Descargar txt
               </Button>
-            </ButtonGroup>
-          </Card>
-        ))}
-        {datos.length ==  0 && (
-          <h1 style={{textAlign: "center"}}>Su empresa no tiene rutas, por favor agregue una</h1>
-        ) }
+              <ButtonGroup style={{ marginTop: "10px" }}>
+                <Button
+                  variant="warning"
+                  onClick={() => datosAEditar(ruta)}
+                  style={{ backgroundColor: "#727273", borderColor: "black", marginRight: "5px" }}
+                >
+                  <GrEdit /> Editar
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => handleEliminar(ruta.id)}
+                  style={{ backgroundColor: "#727273", borderColor: "black", color: "black" }}
+                >
+                  <BsXCircleFill /> Eliminar
+                </Button>
+              </ButtonGroup>
+            </Card>
+          ))}
+        {datos.length == 0 && <h1 style={{ textAlign: "center" }}>Su empresa no tiene rutas, por favor agregue una</h1>}
       </div>
       <RutasModal mostrar={show} cerrar={() => handleCerrar()} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} />
     </div>

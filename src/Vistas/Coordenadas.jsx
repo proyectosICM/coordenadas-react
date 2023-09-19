@@ -42,6 +42,7 @@ export function Coordenadas() {
       sonidosVelocidadModel: {
         id: datosFormulario.velocidad,
         nombre: datosFormulario.velocidadValor,
+        codvel: datosFormulario.codvel,
       },
       sonidosGeocercaModel: {
         id: datosFormulario.sonidoGeocerca,
@@ -102,7 +103,7 @@ export function Coordenadas() {
   };
 
   const handleEditar = (dato) => {
-
+    console.log(dato)
     const requestData = {
       latitud: dato.latitud,
       longitud: dato.longitud,
@@ -110,6 +111,7 @@ export function Coordenadas() {
       sonidosVelocidadModel: {
         id: dato.velocidad,
         nombre: dato.velocidadValor,
+        codvel: dato.codvel,
       },
       sonidosGeocercaModel: {
         id: dato.sonidoGeocerca,
@@ -146,7 +148,7 @@ export function Coordenadas() {
     const content = datos
       .map(
         (coordenada) =>
-          `${coordenada.latitud} ${coordenada.longitud} ${coordenada.radio} ${coordenada.sonidosVelocidadModel.nombre/10} ${coordenada.sonidosVelocidadModel.id + 1} ${coordenada.sonidosGeocercaModel.codsonido}\n`
+          `${coordenada.latitud}, ${coordenada.longitud}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
       )
       .join("");
 
@@ -156,7 +158,7 @@ export function Coordenadas() {
     const link = document.createElement("a");
     link.href = url;
     link.target = "_blank";
-    link.download = "datos_coordenadas.txt";
+    link.download = "ruta.txt";
 
     const event = new MouseEvent("click", {
       bubbles: true,
@@ -205,8 +207,8 @@ export function Coordenadas() {
                 <td>{coordenada.longitud}</td>
                 <td>{coordenada.radio}</td>
                 <td>{coordenada.sonidosVelocidadModel.nombre}</td>
-                <td>{coordenada.sonidosVelocidadModel.id + 1}</td>
-                <td>{coordenada.sonidosGeocercaModel.id}</td>
+                <td>{coordenada.sonidosVelocidadModel.codvel}</td>
+                <td>{coordenada.sonidosGeocercaModel.codsonido}</td>
                 <td>
                   <Button
                     variant="warning"

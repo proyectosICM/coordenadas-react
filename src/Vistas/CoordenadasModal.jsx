@@ -23,6 +23,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     sonidoGeocerca: "",
     imagenGeocerca: "",
     codsonidoG: "",
+    codvel: "",
   });
 
   const [geocercaTipo, setGeocercaTipo] = useState("Todas");
@@ -41,32 +42,24 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
           const response = await axios.get(`${GeocercaxPaisURL}${pais}`);
           setGeocercas(response.data);
         } catch (error) {
-          console.error(
-            "Error al cargar datos:",
-            error,
-            `${GeocercaxPaisURL}${pais}`
-          );
+          console.error("Error al cargar datos:", error, `${GeocercaxPaisURL}${pais}`);
         }
       } else if (pais && geocercaTipo !== "Todas") {
         setGeocercas("");
 
         try {
           let tc;
-          if(geocercaTipo == "Reglamentarias"){
+          if (geocercaTipo == "Reglamentarias") {
             tc = 1;
-          }else if(geocercaTipo == "Preventivas"){
+          } else if (geocercaTipo == "Preventivas") {
             tc = 2;
-          } else if(geocercaTipo == "Informativas"){
+          } else if (geocercaTipo == "Informativas") {
             tc = 3;
           }
           const response = await axios.get(`${GeocercaxPaisxTipoURL}${pais}/${tc}`);
           setGeocercas(response.data);
         } catch (error) {
-          console.error(
-            "Error al cargar datos:",
-            error,
-            `${GeocercaxPaisURL}${pais}`
-          );
+          console.error("Error al cargar datos:", error, `${GeocercaxPaisURL}${pais}`);
         }
       } else {
         const response = await axios.get(`${GeocercaURL}`);
@@ -76,8 +69,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
 
     fetchData();
   }, [pais, geocercaTipo]);
-
-
 
   const [idvelocidad, setIdvelocidad] = useState([]);
   const [velocidadesS, setVelocidadesS] = useState([]);
@@ -93,15 +84,16 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
         radio: datosaeditar.radio,
         velocidad: datosaeditar.sonidosVelocidadModel.id,
         velocidadValor: datosaeditar.sonidosVelocidadModel.id,
-        sonidoVelocidad: datosaeditar.sonidosVelocidadModel.nombre / 10,
+        codvel: datosaeditar.sonidosVelocidadModel.codvel,
         sonidoGeocerca: datosaeditar.sonidosGeocercaModel.id,
         codsonidoG: datosaeditar.sonidosGeocercaModel.codsonido,
         imagenGeocerca: datosaeditar.sonidosGeocercaModel.id,
       });
+
       const ListarDatos = async () => {
         try {
           const response = await axios.get(`${sonidosVelocidadURL}/${datosaeditar.sonidosVelocidadModel.id}`);
-          console.log(response.data);
+
           setVelocidadesS(response.data);
           const responseGeocercaD = await axios.get(`${GeocercaURL}/${datosaeditar.sonidosGeocercaModel.id}`);
           setGeocercaD(responseGeocercaD.data);
@@ -147,6 +139,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
       sonidoGeocerca: "",
       imagenGeocerca: "",
       codsonidoG: "",
+      codvel: "",
     });
     setVelocidadesS("");
     setGeocercaD("");
@@ -163,17 +156,18 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
   const handleSeleccionarAudio = async (e) => {
     const { value, options } = e.target;
     const selectedOption = options[options.selectedIndex];
-    setFormData({
-      ...formData,
-      sonidoVelocidad: selectedOption.text / 10,
-      velocidad: value,
-      velocidadValor: selectedOption.text,
-    });
-    setIdvelocidad(value);
-
     try {
       const response = await axios.get(`${sonidosVelocidadURL}/${value}`);
       setVelocidadesS(response.data);
+      
+
+      setFormData({
+        ...formData,
+        codvel: response.data.codvel,
+        velocidad: value,
+        velocidadValor: selectedOption.text,
+      });
+      setIdvelocidad(value);
     } catch (error) {
       console.error("Error al obtener los datos:", error);
     }
@@ -186,19 +180,19 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
 
     try {
       const response = await axios.get(`${GeocercaURL}/${value}`);
-      const codsonido = response.data.codsonido; // Obtener 'codsonido' del objeto de respuesta
+      const codsonido = response.data.codsonido;
 
       setSonidoG(response.data);
+
+      const responseGeocercaD = await axios.get(`${GeocercaURL}/${value}`);
+      setGeocercaD(responseGeocercaD.data);
 
       setFormData({
         ...formData,
         sonidoGeocerca: selectedOption.value,
         imagenGeocerca: selectedOption.value,
-        codsonidoG: codsonido, // Asignar 'codsonido' a 'codsonidoG'
+        codsonidoG: responseGeocercaD.data.codsonido,
       });
-
-      const responseGeocercaD = await axios.get(`${GeocercaURL}/${value}`);
-      setGeocercaD(responseGeocercaD.data);
     } catch (error) {
       console.error("Error al obtener los datos:", error);
     }
@@ -245,7 +239,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             </div>
           </div>
           <div>
-            <h5>Radio</h5>
+            <h5>Radio en metros</h5>
             <input type="number" name="radio" value={formData.radio} onChange={handleInputChange} style={{ width: "420px" }} />
           </div>
           <div className="input-row">
@@ -277,13 +271,13 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             </div>
           </div>
 
-                    {/* Agregar los radio buttons */}
-                    <div className="input-row">
+          {/* Agregar los radio buttons */}
+          <div className="input-row">
             <div className="input-column">
               <h5>Tipo de Geocerca</h5>
               <label className="rbstyle">
                 <input type="radio" name="geocercaTipo" value="Todas" checked={geocercaTipo === "Todas"} onChange={() => setGeocercaTipo("Todas")} />
-                Todas 
+                Todas
               </label>
               <label className="rbstyle">
                 <input
@@ -318,7 +312,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             </div>
           </div>
 
-
           <div className="input-row">
             {/*
             <div className="input-column">
@@ -335,7 +328,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             </div>
               */}
 
-
             <div className="input-column">
               <h5>
                 <BsSpeedometer2 /> Geocerca
@@ -347,11 +339,12 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
                 style={{ width: "200px", height: "40px", margin: "10px" }}
               >
                 <option value="">Seleccione una geocerca</option>
-                {geocercas  && geocercas.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.nombre} {v.detalle && v.detalle}
-                  </option>
-                ))}
+                {geocercas &&
+                  geocercas.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.nombre} {v.detalle && v.detalle}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -366,7 +359,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
               )}
             </div>
           </div>
-
 
           {geocercaD.nombre && (
             <>
