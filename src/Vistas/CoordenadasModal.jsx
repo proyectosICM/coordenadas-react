@@ -223,6 +223,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+{          /*
           <div className="input-row">
             <div className="input-column">
               <h5>
@@ -237,6 +238,11 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
               </h5>
               <input type="text" name="longitud" value={formData.longitud} onChange={handleInputChange} style={{ width: "150px" }} />
             </div>
+          </div>
+          */}
+          <div>
+            <h5>Coloque latitud y Longuitud</h5>
+            <input type="number" name="radio" value={formData.radio} onChange={handleInputChange} style={{ width: "420px" }} />
           </div>
           <div>
             <h5>Radio en metros</h5>
@@ -373,9 +379,10 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             Guardar
           </button>
 
+
+{/*
           <div style={{ height: "220px", margin: "10px" }}>
             <h5>Mapa</h5>
-
             <Map
               google={window.google}
               zoom={2}
@@ -395,7 +402,9 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
                 />
               ) : null}
             </Map>
-          </div>
+                      </div>
+            */}
+
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>
