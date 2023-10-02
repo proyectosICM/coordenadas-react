@@ -199,8 +199,8 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
   };
 
   const handleMapClick = (mapProps, map, clickEvent) => {
-    const clickedLat = clickEvent.latLng.lat().toFixed(7);
-    const clickedLng = clickEvent.latLng.lng().toFixed(7);
+    const clickedLat = clickEvent.latLng.lat().toFixed(6);
+    const clickedLng = clickEvent.latLng.lng().toFixed(6);
 
     // Actualiza las coordenadas en las variables de estado
     setFormData({
