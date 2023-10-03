@@ -194,6 +194,14 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     }
   };
 
+  const openGoogleMaps = () => {
+    // Aquí puedes construir la URL de Google Maps con las coordenadas ingresadas
+    // const googleMapsUrl = `https://www.google.com/maps?q=-12.046861, -77.042341`;
+    const googleMapsUrl = `https://www.google.com/maps?q=-12.046861, -77.042341`;
+    // Abre Google Maps en una nueva ventana
+    window.open(googleMapsUrl, "_blank");
+  };
+
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
@@ -202,6 +210,11 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
         </Modal.Header>
         <Modal.Body>
           <div>
+            <div>
+              <a href="#" onClick={openGoogleMaps} target="_blank">
+                Abrir Google Maps
+              </a>
+            </div>
             <h5>Coloque latitud y Longuitud</h5>
             <input type="text" name="coordenadas" value={formData.coordenadas} onChange={handleInputChange} style={{ width: "420px" }} />
           </div>
