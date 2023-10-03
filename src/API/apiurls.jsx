@@ -2,9 +2,9 @@
 //export const base = 'http://192.168.1.232:8081/api';
 
 
-export const base = "http://192.168.1.202:8081/api";
+// export const base = "http://192.168.1.202:8081/api";
 
-// export const base = "http://192.168.1.202:8081/api"
+export const base = "http://161.132.180.242:8081/api"
 
 export const loginURL = `${base}/empresas/login`
 
