@@ -123,38 +123,6 @@ export function Rutas() {
   };
   const [datotxt, setDatotxt] = useState([]);
 
-  const generateTextFile = () => {
-    alert(datotxt.length);
-    if (datotxt.length > 0) {
-      const content = datotxt
-        .map(
-          (coordenada) =>
-            `${coordenada.latitud}, ${coordenada.longitud}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
-        )
-        .join("");
-
-      const blob = new Blob([content], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.download = "datos_coordenadas.txt";
-
-      const event = new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-      });
-
-      link.dispatchEvent(event);
-
-      URL.revokeObjectURL(link.href);
-    } else {
-      alert("La ruta seleccionada no contiene coordenadas, por favor agregue coordenadas para poder descargar el archivo");
-    }
-  };
-
   const handleDownloand = async (dato) => {
     try {
       // Hacer la solicitud para obtener los datos
@@ -167,7 +135,7 @@ export function Rutas() {
         const content = response.data
         .map(
           (coordenada) =>
-            `${coordenada.latitud}, ${coordenada.longitud}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
+            `${coordenada.coordenadasURL}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
         )
         .join("");
 

@@ -14,8 +14,7 @@ import { BsFillSignpost2Fill } from "react-icons/bs";
 function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp, title }) {
   // Variables de estado para los campos de entrada y las coordenadas del marcador
   const [formData, setFormData] = useState({
-    latitud: "",
-    longitud: "",
+    coordenadas: "",
     radio: "",
     velocidad: "10",
     velocidadValor: "",
@@ -79,8 +78,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     if (datosaeditar) {
       setFormData({
         id: datosaeditar.id,
-        latitud: datosaeditar.latitud,
-        longitud: datosaeditar.longitud,
+        coordenadas: datosaeditar.coordenadas,
         radio: datosaeditar.radio,
         velocidad: datosaeditar.sonidosVelocidadModel.id,
         velocidadValor: datosaeditar.sonidosVelocidadModel.id,
@@ -130,8 +128,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
 
   const limpiar = () => {
     setFormData({
-      latitud: "",
-      longitud: "",
+      coordenadas: "",
       radio: "",
       velocidad: "10",
       velocidadValor: "",
@@ -159,7 +156,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     try {
       const response = await axios.get(`${sonidosVelocidadURL}/${value}`);
       setVelocidadesS(response.data);
-      
 
       setFormData({
         ...formData,
@@ -198,24 +194,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     }
   };
 
-  const handleMapClick = (mapProps, map, clickEvent) => {
-    const clickedLat = clickEvent.latLng.lat().toFixed(6);
-    const clickedLng = clickEvent.latLng.lng().toFixed(6);
-
-    // Actualiza las coordenadas en las variables de estado
-    setFormData({
-      ...formData,
-      latitud: clickedLat,
-      longitud: clickedLng,
-    });
-
-    // Actualiza la posición del marcador en el mapa
-    setMarkerPosition({
-      lat: parseFloat(clickedLat),
-      lng: parseFloat(clickedLng),
-    });
-  };
-
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
@@ -223,26 +201,9 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-{          /*
-          <div className="input-row">
-            <div className="input-column">
-              <h5>
-                {" "}
-                <SiGooglemaps /> Latitud
-              </h5>
-              <input type="text" name="latitud" value={formData.latitud} onChange={handleInputChange} style={{ width: "150px" }} />
-            </div>
-            <div className="input-column">
-              <h5>
-                <SiGooglemaps /> Longitud
-              </h5>
-              <input type="text" name="longitud" value={formData.longitud} onChange={handleInputChange} style={{ width: "150px" }} />
-            </div>
-          </div>
-          */}
           <div>
             <h5>Coloque latitud y Longuitud</h5>
-            <input type="number" name="radio" value={formData.radio} onChange={handleInputChange} style={{ width: "420px" }} />
+            <input type="text" name="coordenadas" value={formData.coordenadas} onChange={handleInputChange} style={{ width: "420px" }} />
           </div>
           <div>
             <h5>Radio en metros</h5>
@@ -378,33 +339,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
           <button variant="primary" onClick={handleSave}>
             Guardar
           </button>
-
-
-{/*
-          <div style={{ height: "220px", margin: "10px" }}>
-            <h5>Mapa</h5>
-            <Map
-              google={window.google}
-              zoom={2}
-              style={{ height: "220px", width: "90%" }}
-              initialCenter={{
-                lat: -12.0415785,
-                lng: -77.0252425,
-              }}
-              onClick={handleMapClick} // Agrega el controlador de eventos onClick
-            >
-              {formData.latitud && formData.longitud ? (
-                <Marker
-                  position={{
-                    lat: parseFloat(formData.latitud),
-                    lng: parseFloat(formData.longitud),
-                  }}
-                />
-              ) : null}
-            </Map>
-                      </div>
-            */}
-
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>

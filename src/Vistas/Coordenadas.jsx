@@ -9,7 +9,7 @@ import CoordenadasModal from "./CoordenadasModal";
 import axios from "axios";
 import Swal from "sweetalert2";
 import NavBar from "../Common/NavBar";
-import { FaDownload } from 'react-icons/fa';
+import { FaDownload } from "react-icons/fa";
 
 export function Coordenadas() {
   const [datos, setDatos] = useState([]);
@@ -24,7 +24,7 @@ export function Coordenadas() {
 
   const handleShowModal = (t) => {
     setShow(true);
-    if(t == "Nuevo"){
+    if (t == "Nuevo") {
       setLimp(true);
     }
   };
@@ -36,8 +36,7 @@ export function Coordenadas() {
 
   const handleGuardar = (datosFormulario) => {
     const requestData = {
-      latitud: datosFormulario.latitud,
-      longitud: datosFormulario.longitud,
+      coordenadas: datosFormulario.coordenadas,
       radio: datosFormulario.radio,
       sonidosVelocidadModel: {
         id: datosFormulario.velocidad,
@@ -79,19 +78,13 @@ export function Coordenadas() {
           .delete(`${coordenadasURL}/${id}`)
           .then(() => {
             // Filtra los datos para mantener solo los registros que no tienen el ID eliminado
-            const nuevosDatos = datos.filter(
-              (coordenada) => coordenada.id !== id
-            );
+            const nuevosDatos = datos.filter((coordenada) => coordenada.id !== id);
             setDatos(nuevosDatos); // Actualiza la variable de estado
             Swal.fire("Eliminado", "El registro ha sido eliminado", "success");
           })
           .catch((error) => {
             console.error("Error al eliminar los datos:", error);
-            Swal.fire(
-              "Error",
-              "Hubo un error al eliminar el registro",
-              "error"
-            );
+            Swal.fire("Error", "Hubo un error al eliminar el registro", "error");
           });
       }
     });
@@ -103,10 +96,9 @@ export function Coordenadas() {
   };
 
   const handleEditar = (dato) => {
-    console.log(dato)
+    console.log(dato);
     const requestData = {
-      latitud: dato.latitud,
-      longitud: dato.longitud,
+      coordenadas: dato.coordenadas,
       radio: dato.radio,
       sonidosVelocidadModel: {
         id: dato.velocidad,
@@ -121,34 +113,31 @@ export function Coordenadas() {
         id: ruta,
       },
     };
-    console.log(requestData)
+    console.log(requestData);
     axios
-    .put(`${coordenadasURL}/${dato.id}`, requestData)
-    .then((response) => {
-      // Actualiza los datos localmente en la lista
-      const indice = datos.findIndex((item) => item.id === dato.id);
-      if (indice !== -1) {
-        const nuevosDatos = [...datos];
-        nuevosDatos[indice] = response.data;
-        setDatos(nuevosDatos);
-      }
+      .put(`${coordenadasURL}/${dato.id}`, requestData)
+      .then((response) => {
+        // Actualiza los datos localmente en la lista
+        const indice = datos.findIndex((item) => item.id === dato.id);
+        if (indice !== -1) {
+          const nuevosDatos = [...datos];
+          nuevosDatos[indice] = response.data;
+          setDatos(nuevosDatos);
+        }
 
-      setShow(false);
-    })
-    .catch((error) => {
-      console.error("Error al editar los datos:", error);
-      Swal.fire("Error", "Hubo un error al editar el registro", "error");
-    });
-};
-
-
-
+        setShow(false);
+      })
+      .catch((error) => {
+        console.error("Error al editar los datos:", error);
+        Swal.fire("Error", "Hubo un error al editar el registro", "error");
+      });
+  };
 
   const generateTextFile = () => {
     const content = datos
       .map(
         (coordenada) =>
-          `${coordenada.latitud}, ${coordenada.longitud}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
+          `${coordenada.coordenadas}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
       )
       .join("");
 
@@ -173,25 +162,20 @@ export function Coordenadas() {
 
   return (
     <>
-    <NavBar />
+      <NavBar />
       <div className="camionesMenu-contenedor">
         <Button style={{ width: "100%" }} onClick={() => navigation("/rutas")}>
           Atras
         </Button>
         <h1>Coordenadas de la ruta {nomRuta}</h1>
-        <Button
-          variant="success"
-          style={{ margin: "30px" }}
-          onClick={() => handleShowModal("Nuevo")}
-        >
+        <Button variant="success" style={{ margin: "30px" }} onClick={() => handleShowModal("Nuevo")}>
           <BsPlusCircleFill /> Agregar
         </Button>
         <Table striped bordered hover>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Latitud</th>
-              <th>Longitud</th>
+              <th>Latitud - Longuitud</th>
               <th>Radio</th>
               <th>Velocidad</th>
               <th>Sonido Velocidad</th>
@@ -203,25 +187,16 @@ export function Coordenadas() {
             {datos.map((coordenada) => (
               <tr key={coordenada.id}>
                 <td>{coordenada.id}</td>
-                <td>{coordenada.latitud}</td>
-                <td>{coordenada.longitud}</td>
+                <td>{coordenada.coordenadas}</td>
                 <td>{coordenada.radio}</td>
                 <td>{coordenada.sonidosVelocidadModel.nombre}</td>
                 <td>{coordenada.sonidosVelocidadModel.codvel}</td>
                 <td>{coordenada.sonidosGeocercaModel.codsonido}</td>
                 <td>
-                  <Button
-                    variant="warning"
-                    style={{ marginInline: "10px" }}
-                    onClick={() => datosAEditar(coordenada)}
-                  >
+                  <Button variant="warning" style={{ marginInline: "10px" }} onClick={() => datosAEditar(coordenada)}>
                     <GrEdit /> Editar
                   </Button>
-                  <Button
-                    variant="danger"
-                    style={{ marginInline: "10px" }}
-                    onClick={() => handleEliminar(coordenada.id)}
-                  >
+                  <Button variant="danger" style={{ marginInline: "10px" }} onClick={() => handleEliminar(coordenada.id)}>
                     <BsXCircleFill /> Eliminar
                   </Button>
                 </td>
@@ -229,16 +204,11 @@ export function Coordenadas() {
             ))}
           </tbody>
         </Table>
-        <Button onClick={generateTextFile}><FaDownload /> Descargar txt</Button>
+        <Button onClick={generateTextFile}>
+          <FaDownload /> Descargar txt
+        </Button>
       </div>
-      <CoordenadasModal
-        mostrar={show}
-        cerrar={handleCerrar}
-        guardar={handleGuardar}
-        datosaeditar={datosEdit}
-        editar={handleEditar}
-        limp={limp}
-      />
+      <CoordenadasModal mostrar={show} cerrar={handleCerrar} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} limp={limp} />
     </>
   );
 }
