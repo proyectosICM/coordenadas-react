@@ -145,7 +145,7 @@ export function Rutas() {
         const link = document.createElement("a");
         link.href = url;
         link.target = "_blank";
-        link.download = "datos_coordenadas.txt";
+        link.download = "ruta.txt";
 
         const event = new MouseEvent("click", {
           bubbles: true,
