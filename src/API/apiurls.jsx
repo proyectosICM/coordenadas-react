@@ -7,7 +7,7 @@
 export const base = "http://161.132.180.242:65002/api"
 
 export const loginURL = `${base}/empresas/login`
-
+ 
 // Ruta
 export const rutasURL = `${base}/rutas`;
 export const rutasxEmpresaURL = `${rutasURL}/xempresa/`
