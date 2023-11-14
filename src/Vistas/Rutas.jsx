@@ -53,7 +53,7 @@ export function Rutas() {
           });
       }
     });
-  };
+  }; 
 
   const handleAbrir = () => {
     setShow(true);
@@ -135,7 +135,7 @@ export function Rutas() {
         const content = response.data
         .map(
           (coordenada) =>
-            `${coordenada.coordenadasURL}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
+            `${coordenada.coordenadas}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
         )
         .join("");
 
