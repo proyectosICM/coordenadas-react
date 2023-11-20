@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { GrEdit } from "react-icons/gr";
 import { useNavigate, useParams } from "react-router-dom";
-import { coordenadasURL, coordenadaxRutaURL } from "../API/apiurls";
-import { useListarElementos } from "../Hooks/CRUDHooks";
+import { coordenadasURL, coordenadaxRutaURL } from "../../API/apiurls";
+import { useListarElementos } from "../../Hooks/CRUDHooks";
 import { BsXCircleFill, BsPlusCircleFill } from "react-icons/bs";
 import CoordenadasModal from "./CoordenadasModal";
 import axios from "axios";
 import Swal from "sweetalert2";
-import NavBar from "../Common/NavBar";
+import NavBar from "../../Common/NavBar";
 import { FaDownload } from "react-icons/fa";
+import {   goToNextPage, goToPreviousPage } from "./PaginacionUtils";
 
 export function Coordenadas() {
   const [datos, setDatos] = useState([]);
@@ -20,7 +21,38 @@ export function Coordenadas() {
   const [limp, setLimp] = useState(false);
   const nomRuta = localStorage.getItem("nomRuta");
 
-  useListarElementos(`${coordenadaxRutaURL}${ruta}`, datos, setDatos);
+  const [pageNumber, setPageNumber] = useState(0); // Número de página actual
+  const [pageSize, setPageSize] = useState(3); // Tamaño de la página
+  const [totalElements, setTotalElements] = useState(0); // Total de elementos
+  const [currentPage, setCurrentPage] = useState(0); // Página actual
+  const [totalPages, setTotalPages] = useState(0); 
+
+  // useListarElementos(`${coordenadaxRutaURL}${ruta}`, datos, setDatos);
+  // La función de carga de datos ahora acepta pageNumber y pageSize
+  const cargarDatos = async (page, size) => {
+    try {
+      const response = await axios.get(`http://localhost:8087/api/coordenadas/cxr/2?pageNumber=${page}`);
+      setDatos(response.data.content);
+      setTotalPages(response.data.totalPages); // Actualiza el estado de totalPages
+      console.log(response.data.content);
+    } catch (error) {
+      console.error('Error al cargar los datos:', error);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    setPageNumber(goToPreviousPage(currentPage)); // <-- Usa la función desde el módulo importado
+    setCurrentPage(goToPreviousPage(currentPage)); // <-- Usa la función desde el módulo importado
+  };
+  
+  const handleNextPage = () => {
+    setPageNumber(goToNextPage(currentPage, totalPages)); // <-- Usa la función desde el módulo importado
+    setCurrentPage(goToNextPage(currentPage, totalPages)); // <-- Usa la función desde el módulo importado
+  };
+
+  useEffect(() => {
+    cargarDatos(pageNumber, pageSize);
+  }, [pageNumber, pageSize]);
 
   const handleShowModal = (t) => {
     setShow(true);
@@ -184,27 +216,39 @@ export function Coordenadas() {
             </tr>
           </thead>
           <tbody>
-            {datos.map((coordenada) => (
-              <tr key={coordenada.id}>
-                <td>{coordenada.id}</td>
-                <td>{coordenada.coordenadas}</td>
-                <td>{coordenada.radio}</td>
-                <td>{coordenada.sonidosVelocidadModel.nombre}</td>
-                <td>{coordenada.sonidosVelocidadModel.codvel}</td>
-                <td>{coordenada.sonidosGeocercaModel.codsonido}</td>
-                <td>
-                  <Button variant="warning" style={{ marginInline: "10px" }} onClick={() => datosAEditar(coordenada)}>
-                    <GrEdit /> Editar
-                  </Button>
-                  <Button variant="danger" style={{ marginInline: "10px" }} onClick={() => handleEliminar(coordenada.id)}>
-                    <BsXCircleFill /> Eliminar
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {datos &&
+              datos.map((coordenada) => (
+                <tr key={coordenada.id}>
+                  <td>{coordenada.id}</td>
+                  <td>{coordenada.coordenadas}</td>
+                  <td>{coordenada.radio}</td>
+                  <td>{coordenada.sonidosVelocidadModel.nombre}</td>
+                  <td>{coordenada.sonidosVelocidadModel.codvel}</td>
+                  <td>{coordenada.sonidosGeocercaModel.codsonido}</td>
+                  <td>
+                    <Button variant="warning" style={{ marginInline: "10px" }} onClick={() => datosAEditar(coordenada)}>
+                      <GrEdit /> Editar
+                    </Button>
+                    <Button variant="danger" style={{ marginInline: "10px" }} onClick={() => handleEliminar(coordenada.id)}>
+                      <BsXCircleFill /> Eliminar
+                    </Button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
-        <Button onClick={generateTextFile}>
+        {/* Botones de paginación */}
+        <div style={{ marginTop: "30px", width:"100%", userSelect: "none"  }}>
+          <Button onClick={handlePreviousPage} disabled={currentPage === 0}>
+            Anterior
+          </Button>
+          <span style={{ margin: "0 10px" }}>Página {currentPage + 1} de {totalPages}</span>
+          <Button onClick={handleNextPage} disabled={currentPage === totalPages - 1}>
+            Siguiente
+          </Button>
+        </div>
+
+        <Button onClick={generateTextFile} style={{ marginTop: "30px"}}>
           <FaDownload /> Descargar txt
         </Button>
       </div>

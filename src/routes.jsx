@@ -1,4 +1,4 @@
-import { Coordenadas } from "./Vistas/Coordenadas";
+import { Coordenadas } from "./Vistas/PanelCoordenadas/Coordenadas";
 import { Login } from "./Vistas/Login";
 import { Rutas } from "./Vistas/Rutas";
 import { GaleriaDeCercas } from "./Vistas/GaleriaDeCercas";
