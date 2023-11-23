@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button } from "react-bootstrap";
-import { GrEdit } from "react-icons/gr";
+import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { coordenadasURL, coordenadaxRutaURL } from "../../API/apiurls";
-import { useListarElementos } from "../../Hooks/CRUDHooks";
-import { BsXCircleFill, BsPlusCircleFill } from "react-icons/bs";
+import { coordenadasURL } from "../../API/apiurls";
+import { BsPlusCircleFill } from "react-icons/bs";
 import CoordenadasModal from "./CoordenadasModal";
 import axios from "axios";
 import Swal from "sweetalert2";
 import NavBar from "../../Common/NavBar";
-import { FaDownload } from "react-icons/fa";
-import {   goToNextPage, goToPreviousPage } from "./PaginacionUtils";
+
+import buildRequestData from "./requestDataCoordenadas";
+import { CoordenadasTabla } from "./CoordenadasTabla";
+import { DownloadTxt } from "./DownloadTXT";
+import { PaginacionUtils } from "./PaginacionUtils";
 
 export function Coordenadas() {
   const [datos, setDatos] = useState([]);
@@ -25,30 +26,20 @@ export function Coordenadas() {
   const [pageSize, setPageSize] = useState(3); // Tamaño de la página
   const [totalElements, setTotalElements] = useState(0); // Total de elementos
   const [currentPage, setCurrentPage] = useState(0); // Página actual
-  const [totalPages, setTotalPages] = useState(0); 
+  const [totalPages, setTotalPages] = useState(0);
 
   // useListarElementos(`${coordenadaxRutaURL}${ruta}`, datos, setDatos);
   // La función de carga de datos ahora acepta pageNumber y pageSize
   const cargarDatos = async (page, size) => {
     try {
-      const response = await axios.get(`http://localhost:8087/api/coordenadas/cxr/2?pageNumber=${page}`);
+      const response = await axios.get(`http://localhost:8087/api/coordenadas/cxr/${ruta}?pageNumber=${page}`);
       setDatos(response.data.content);
       setTotalPages(response.data.totalPages); // Actualiza el estado de totalPages
-      console.log(response.data.content);
     } catch (error) {
-      console.error('Error al cargar los datos:', error);
+      console.error("Error al cargar los datos:", error);
     }
   };
 
-  const handlePreviousPage = () => {
-    setPageNumber(goToPreviousPage(currentPage)); // <-- Usa la función desde el módulo importado
-    setCurrentPage(goToPreviousPage(currentPage)); // <-- Usa la función desde el módulo importado
-  };
-  
-  const handleNextPage = () => {
-    setPageNumber(goToNextPage(currentPage, totalPages)); // <-- Usa la función desde el módulo importado
-    setCurrentPage(goToNextPage(currentPage, totalPages)); // <-- Usa la función desde el módulo importado
-  };
 
   useEffect(() => {
     cargarDatos(pageNumber, pageSize);
@@ -67,22 +58,7 @@ export function Coordenadas() {
   };
 
   const handleGuardar = (datosFormulario) => {
-    const requestData = {
-      coordenadas: datosFormulario.coordenadas,
-      radio: datosFormulario.radio,
-      sonidosVelocidadModel: {
-        id: datosFormulario.velocidad,
-        nombre: datosFormulario.velocidadValor,
-        codvel: datosFormulario.codvel,
-      },
-      sonidosGeocercaModel: {
-        id: datosFormulario.sonidoGeocerca,
-        codsonido: datosFormulario.codsonidoG,
-      },
-      rutasModel: {
-        id: ruta,
-      },
-    };
+    const requestData = buildRequestData(datosFormulario, ruta);
     axios
       .post(`${coordenadasURL}`, requestData)
       .then((response) => {
@@ -129,22 +105,7 @@ export function Coordenadas() {
 
   const handleEditar = (dato) => {
     console.log(dato);
-    const requestData = {
-      coordenadas: dato.coordenadas,
-      radio: dato.radio,
-      sonidosVelocidadModel: {
-        id: dato.velocidad,
-        nombre: dato.velocidadValor,
-        codvel: dato.codvel,
-      },
-      sonidosGeocercaModel: {
-        id: dato.sonidoGeocerca,
-        codsonido: dato.codsonidoG,
-      },
-      rutasModel: {
-        id: ruta,
-      },
-    };
+    const requestData = buildRequestData(dato, ruta);
     console.log(requestData);
     axios
       .put(`${coordenadasURL}/${dato.id}`, requestData)
@@ -165,92 +126,13 @@ export function Coordenadas() {
       });
   };
 
-  const generateTextFile = () => {
-    const content = datos
-      .map(
-        (coordenada) =>
-          `${coordenada.coordenadas}, ${coordenada.radio}, ${coordenada.sonidosVelocidadModel.nombre}, ${coordenada.sonidosVelocidadModel.codvel}, ${coordenada.sonidosGeocercaModel.codsonido}\n`
-      )
-      .join("");
-
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.target = "_blank";
-    link.download = "ruta.txt";
-
-    const event = new MouseEvent("click", {
-      bubbles: true,
-      cancelable: true,
-      view: window,
-    });
-
-    link.dispatchEvent(event);
-
-    URL.revokeObjectURL(link.href);
-  };
-
   return (
     <>
       <NavBar />
       <div className="camionesMenu-contenedor">
-        <Button style={{ width: "100%" }} onClick={() => navigation("/rutas")}>
-          Atras
-        </Button>
-        <h1>Coordenadas de la ruta {nomRuta}</h1>
-        <Button variant="success" style={{ margin: "30px" }} onClick={() => handleShowModal("Nuevo")}>
-          <BsPlusCircleFill /> Agregar
-        </Button>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Latitud - Longuitud</th>
-              <th>Radio</th>
-              <th>Velocidad</th>
-              <th>Sonido Velocidad</th>
-              <th>Sonido Geocerca</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {datos &&
-              datos.map((coordenada) => (
-                <tr key={coordenada.id}>
-                  <td>{coordenada.id}</td>
-                  <td>{coordenada.coordenadas}</td>
-                  <td>{coordenada.radio}</td>
-                  <td>{coordenada.sonidosVelocidadModel.nombre}</td>
-                  <td>{coordenada.sonidosVelocidadModel.codvel}</td>
-                  <td>{coordenada.sonidosGeocercaModel.codsonido}</td>
-                  <td>
-                    <Button variant="warning" style={{ marginInline: "10px" }} onClick={() => datosAEditar(coordenada)}>
-                      <GrEdit /> Editar
-                    </Button>
-                    <Button variant="danger" style={{ marginInline: "10px" }} onClick={() => handleEliminar(coordenada.id)}>
-                      <BsXCircleFill /> Eliminar
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-        {/* Botones de paginación */}
-        <div style={{ marginTop: "30px", width:"100%", userSelect: "none"  }}>
-          <Button onClick={handlePreviousPage} disabled={currentPage === 0}>
-            Anterior
-          </Button>
-          <span style={{ margin: "0 10px" }}>Página {currentPage + 1} de {totalPages}</span>
-          <Button onClick={handleNextPage} disabled={currentPage === totalPages - 1}>
-            Siguiente
-          </Button>
-        </div>
-
-        <Button onClick={generateTextFile} style={{ marginTop: "30px"}}>
-          <FaDownload /> Descargar txt
-        </Button>
+        <CoordenadasTabla datos={datos} datosAEditar={datosAEditar} handleEliminar={handleEliminar} handleShowModal={handleShowModal} />
+        <PaginacionUtils setPageNumber={setPageNumber} setCurrentPage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />
+        <DownloadTxt ruta={ruta}/>
       </div>
       <CoordenadasModal mostrar={show} cerrar={handleCerrar} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} limp={limp} />
     </>

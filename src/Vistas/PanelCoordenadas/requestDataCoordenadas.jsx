@@ -1,4 +1,3 @@
-
 const buildRequestData = (datosFormulario, ruta) => {
     return {
       coordenadas: datosFormulario.coordenadas,

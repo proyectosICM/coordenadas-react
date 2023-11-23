@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import "leaflet/dist/leaflet.css";
-import "../Styles/CoordenadasModal.css";
-import { paisesURL } from "../API/apiurls";
-import { useListarElementos } from "../Hooks/CRUDHooks";
+import "../../Styles/CoordenadasModal.css";
+import { paisesURL } from "../../API/apiurls";
+import { useListarElementos } from "../../Hooks/CRUDHooks";
 
 function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
   const [formData, setFormData] = useState({
