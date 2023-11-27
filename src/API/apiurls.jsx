@@ -30,3 +30,6 @@ export const GeocercaxPaisxTipoURL = `${base}/SonidoGeo/xpaisxtipo/`
 
 // TipoS
 export const TipoSURL = `${base}/tipoS`
+
+// Dispositivos
+export const DispositivosURL = `${base}/dispositivos`

@@ -103,7 +103,7 @@ export function Rutas() {
       Swal.fire("Error", "Hubo un error al editar el registro", "error");
     }
   };
-
+ 
   return (
     <div>
       <NavBar />

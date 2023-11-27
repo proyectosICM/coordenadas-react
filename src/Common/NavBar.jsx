@@ -13,6 +13,7 @@ const NavBar = () => {
       <Nav>
         <Nav.Link onClick={() => navigation("/rutas")} >Rutas</Nav.Link>
         <Nav.Link onClick={() => navigation("/galeria")}>Galería de Cercas</Nav.Link>
+        <Nav.Link onClick={() => navigation("/dispositivos")}>Dispositivos</Nav.Link>
       </Nav>
       <Button onClick={() => handleEliminar() } style={{marginRight: "25px"}} variant="outline-light">Cerrar Sesión</Button>
     </Navbar>

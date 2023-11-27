@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export function CoordenadasTabla({ datos, datosAEditar, handleEliminar, handleShowModal }) {
   const navigation = useNavigate();
 
-  
+   
 
   return (
     <>
