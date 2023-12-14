@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { BsPlusCircleFill, BsXCircleFill } from "react-icons/bs";
 import { GrEdit } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import { ListarElementos } from "../../Hooks/CRUDHooks";
+import { Empresas } from './../PanelAdministrador/EmpresasAdmin/Empresas';
 
 export function CoordenadasTabla({ datos, datosAEditar, handleEliminar, handleShowModal }) {
   const navigation = useNavigate();
 
-   
+
 
   return (
     <>

@@ -5,7 +5,7 @@ import { BsXCircleFill } from "react-icons/bs";
 import { DownloadTxt } from "../PanelCoordenadas/DownloadTXT";
 import { GrEdit } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
-
+ 
 export function RutasCard({ ruta, index, empresaNombre, datosAEditar, handleEliminar }) {
   const navigation = useNavigate();
 
@@ -16,10 +16,10 @@ export function RutasCard({ ruta, index, empresaNombre, datosAEditar, handleElim
   };
 
   return (
-    <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
+    <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", borderColor: "white", margin: "20px", padding: "10px", backgroundColor: "black", color: "white" }}>
       <Card.Body>
         <Card.Title>{index + 1}</Card.Title>
-        <Card.Subtitle className="mb-2 text-muted">Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
+        <Card.Subtitle  style={{color: "white" }}>Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
         <Card.Text>Empresa: {empresaNombre}</Card.Text>
         <Card.Text>País: {ruta.paisesModel && ruta.paisesModel.nombre}</Card.Text>
       </Card.Body>

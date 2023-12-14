@@ -2,16 +2,21 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useGlobalState } from "../Context/GlobalStateContext";
 
 export function useListarElementos(url, dato, setDatos) {
-  const empresa = localStorage.getItem("empresa");
+
+  const { userData } = useGlobalState(); 
+  const { empresaId } = userData; 
+
   const navigation = useNavigate();
 
   const ListarCarriles = async () => {
-    if (empresa) {
+    if (empresaId) {
       try {
         const response = await axios.get(url);
         setDatos(response.data);
+
       } catch (error) {
         console.error("Error al obtener los datos:", error, url);
       }
@@ -28,6 +33,7 @@ export function useListarElementos(url, dato, setDatos) {
 }
 
 export function ListarElementos(url, setDatos) {
+         console.log("Si")
   useEffect(() => {
     const fetchData = async () => {
       try {

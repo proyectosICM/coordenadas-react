@@ -98,7 +98,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
         } catch (error) {
           console.error("Error al obtener los datos:", error);
         }
-      };
+      }; 
       ListarDatos();
     }
   }, [datosaeditar]);
@@ -149,6 +149,8 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
       [name]: value,
     });
   };
+
+  
 
   const handleSeleccionarAudio = async (e) => {
     const { value, options } = e.target;

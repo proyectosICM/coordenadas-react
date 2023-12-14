@@ -33,3 +33,10 @@ export const TipoSURL = `${base}/tipoS`
 
 // Dispositivos
 export const DispositivosURL = `${base}/dispositivos`
+export const VerificarDisp = `${DispositivosURL}/verificar`
+export const ReasignarDisp = `${DispositivosURL}/reasignar`
+
+//Empresas 
+export const EmpresasURL = `${base}/empresas`
+export const EmpresaFNombre = `${EmpresasURL}/findNombre`;
+export const EmpresaFUsuario = `${EmpresasURL}/findUsuario`;

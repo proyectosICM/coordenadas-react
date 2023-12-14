@@ -25,7 +25,6 @@ export function ConfiguracionDispositivos() {
     Listar();
   }, [setDatos]);
 
-
   return (
     <div>
       <NavBar />

@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 const NavBar = () => {
     const navigation = useNavigate();
     const handleEliminar = () => {
-        localStorage.removeItem("empresa");
+        // localStorage.removeItem("empresa");
         navigation('/')
     }
   return (
     <Navbar bg="dark" variant="dark" className="justify-content-between">
-      <Navbar.Brand style={{marginLeft: "25px"}} href="/rutas">Ruta Segura</Navbar.Brand>
+      <Navbar.Brand style={{marginLeft: "25px", cursor:"pointer"}} onClick={() => navigation("/")}>Ruta Segura</Navbar.Brand>
       <Nav>
         <Nav.Link onClick={() => navigation("/rutas")} >Rutas</Nav.Link>
         <Nav.Link onClick={() => navigation("/galeria")}>Galería de Cercas</Nav.Link>

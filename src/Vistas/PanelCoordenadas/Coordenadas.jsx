@@ -103,6 +103,7 @@ export function Coordenadas() {
     setShow(true);
   };
 
+
   const handleEditar = (dato) => {
     console.log(dato);
     const requestData = buildRequestData(dato, ruta);

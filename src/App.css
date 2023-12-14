@@ -1,6 +1,6 @@
 .App {
   text-align: center;
- /* background-color:aquamarine; */
+  background-color:black; 
 }
 
 .App-logo {
@@ -49,8 +49,9 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  border: 2px solid #E5E7E9;
+  border: 0.5px solid grey;
   border-radius: 1%;
+  overflow: auto;
 } 
 
 /* Estilo para los campos de entrada pequeños */

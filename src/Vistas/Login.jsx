@@ -4,42 +4,43 @@ import { useNavigate } from "react-router-dom";
 import { RiUserLine, RiLockPasswordLine } from "react-icons/ri"; 
 import "../Styles/login.css";
 import { loginURL } from "../API/apiurls";
+import { useGlobalState } from "../Context/GlobalStateContext";
 
 export function Login() {
+  const { userData, setUserData } = useGlobalState(); 
   const [usuario, setUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState("");
-
   const navigation = useNavigate();
 
-  useEffect(()=> {
+  useEffect(() => {
     let empresa = localStorage.getItem("empresa");
-    if(empresa){
+    if (empresa) {
       navigation('/rutas');
     }
-  },[navigation])
+  }, [navigation]);
 
-  const handleSubmit = (e) => {
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const dataInicio = {
-      usuario: usuario,
-      password: contrasena,
-    };
+    if (!usuario || !contrasena) {
+      setError("Por favor, complete todos los campos.");
+      return;
+    }
 
-    axios
-      .post(loginURL, dataInicio)
-      .then((response) => {
-        localStorage.setItem("empresa", response.data.id);
-        localStorage.setItem("empresaNombre", response.data.nombre);
-        navigation("/rutas");
-        console.log("hol")
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setError("Error en inicio de sesión");
+    try {
+      const dataInicio = { usuario, password: contrasena };
+      const response = await axios.post(loginURL, dataInicio);
+
+      setUserData({ 
+        empresaId: response.data.id,
+        empresaNombre: response.data.nombre,
+        empresaUsuario: response.data.usuario,
       });
-
+      navigation("/rutas");
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Credenciales incorrectas. Por favor, inténtelo de nuevo.");
+    }
   };
 
   return (

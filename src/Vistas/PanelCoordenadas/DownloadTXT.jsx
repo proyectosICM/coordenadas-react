@@ -12,7 +12,7 @@ export function DownloadTxt({ ruta }) {
     axios.get(`${coordenadaxRutaURL}${ruta}`)
       .then(response => {
         setDatosC(response.data); // Asumiendo que la respuesta contiene los datos que necesitas
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch(error => {
         console.error('Error al obtener los datos:', error);

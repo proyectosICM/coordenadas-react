@@ -8,22 +8,22 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import RutasModal from "./RutasModal";
 import NavBar from "../../Common/NavBar";
-import { AiFillProfile } from "react-icons/ai";
 import buildRequestData from "./requestDataRutas";
-import { DownloadTxt } from "../PanelCoordenadas/DownloadTXT";
 import { RutasCard } from "./RutasCard";
-
+import { useGlobalState } from "../../Context/GlobalStateContext";
+ 
 export function Rutas() {
   const [datos, setDatos] = useState([]);
   const navigation = useNavigate();
-  const empresaid = localStorage.getItem("empresa");
-  const empresaNombre = localStorage.getItem("empresaNombre");
+  const { userData } = useGlobalState(); 
+  const { empresaId, empresaNombre } = userData; 
   const [show, setShow] = useState(false);
   const [datosEdit, setDatosEdit] = useState(null);
+  const [listadoRealizado, setListadoRealizado] = useState(false); 
 
   const Listar = async () => {
     try {
-      const response = await axios.get(`${rutasxEmpresaURL}${empresaid}`);
+      const response = await axios.get(`${rutasxEmpresaURL}1/${empresaId}`);
       setDatos(response.data);
     } catch (error) {
       console.error("Error al listar", error);
@@ -31,8 +31,11 @@ export function Rutas() {
   };
 
   useEffect(() => {
-    Listar();
-  }, [setDatos]);
+    if (empresaId && !listadoRealizado) { 
+      Listar();
+      setListadoRealizado(true);
+    }
+  }, [empresaId, listadoRealizado]);
 
   const handleEliminar = (id) => {
     Swal.fire({
@@ -76,11 +79,11 @@ export function Rutas() {
   };
 
   const handleGuardar = (datosFormulario) => {
-    const requestData = buildRequestData(datosFormulario, empresaid);
+    const requestData = buildRequestData(datosFormulario, empresaId);
     GuardarElementos(`${rutasURL}`, requestData, datos, setDatos)
       .then((response) => {
         setShow(false);
-        Listar();
+       Listar();
       })
       .catch((error) => {
         console.error("Error al guardar los datos:", error);
@@ -90,7 +93,7 @@ export function Rutas() {
 
   const handleEditar = async (dato) => {
     try {
-      const requestData = buildRequestData(dato, empresaid);
+      const requestData = buildRequestData(dato, empresaId);
       await EditarElemento(`${rutasURL}/${dato.id}`, requestData)
         .catch((error) => {
           console.error("Error al editar los datos:", error);
@@ -107,7 +110,7 @@ export function Rutas() {
   return (
     <div>
       <NavBar />
-      <h1>Rutas de la empresa</h1>
+      <h1 style={{color: "white"}}>Rutas de la empresa</h1>
       <Button style={{ margin: "10px" }} onClick={() => handleAbrir()}>
         Crear nueva ruta
       </Button>
