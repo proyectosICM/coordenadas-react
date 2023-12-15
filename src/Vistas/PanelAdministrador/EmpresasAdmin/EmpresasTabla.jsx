@@ -8,8 +8,9 @@ import { EmpresasURL } from "../../../API/apiurls";
 import { GrEdit } from "react-icons/gr";
 import axios from "axios";
 import { EmpresaEliminarModal } from "./EmpresaEliminarModal";
+import { EmpresasModel } from "./EmpresasModal";
 
-export function EmpresasTabla({ handleShowModal, datos }) {
+export function EmpresasTabla({ handleShowModal, show, guardar, cerrar,  datos, eliminar, datosaeditar , editar }) {
   const navigation = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [empresaEliminar, setEmpresaEliminar] = useState();
@@ -23,15 +24,6 @@ export function EmpresasTabla({ handleShowModal, datos }) {
     setShowDeleteModal(false);
   };
 
-  useEffect(() => {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i); 
-      const value = localStorage.getItem(key); 
-    
-      console.log(`Clave: ${key}, Valor: ${value}`);
-    }
-    
-  })
 
   return (
     <>
@@ -60,7 +52,7 @@ export function EmpresasTabla({ handleShowModal, datos }) {
                 <td>{empresa.usuario}</td>
                 <td>{empresa.password}</td>
                 <td>
-                  <Button variant="warning" style={{ marginInline: "10px" }}>
+                  <Button variant="warning" style={{ marginInline: "10px" }} onClick={() => datosaeditar(empresa)}>
                     <GrEdit /> Editar
                   </Button>
                   <Button variant="danger" style={{ marginInline: "10px" }} onClick={() => handleEliminar(empresa.id)}>
@@ -72,7 +64,7 @@ export function EmpresasTabla({ handleShowModal, datos }) {
         </tbody>
       </Table>
 
-      <EmpresaEliminarModal idEmp={empresaEliminar} show={showDeleteModal} close={handleCloseDeleteModal} />
+      <EmpresaEliminarModal idEmp={empresaEliminar} show={showDeleteModal} close={handleCloseDeleteModal}  eliminar={eliminar} />
     </>
   );
 }

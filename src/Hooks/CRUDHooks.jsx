@@ -10,7 +10,7 @@ export function useListarElementos(url, dato, setDatos) {
   const { empresaId } = userData; 
 
   const navigation = useNavigate();
-
+ 
   const ListarCarriles = async () => {
     if (empresaId) {
       try {
@@ -21,19 +21,20 @@ export function useListarElementos(url, dato, setDatos) {
         console.error("Error al obtener los datos:", error, url);
       }
     } else {
-      navigation("/");
+      // navigation("/");
+      console.log("Yia")
     }
   };
 
   useEffect(() => {
     ListarCarriles();
-  }, []);
+  }, [setDatos]);
 
   return dato;
 }
 
 export function ListarElementos(url, setDatos) {
-         console.log("Si")
+
   useEffect(() => {
     const fetchData = async () => {
       try {

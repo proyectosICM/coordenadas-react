@@ -2,21 +2,11 @@ import React from "react";
 import { Form, Modal, Button } from "react-bootstrap";
 import { EmpresasURL } from "../../../API/apiurls";
 import axios from "axios";
+import { ListarElementos } from "../../../Hooks/CRUDHooks";
 
-export function EmpresaEliminarModal({show, close, idEmp }) {
+export function EmpresaEliminarModal({show, close, idEmp, setDatos, eliminar }) {
 
-    const handleConfirmDelete = (id) => {
-        axios
-          .delete(`${EmpresasURL}/${id}`)
-          .then(() => {
-            close();
-            alert("Eliminado correctamente");
-          })
-          .catch((error) => {
-            console.error("Error al eliminar:", error);
-            alert("Hubo un error al intentar eliminar");
-          });
-      };
+
 
   return (
     <>
@@ -33,7 +23,7 @@ export function EmpresaEliminarModal({show, close, idEmp }) {
           <Button variant="secondary" onClick={close}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={() => handleConfirmDelete(idEmp)}>
+          <Button variant="danger" onClick={() => eliminar(idEmp)}>
             Eliminar
           </Button>
         </Modal.Footer>

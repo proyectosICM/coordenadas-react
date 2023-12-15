@@ -1,7 +1,7 @@
 // Importar useState y useEffect si aún no lo has hecho
 import React, { useState, useEffect } from "react";
 import { Form, Modal } from "react-bootstrap";
-import { VerificarDisp, rutasxEmpresaURL } from "../../API/apiurls";
+import { ReasignarDisp, VerificarDisp, rutasxEmpresaURL } from "../../API/apiurls";
 import { ListarElementos } from "../../Hooks/CRUDHooks";
 import axios from "axios";
 

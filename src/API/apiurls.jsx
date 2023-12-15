@@ -11,6 +11,7 @@ export const loginURL = `${base}/empresas/login`
 // Ruta
 export const rutasURL = `${base}/rutas`;
 export const rutasxEmpresaURL = `${rutasURL}/xempresa/`
+export const rutasxEmpresaPURL = `${rutasURL}/xempresaP/`
 export const rutasDeshabilitar = `${rutasURL}/deshabilitar/`
 // Coordenadas
 export const coordenadasURL = `${base}/coordenadas`

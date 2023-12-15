@@ -3,7 +3,7 @@ import { Button} from "react-bootstrap";
 import "../../Styles/Rutas.css";
 import { useNavigate } from "react-router-dom";
 import { EditarElemento, GuardarElementos } from "../../Hooks/CRUDHooks";
-import { rutasDeshabilitar, rutasURL, rutasxEmpresaURL } from "../../API/apiurls";
+import { rutasDeshabilitar, rutasURL, rutasxEmpresaPURL, rutasxEmpresaURL } from "../../API/apiurls";
 import Swal from "sweetalert2";
 import axios from "axios";
 import RutasModal from "./RutasModal";
@@ -11,6 +11,7 @@ import NavBar from "../../Common/NavBar";
 import buildRequestData from "./requestDataRutas";
 import { RutasCard } from "./RutasCard";
 import { useGlobalState } from "../../Context/GlobalStateContext";
+import { PaginacionUtils } from "../../Hooks/PaginacionUtils";
  
 export function Rutas() {
   const [datos, setDatos] = useState([]);
@@ -19,23 +20,26 @@ export function Rutas() {
   const { empresaId, empresaNombre } = userData; 
   const [show, setShow] = useState(false);
   const [datosEdit, setDatosEdit] = useState(null);
-  const [listadoRealizado, setListadoRealizado] = useState(false); 
-
-  const Listar = async () => {
+  //Paginacion 
+  const [pageNumber, setPageNumber] = useState(0); 
+  const [currentPage, setCurrentPage] = useState(0); 
+  const [totalPages, setTotalPages] = useState(0);
+ 
+  const Listar = async (page, size) => {
     try {
-      const response = await axios.get(`${rutasxEmpresaURL}1/${empresaId}`);
-      setDatos(response.data);
+      const response = await axios.get(`${rutasxEmpresaPURL}1/${empresaId}?pageNumber=${page}`);
+      setDatos(response.data.content);
+      setTotalPages(response.data.totalPages); 
+      setCurrentPage(response.data.number + 0);
     } catch (error) {
       console.error("Error al listar", error);
     }
   };
 
+  
   useEffect(() => {
-    if (empresaId && !listadoRealizado) { 
-      Listar();
-      setListadoRealizado(true);
-    }
-  }, [empresaId, listadoRealizado]);
+    Listar(pageNumber + 1);                                     
+  }, [pageNumber]);
 
   const handleEliminar = (id) => {
     Swal.fire({
@@ -120,6 +124,7 @@ export function Rutas() {
           <RutasCard key={ruta.id} ruta={ruta} empresaNombre={empresaNombre} index={index} datosAEditar={datosAEditar} handleEliminar={handleEliminar} />
           ))}
         {datos.length == 0 && <h1 style={{ textAlign: "center" }}>Su empresa no tiene rutas, por favor agregue una</h1>}
+        <PaginacionUtils setPageNumber={setPageNumber} setCurrentPage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />
       </div>
       <RutasModal mostrar={show} cerrar={() => handleCerrar()} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} />
     </div>

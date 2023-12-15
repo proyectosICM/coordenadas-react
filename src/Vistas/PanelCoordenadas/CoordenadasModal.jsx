@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
-import { Map, Marker } from "google-maps-react";
 import { useListarElementos } from "../../Hooks/CRUDHooks";
 import { GeocercaURL, GeocercaxPaisURL, GeocercaxPaisxTipoURL, sonidosVelocidadURL } from "../../API/apiurls";
 import axios from "axios";

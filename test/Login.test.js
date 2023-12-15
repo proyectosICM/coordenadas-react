@@ -1,7 +1,8 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
+import { Login } from "../src/Vistas/Login";
 const axios = require("axios"); // Importa axios para simular llamadas a la API
-import { Login } from "../src/Login";
+
 
 
 // Mock manual de axios

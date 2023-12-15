@@ -2,10 +2,11 @@ import React from "react";
 import { Button, ButtonGroup, Card } from "react-bootstrap";
 import { AiFillProfile } from "react-icons/ai";
 import { BsXCircleFill } from "react-icons/bs";
-import { DownloadTxt } from "../PanelCoordenadas/DownloadTXT";
+import { DownloadTxt } from "../PanelCoordenadas/DownloadTXT"; 
 import { GrEdit } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
- 
+import './RutasStyles.css'
+  
 export function RutasCard({ ruta, index, empresaNombre, datosAEditar, handleEliminar }) {
   const navigation = useNavigate();
 
@@ -14,12 +15,12 @@ export function RutasCard({ ruta, index, empresaNombre, datosAEditar, handleElim
     await localStorage.setItem("pais", dato.paisesModel.id);
     navigation(`/coordenadas/${dato.id}`);
   };
-
+ 
   return (
-    <Card key={ruta.id} style={{ width: "18rem", marginBottom: "20px", borderColor: "white", margin: "20px", padding: "10px", backgroundColor: "black", color: "white" }}>
+    <Card key={ruta.id} className="cardRuta">
       <Card.Body>
-        <Card.Title>{index + 1}</Card.Title>
-        <Card.Subtitle  style={{color: "white" }}>Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
+        {/* <Card.Title>{index + 1}</Card.Title> */}
+        <Card.Subtitle  style={{color: "black" }}>Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
         <Card.Text>Empresa: {empresaNombre}</Card.Text>
         <Card.Text>País: {ruta.paisesModel && ruta.paisesModel.nombre}</Card.Text>
       </Card.Body>
@@ -38,3 +39,4 @@ export function RutasCard({ ruta, index, empresaNombre, datosAEditar, handleElim
     </Card>
   );
 }
+ 

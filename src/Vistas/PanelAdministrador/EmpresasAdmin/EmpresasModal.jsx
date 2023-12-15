@@ -6,16 +6,27 @@ import { EmpresaFNombre, EmpresaFUsuario, EmpresasURL } from "../../../API/apiur
 import { requestDataEmpresa } from "./requestDataEmpresa";
 import axios from "axios";
 
-export function EmpresasModel({ mostrar, cerrar, datos, setDatos, guardar, editar, datosaeditar, limp, title }) {
+export function EmpresasModel({ mostrar, cerrar, guardar, editar, datosaeditar
+  , title }) {
   const [formData, setFormData] = useState({
     nombre: "",
     usuario: "",
     password: "",
   });
-
+  console.log(datosaeditar)
   const [disableGuardar, setDisableGuardar] = useState(false);
   const [nombreEnUso, setNombreEnUso] = useState(false);
   const [usuarioEnUso, setUsuarioEnUso] = useState(false);
+
+  useEffect(() => {
+    if (datosaeditar) {
+      setFormData({
+        nombre: datosaeditar.nombre,
+        usuario: datosaeditar.usuario,
+        password: datosaeditar.password,
+      });
+    }
+  }, [datosaeditar]);
 
   useEffect(() => {
     const handleBuscarNombre = async () => {
@@ -75,25 +86,16 @@ export function EmpresasModel({ mostrar, cerrar, datos, setDatos, guardar, edita
     });
   };
 
-  const handleGuardar = (datos) => {
-    
-
-    setTimeout(() => {
-      Swal.fire({
-        title: "Cargando...",
-        timer: 500,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      }).then(() => {
-        const requestData = requestDataEmpresa(datos);
-
-        GuardarElementos(EmpresasURL, requestData, datos, setDatos).then(() => console.log("Datos guardados"));
-        cerrar();
-      });
-    }, 500);
+  const handleSave = () => {
+    if (datosaeditar) {
+      editar(formData);
+    } else {
+      guardar(formData); 
+    }
+    cerrar();
+    limpiar();
   };
+
 
   return (
     <>
@@ -118,10 +120,10 @@ export function EmpresasModel({ mostrar, cerrar, datos, setDatos, guardar, edita
             <h5>Ingrese la contraseña</h5>
             <input type="password" name="password" value={formData.password} onChange={handleChange} style={{ width: "420px" }} />
           </div>
-        </Modal.Body>
+        </Modal.Body> 
         <Modal.Footer>
           <button onClick={handleClose}>Cancelar</button>
-          <button onClick={() => handleGuardar(formData)} disabled={disableGuardar}>Guardar</button>
+          <button onClick={() => handleSave(formData)} disabled={disableGuardar}>Guardar</button>
         </Modal.Footer>
       </Modal>
     </>

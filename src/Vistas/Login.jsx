@@ -20,7 +20,7 @@ export function Login() {
     }
   }, [navigation]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { 
     e.preventDefault();
     if (!usuario || !contrasena) {
       setError("Por favor, complete todos los campos.");
@@ -36,6 +36,9 @@ export function Login() {
         empresaNombre: response.data.nombre,
         empresaUsuario: response.data.usuario,
       });
+
+      localStorage.setItem("empresaid", response.data.id);
+      localStorage.setItem("empresaNombre", response.data.nombre);
       navigation("/rutas");
     } catch (error) {
       console.error("Error:", error);

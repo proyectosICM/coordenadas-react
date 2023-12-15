@@ -11,7 +11,8 @@ import NavBar from "../../Common/NavBar";
 import buildRequestData from "./requestDataCoordenadas";
 import { CoordenadasTabla } from "./CoordenadasTabla";
 import { DownloadTxt } from "./DownloadTXT";
-import { PaginacionUtils } from "./PaginacionUtils";
+import { PaginacionUtils } from "../../Hooks/PaginacionUtils";
+
 
 export function Coordenadas() {
   const [datos, setDatos] = useState([]);
@@ -23,7 +24,7 @@ export function Coordenadas() {
   const nomRuta = localStorage.getItem("nomRuta");
 
   const [pageNumber, setPageNumber] = useState(0); // Número de página actual
-  const [pageSize, setPageSize] = useState(3); // Tamaño de la página
+
   const [totalElements, setTotalElements] = useState(0); // Total de elementos
   const [currentPage, setCurrentPage] = useState(0); // Página actual
   const [totalPages, setTotalPages] = useState(0);
@@ -42,8 +43,8 @@ export function Coordenadas() {
 
 
   useEffect(() => {
-    cargarDatos(pageNumber, pageSize);
-  }, [pageNumber, pageSize]);
+    cargarDatos(pageNumber);
+  }, [pageNumber]);
 
   const handleShowModal = (t) => {
     setShow(true);
@@ -56,7 +57,7 @@ export function Coordenadas() {
     setShow(false);
     setLimp(false);
   };
-
+ 
   const handleGuardar = (datosFormulario) => {
     const requestData = buildRequestData(datosFormulario, ruta);
     axios
@@ -96,7 +97,7 @@ export function Coordenadas() {
           });
       }
     });
-  };
+  }; 
 
   const datosAEditar = (camion) => {
     setDatosEdit(camion);
@@ -130,12 +131,12 @@ export function Coordenadas() {
   return (
     <>
       <NavBar />
-      <div className="camionesMenu-contenedor">
+      <div className="camionesMenu-contenedor" >
         <CoordenadasTabla datos={datos} datosAEditar={datosAEditar} handleEliminar={handleEliminar} handleShowModal={handleShowModal} />
         <PaginacionUtils setPageNumber={setPageNumber} setCurrentPage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />
         <DownloadTxt ruta={ruta}/>
       </div>
-      <CoordenadasModal mostrar={show} cerrar={handleCerrar} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} limp={limp} />
+      <CoordenadasModal handleGuardar={handleGuardar} mostrar={show} cerrar={handleCerrar} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} limp={limp} />
     </>
   );
 }
