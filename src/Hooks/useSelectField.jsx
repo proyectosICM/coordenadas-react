@@ -8,16 +8,22 @@ const useSelectField = (initialValue = '') => {
     const { value, options } = e.target;
     const selectedOption = options[options.selectedIndex];
     
-    setSelectedValue(value);
+    setSelectedValue(value); 
     setSelectedText(selectedOption.text);
   };
-
+/*
+  const resetSelectField = () => {
+    setSelectedValue(initialValue);
+    setSelectedText('');
+  };
+*/
   return {
     selectedValue,
     selectedText,
     handleSelectChange,
     setSelectedValue, // Si se requiere establecer el valor desde fuera del hook
     setSelectedText, // Si se requiere establecer el texto desde fuera del hook
+    //resetSelectField,
   };
 };
 

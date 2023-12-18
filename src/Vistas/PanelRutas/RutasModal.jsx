@@ -4,6 +4,8 @@ import { paisesURL } from "../../API/apiurls";
 import { useListarElementos } from "../../Hooks/CRUDHooks";
 import "../../Styles/CoordenadasModal.css";
 import Swal from "sweetalert2";
+import { FormFields } from "../../Hooks/FormFields";
+import { SelectField } from "../../Hooks/SelectField";
 
 function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
   // State to control the enable/disable state of the save button
@@ -50,63 +52,57 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
     limpiar();
   };
 
-  // Function to handle input changes in the form fields
+  useEffect(() => {
+    setIsGuardarHabilitado(formData.nomruta.trim() !== "" && formData.paisId !== "");
+  },[formData.nomruta, formData.paisId ]);
+
+  // Llamada a handleInputChange
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    // Check if both fields have data to enable the save button
-    if (name === "nomruta" || name === "paisId") {
-      setIsGuardarHabilitado(formData.nomruta.trim() !== "" && formData.paisId !== "");
-    }
+    FormFields(e, formData, setFormData, setIsGuardarHabilitado);
   };
 
   // Function to handle changes in the select input field
   const handleSelectChange = (e) => {
-    const { value, options } = e.target;
-    // Retrieve the selected option from the dropdown
-    const selectedOption = options[options.selectedIndex];
-    setFormData({
-      ...formData,
-      paisId: value,
-      paisNombre: selectedOption.text,
-    });
-    // Check if both route name and country ID have data to enable the save button
-    setIsGuardarHabilitado(formData.nomruta.trim() !== "" && value !== "");
+    SelectField(e, formData, setFormData, setIsGuardarHabilitado);
   };
 
-  // Function to handle form data saving
+  const validarFormulario = () => {
+    const errores = {};
+  
+    if (formData.nomruta.trim() === "") {
+      errores.nomruta = 'El campo "Nombre de Ruta" no puede estar vacío.';
+    }
+  
+    if (formData.paisId === "") {
+      errores.paisId = "Debe seleccionar un país.";
+    }
+  
+    return errores;
+  };
+  
   const handleSave = () => {
-    // Validate that the "Route Name" and "Country" fields are not empty
-    if (formData.nomruta.trim() === "" || formData.paisId === "") {
-      let mensajeError = "";
-      // Check if "Route Name" field is empty
-      if (formData.nomruta.trim() === "") {
-        mensajeError += 'El campo "Nombre de Ruta" no puede estar vacío.\n';
-      }
-      // Check if no country is selected
-      if (formData.paisId === "") {
-        mensajeError += "Debe seleccionar un país.\n";
-      }
-      // Show alert with error message if any field is empty
-      // Reemplaza el alert con SweetAlert
+    const errores = validarFormulario();
+  
+    if (Object.keys(errores).length > 0) {
+      // Construye el mensaje de error combinando los mensajes de cada campo
+      const mensajeError = Object.values(errores).join("\n");
+  
+      // Muestra el mensaje de error usando SweetAlert
       Swal.fire({
         icon: "error",
         title: "Error de validación",
         text: mensajeError,
       });
-
-      return; // Stop the function if any field is empty
+      return;
     }
-
-    // If editing existing data, call 'editar'; otherwise, call 'guardar'
+  
+    // Si no hay errores, procede con el guardado o edición de los datos
     if (datosaeditar) {
       editar(formData);
     } else {
       guardar(formData);
     }
+  
     // Close modal and reset form data
     cerrar();
     limpiar();
