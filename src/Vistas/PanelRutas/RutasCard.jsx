@@ -2,19 +2,13 @@ import React from "react";
 import { Button, ButtonGroup, Card } from "react-bootstrap";
 import { AiFillProfile } from "react-icons/ai";
 import { BsXCircleFill } from "react-icons/bs";
-import { DownloadTxt } from "../PanelCoordenadas/DownloadTXT"; 
 import { GrEdit } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import { DownloadTxt } from "../PanelCoordenadas/DownloadTXT"; 
 import './RutasStyles.css'
   
-export function RutasCard({ ruta, index, empresaNombre, datosAEditar, handleEliminar }) {
+export function RutasCard({ ruta, empresaNombre, datosAEditar, handleEliminar }) {
   const navigation = useNavigate();
-
-  const handleVerCoordenadas = async (dato) => {
-    await localStorage.setItem("nomRuta", dato.nomruta);
-    await localStorage.setItem("pais", dato.paisesModel.id);
-    navigation(`/coordenadas/${dato.id}`);
-  };
  
   return (
     <Card key={ruta.id} className="cardRuta">
@@ -24,15 +18,15 @@ export function RutasCard({ ruta, index, empresaNombre, datosAEditar, handleElim
         <Card.Text>Empresa: {empresaNombre}</Card.Text>
         <Card.Text>País: {ruta.paisesModel && ruta.paisesModel.nombre}</Card.Text>
       </Card.Body>
-      <Button onClick={() => handleVerCoordenadas(ruta)} style={{ backgroundColor: "#40609F", borderColor: "black", color: "white" }}>
+      <Button onClick={() => navigation(`/coordenadas/${ruta.id}`)} className="boton-ver">
         <AiFillProfile /> Ver Coordenadas
       </Button>
       <DownloadTxt ruta={ruta.id} />
-      <ButtonGroup style={{ marginTop: "10px" }}>
-        <Button variant="warning" onClick={() => datosAEditar(ruta)} style={{ backgroundColor: "#727273", borderColor: "black", marginRight: "5px" }}>
+      <ButtonGroup className="contenedor-botones">
+        <Button variant="warning" onClick={() => datosAEditar(ruta)} className="boton-editar">
           <GrEdit /> Editar
         </Button>
-        <Button variant="danger" onClick={() => handleEliminar(ruta.id)} style={{ backgroundColor: "#727273", borderColor: "black", color: "black" }}>
+        <Button variant="danger" onClick={() => handleEliminar(ruta.id)} className="boton-eliminar">
           <BsXCircleFill /> Eliminar
         </Button>
       </ButtonGroup>

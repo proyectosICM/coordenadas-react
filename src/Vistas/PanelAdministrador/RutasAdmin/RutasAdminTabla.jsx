@@ -13,8 +13,13 @@ export function RutasAdminTabla({ handleShowModal }) {
   const [datos, setDatos] = useState();
 
   const cargarDatos = async () => {
-    const response = await axios.get(`${rutasxEmpresaURL}0/${empresaid}`);
-    setDatos(response.data);
+    try {
+      const response = await axios.get(`${rutasxEmpresaURL}0/${empresaid}`);
+      setDatos(response.data);
+    } catch (error) {
+      console.error("Error al cargar los datos")
+    }
+
   };
 
   useEffect(() => {

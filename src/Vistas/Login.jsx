@@ -1,48 +1,59 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RiUserLine, RiLockPasswordLine } from "react-icons/ri"; 
-import "../Styles/login.css";
-import { loginURL } from "../API/apiurls";
+import { RiUserLine, RiLockPasswordLine } from "react-icons/ri";
 import { useGlobalState } from "../Context/GlobalStateContext";
+import { loginURL } from "../API/apiurls";
+import "../Styles/login.css";
 
 export function Login() {
-  const { userData, setUserData } = useGlobalState(); 
+  // State variables and navigation functions definition
+  const { userData, setUserData } = useGlobalState();
   const [usuario, setUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState("");
   const navigation = useNavigate();
 
+  // Redirect to main page ('/rutas') if a session is already active
   useEffect(() => {
     let empresa = localStorage.getItem("empresa");
     if (empresa) {
-      navigation('/rutas');
+      navigation("/rutas");
     }
   }, [navigation]);
 
-  const handleSubmit = async (e) => { 
+  // Login function
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    // Input fields validation
     if (!usuario || !contrasena) {
       setError("Por favor, complete todos los campos.");
       return;
     }
-
     try {
       const dataInicio = { usuario, password: contrasena };
       const response = await axios.post(loginURL, dataInicio);
-
-      setUserData({ 
+      // Load data into global state
+      setUserData({
         empresaId: response.data.id,
         empresaNombre: response.data.nombre,
         empresaUsuario: response.data.usuario,
       });
-
+      // Load data into global state
       localStorage.setItem("empresaid", response.data.id);
       localStorage.setItem("empresaNombre", response.data.nombre);
+      // Redirect to routes page
       navigation("/rutas");
     } catch (error) {
       console.error("Error:", error);
-      setError("Credenciales incorrectas. Por favor, inténtelo de nuevo.");
+
+      if (error.response && error.response.status === 401) {
+        setError("Credenciales incorrectas. Por favor, inténtelo de nuevo.");
+      } else if (error.message === "Network Error") {
+        setError("Error de conexión. Comprueba tu conexión a internet.");
+      } else {
+        setError("Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.");
+      }
     }
   };
 

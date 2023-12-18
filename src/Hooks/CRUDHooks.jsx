@@ -78,3 +78,34 @@ export function EditarElemento(url, requestData) {
       });
   });
 }
+
+export function EliminarElemento(url, requestData) {
+  return new Promise((resolve, reject) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción no se puede deshacer',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${url}`, requestData)
+          .then((response) => {
+            resolve(response.data);
+            Swal.fire("Eliminado", "El registro ha sido eliminado", "success");
+          })
+          .catch((error) => {
+            console.error("Error al eliminar los datos:", error);
+            reject(error);
+            Swal.fire("Error", "Hubo un error al eliminar el registro", "error");
+          });
+      } else {
+        console.log('Eliminación cancelada');
+      }
+    });
+  });
+}

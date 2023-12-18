@@ -1,82 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import "../../Styles/CoordenadasModal.css";
 import { paisesURL } from "../../API/apiurls";
 import { useListarElementos } from "../../Hooks/CRUDHooks";
+import "../../Styles/CoordenadasModal.css";
+import Swal from "sweetalert2";
 
 function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
+  // State to control the enable/disable state of the save button
+  const [isGuardarHabilitado, setIsGuardarHabilitado] = useState(false);
+
+  // State to store the list of countries
+  const [pais, setPais] = useState([]);
+
+  // State to hold form data
   const [formData, setFormData] = useState({
     nomruta: "",
     paisId: "",
     paisNombre: "",
   });
 
-  const [pais, setPais] = useState([]);
+  // Retrieve country data using a custom link from an API
   useListarElementos(`${paisesURL}`, pais, setPais);
 
-  const [isGuardarHabilitado, setIsGuardarHabilitado] = useState(false);
-
-  const handleClose = () => {
-    cerrar();
-    limpiar();
-  };
- 
-  const handleSave = () => {
-    // Validar que los campos "Nombre de Ruta" y "País" no estén vacíos
-    if (formData.nomruta.trim() === "" || formData.paisId === "") {
-      let mensajeError = "";
-      if (formData.nomruta.trim() === "") {
-        mensajeError += 'El campo "Nombre de Ruta" no puede estar vacío.\n';
-      }
-      if (formData.paisId === "") {
-        mensajeError += 'Debe seleccionar un país.\n';
-      }
-      alert(mensajeError);
-      return; // Detener la función si algún campo está vacío
-    }
-
-    if (datosaeditar) {
-      editar(formData);
-    } else {
-      guardar(formData);
-    }
-    cerrar();
-    limpiar();
-  };
-
-  const limpiar = () => {
-    setFormData({
-      nomruta: "",
-      paisId: "",
-      paisNombre: "",
-    });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // Verificar si ambos campos tienen datos para habilitar el botón de guardar
-    if (name === "nomruta" || name === "paisId") {
-      setIsGuardarHabilitado(formData.nomruta.trim() !== "" && formData.paisId !== "");
-    }
-  };
-
-  const handleSelectChange = (e) => {
-    const { value, options } = e.target;
-    const selectedOption = options[options.selectedIndex];
-    setFormData({
-      ...formData,
-      paisId: value,
-      paisNombre: selectedOption.text,
-    });
-
-    setIsGuardarHabilitado(formData.nomruta.trim() !== "" && value !== "");
-  };
-
+  // Update form data if 'datosaeditar' exists
   useEffect(() => {
     if (datosaeditar) {
       setFormData({
@@ -86,14 +32,88 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
         paisId: datosaeditar.paisesModel.id,
         paisNombre: datosaeditar.paisesModel.nombre,
       });
-      //setEditando(true);
-    } else {
-      // ...
     }
   }, [datosaeditar]);
 
+  // Function to reset form data
+  const limpiar = () => {
+    setFormData({
+      nomruta: "",
+      paisId: "",
+      paisNombre: "",
+    });
+  };
+
+  // Function to close modal and reset form data
+  const handleClose = () => {
+    cerrar();
+    limpiar();
+  };
+
+  // Function to handle input changes in the form fields
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    // Check if both fields have data to enable the save button
+    if (name === "nomruta" || name === "paisId") {
+      setIsGuardarHabilitado(formData.nomruta.trim() !== "" && formData.paisId !== "");
+    }
+  };
+
+  // Function to handle changes in the select input field
+  const handleSelectChange = (e) => {
+    const { value, options } = e.target;
+    // Retrieve the selected option from the dropdown
+    const selectedOption = options[options.selectedIndex];
+    setFormData({
+      ...formData,
+      paisId: value,
+      paisNombre: selectedOption.text,
+    });
+    // Check if both route name and country ID have data to enable the save button
+    setIsGuardarHabilitado(formData.nomruta.trim() !== "" && value !== "");
+  };
+
+  // Function to handle form data saving
+  const handleSave = () => {
+    // Validate that the "Route Name" and "Country" fields are not empty
+    if (formData.nomruta.trim() === "" || formData.paisId === "") {
+      let mensajeError = "";
+      // Check if "Route Name" field is empty
+      if (formData.nomruta.trim() === "") {
+        mensajeError += 'El campo "Nombre de Ruta" no puede estar vacío.\n';
+      }
+      // Check if no country is selected
+      if (formData.paisId === "") {
+        mensajeError += "Debe seleccionar un país.\n";
+      }
+      // Show alert with error message if any field is empty
+      // Reemplaza el alert con SweetAlert
+      Swal.fire({
+        icon: "error",
+        title: "Error de validación",
+        text: mensajeError,
+      });
+
+      return; // Stop the function if any field is empty
+    }
+
+    // If editing existing data, call 'editar'; otherwise, call 'guardar'
+    if (datosaeditar) {
+      editar(formData);
+    } else {
+      guardar(formData);
+    }
+    // Close modal and reset form data
+    cerrar();
+    limpiar();
+  };
+
   return (
-    <> 
+    <>
       <Modal show={mostrar} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
@@ -118,8 +138,8 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
           </div>
 
           <button variant="primary" onClick={handleSave} disabled={!isGuardarHabilitado}>
-          Guardar
-        </button>
+            Guardar
+          </button>
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>

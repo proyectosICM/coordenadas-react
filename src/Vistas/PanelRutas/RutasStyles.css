@@ -7,3 +7,25 @@
     background-color: black;
     color: black;
 }
+
+.boton-ver {
+    background-Color: "#40609F";
+    border-color: "black";
+    color: "white";
+}
+
+.boton-eliminar,
+.boton-editar {
+    background-color: #727273 !important;
+    border-color: black !important;
+    color: black !important;
+}
+
+/* Estilo adicional para el botón de editar */
+.boton-editar {
+    margin-right: 5px !important;
+}
+
+.contenedor-botones {
+    margin-top: 10px
+}

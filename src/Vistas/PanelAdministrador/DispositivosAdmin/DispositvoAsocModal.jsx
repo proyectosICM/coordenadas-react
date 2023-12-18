@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
+import { Form, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
 import { ListarElementos } from "../../../Hooks/CRUDHooks";
 import { EmpresasURL, rutasxEmpresaURL } from "../../../API/apiurls";
 import { useGlobalState } from "../../../Context/GlobalStateContext";
@@ -11,10 +11,10 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
   const [empresas, setEmpresas] = useState();
   const [formData, setFormData] = useState({
     nombre: "",
-    ruta: null,
-    empresa: null,
+    ruta: "",
+    empresa: "",
   });
- 
+
   const handleClose = () => {
     cerrar();
     limpiar();
@@ -24,6 +24,7 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
     setFormData({
       nombre: "",
       ruta: "",
+      empresa: "",
       agregarARuta: null,
     });
   };
@@ -31,18 +32,7 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
   ListarElementos(`${rutasxEmpresaURL}1/${empresaId}`, setRutas);
   ListarElementos(`${EmpresasURL}`, setEmpresas);
 
-  useEffect(() => {
-    if (datosaeditar) {
-      console.log("ds")
-      console.log(datosaeditar)
-      console.log("ds")
-      setFormData({
-        nombre: datosaeditar.nombre,
-        ruta: datosaeditar.rutas,
-        password: datosaeditar.password,
-      });
-    }
-  }, [datosaeditar]);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -77,7 +67,18 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
     cerrar();
     limpiar();
   };
- 
+
+    useEffect(() => {
+    if (datosaeditar) {
+      setFormData({
+        nombre: datosaeditar.nombre,
+        agregarARuta: true,
+        empresa: datosaeditar.empresasModel.id,
+        ruta: datosaeditar.rutasModel.id,
+      });
+    }
+  }, [datosaeditar]);
+
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
@@ -90,21 +91,22 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
             <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} style={{ width: "420px" }} />
           </div>
 
-          <div>
-            <h5>Seleccione la empresa a la que pertenece el dispositivo</h5>
-            <Form.Select name="empresa" value={formData.empresa} onChange={handleInputChange} style={{ width: "420px" }}>
-              <option value="">Seleccionar empresa</option>
-              {empresas &&
-                empresas.map((empresa) => (
-                  <option key={empresa.id} value={empresa.id}>
-                    {empresa.nombre}
-                  </option>
-                ))}
-            </Form.Select>
-          </div>
+          <FormGroup>
+            <div>
+              <Form.Label>Seleccione la empresa a la que pertenece el dispositivo</Form.Label>
+              <Form.Select name="empresa" value={formData.empresa} onChange={handleInputChange} style={{ width: "420px" }}>
+                <option value="">Seleccionar empresa</option>
+                {empresas &&
+                  empresas.map((empresa) => (
+                    <option key={empresa.id} value={empresa.id}>
+                      {empresa.nombre}
+                    </option>
+                  ))}
+              </Form.Select>
+            </div>
+          </FormGroup>
 
           <Form.Group>
-            <Form.Label>Desea agregar el dispositivo a una ruta</Form.Label>
             <div>
               <Form.Check
                 inline
@@ -126,14 +128,18 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
               />
             </div>
             {formData.agregarARuta && (
-              <Form.Control as="select" name="ruta" value={formData.ruta} onChange={handleInputChange}>
-                <option value="">Seleccionar ruta</option>
-                {rutas.map((ruta) => (
-                  <option key={ruta.id} value={ruta.id}>
-                    {ruta.nomruta}
-                  </option>
-                ))}
-              </Form.Control>
+              <>
+                <Form.Label>Seleccione la empresa a la que pertenece el dispositivo</Form.Label>
+                <Form.Select name="ruta" value={formData.ruta} onChange={handleInputChange} style={{ width: "420px" }}>
+                  <option value="">Seleccionar ruta</option>
+                  {rutas &&
+                    rutas.map((ruta) => (
+                      <option key={ruta.id} value={ruta.id}>
+                        {ruta.nomruta}
+                      </option>
+                    ))}
+                </Form.Select>
+              </>
             )}
           </Form.Group>
         </ModalBody>

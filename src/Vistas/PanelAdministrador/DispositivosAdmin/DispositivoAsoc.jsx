@@ -7,9 +7,10 @@ import { DispositivoCard } from "./DispositivoCard";
 import { DispositivosURL } from "../../../API/apiurls";
 import axios from "axios";
 import { DispositivoAsocModal } from "./DispositvoAsocModal";
-import { GuardarElementos } from "../../../Hooks/CRUDHooks";
+import { EditarElemento, EliminarElemento, GuardarElementos } from "../../../Hooks/CRUDHooks";
 import { dispositivoAsocRequestData } from "./DispositivoAsocRequestData";
 import { useGlobalState } from "../../../Context/GlobalStateContext";
+import Swal from "sweetalert2";
 
 export function DispositivoAsoc() {
   const { userData } = useGlobalState();
@@ -42,10 +43,18 @@ export function DispositivoAsoc() {
     setLimp(false);
   };
 
+  const handleEliminar = (id) => {
+    EliminarElemento(`${DispositivosURL}/${id}`).then(() => {
+      cargarDatos();
+    }).catch((error) => {
+      console.error("Error al eliminar el elemento:", error);
+    });
+  };
+
   const handleGuardar = (datosFormulario) => {
     const requestData = dispositivoAsocRequestData(datosFormulario, empresaId);
     GuardarElementos(`${DispositivosURL}`, requestData, datos, setDatos)
-      .then((response) => {
+      .then(() => {
         setShow(false);
         cargarDatos();
       })
@@ -53,8 +62,6 @@ export function DispositivoAsoc() {
         console.error("Error al guardar los datos:", error);
         setShow(false);
       });
-
-    console.log(datosFormulario);
   };
 
   const handleEditar = async (dato) => {
@@ -65,7 +72,7 @@ export function DispositivoAsoc() {
         Swal.fire("Error", "Hubo un error al editar el registro", "error");
       });
       setShow(false);
-      Listar();
+      cargarDatos();
     } catch (error) {
       console.error("Error al editar los datos:", error);
       Swal.fire("Error", "Hubo un error al editar el registro", "error");
@@ -77,6 +84,9 @@ export function DispositivoAsoc() {
     setShow(true);
     console.log(camion);
   };
+
+
+
 
   return (
     <div>
@@ -91,9 +101,9 @@ export function DispositivoAsoc() {
         </Button>
 
         <div className="camionesMenu-contenedor">
-          {datos && datos.map((dato) => <DispositivoCard key={dato.id}  datosAEditar={datosAEditar} dispositivo={dato} />)}
+          {datos && datos.map((dato) => <DispositivoCard key={dato.id} eliminar={handleEliminar}  datosAEditar={datosAEditar} dispositivo={dato} />)}
         </div>
-        <DispositivoAsocModal mostrar={show} datosaeditar={datosEdit} guardar={handleGuardar} cerrar={handleCerrar} editar={handleEditar} />
+        <DispositivoAsocModal mostrar={show}   datosaeditar={datosEdit} guardar={handleGuardar} cerrar={handleCerrar} editar={handleEditar} />
       </div>
     </div>
   );
