@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-color:#080404; 
+  background-color: #080404;
 }
 
 .App-logo {
@@ -33,13 +33,14 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
 
-.camionesMenu-contenedor{
+.camionesMenu-contenedor {
   width: 80%;
   height: 750px;
   margin: 0.5% auto;
@@ -49,16 +50,28 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  border: 0.5px solid #333333  ;
+  border: 0.5px solid #333333;
   border-radius: 1%;
   overflow: auto;
-} 
+}
 
 /* Estilo para los campos de entrada pequeños */
 .small-input {
-  width: 100px; /* Ancho deseado para los inputs pequeños */
+  width: 100px;
+  /* Ancho deseado para los inputs pequeños */
 }
 
-.rbstyle{
+.rbstyle {
+  margin: 10px;
+}
+
+/* Estilos para formularios */
+.inp2-form {
+  width: 10px;
+}
+
+.select-form {
+  width: 100%;
+  height: 40px;
   margin: 10px;
 }

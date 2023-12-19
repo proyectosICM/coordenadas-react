@@ -7,16 +7,14 @@ import { ListarElementos } from "../../Hooks/CRUDHooks";
 import { Empresas } from './../PanelAdministrador/EmpresasAdmin/Empresas';
 
 export function CoordenadasTabla({ datos, datosAEditar, handleEliminar, handleShowModal }) {
-  const navigation = useNavigate();
-
-
+  const navigation = useNavigate(); 
 
   return (
     <>
       <Button style={{ width: "100%" }} onClick={() => navigation("/rutas")}>
         Atras
       </Button>
-      <h1>Coordenadas de la ruta {/*nomRuta*/}</h1>
+      <h1>Coordenadas de la ruta</h1>
       <Button variant="success" style={{ margin: "30px" }} onClick={() => handleShowModal("Nuevo")}>
         <BsPlusCircleFill /> Agregar
       </Button>

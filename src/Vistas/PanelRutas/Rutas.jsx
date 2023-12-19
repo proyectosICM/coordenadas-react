@@ -75,12 +75,14 @@ export function Rutas() {
 
   // Function to edit data and handle the response
   const handleEditar = async (dato) => {
+    console.log(dato)
     try {
       const requestData = buildRequestData(dato, empresaId);
       await EditarElemento(`${rutasURL}/${dato.id}`, requestData);
       setShow(false);
       Listar(pageNumber + 1);
     } catch (error) {
+      console.log("ds")
       handleErrorResponse(error);
     }
   };

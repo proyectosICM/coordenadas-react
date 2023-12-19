@@ -129,7 +129,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     setFormData({
       coordenadas: "",
       radio: "",
-      velocidad: "10",
+      velocidad: "10", 
       velocidadValor: "",
       sonidoVelocidad: "",
       sonidoGeocerca: "",
@@ -202,7 +202,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     // Abre Google Maps en una nueva ventana
     window.open(googleMapsUrl, "_blank");
   };
-
+ 
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>

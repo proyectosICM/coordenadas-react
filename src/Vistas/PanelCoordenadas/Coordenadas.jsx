@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
-import { coordenadasURL } from "../../API/apiurls";
-import { BsPlusCircleFill } from "react-icons/bs";
+import { useParams } from "react-router-dom";
+import { coordenadacxrURL, coordenadasURL } from "../../API/apiurls";
 import CoordenadasModal from "./CoordenadasModal";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -12,38 +10,50 @@ import buildRequestData from "./requestDataCoordenadas";
 import { CoordenadasTabla } from "./CoordenadasTabla";
 import { DownloadTxt } from "./DownloadTXT";
 import { PaginacionUtils } from "../../Hooks/PaginacionUtils";
-
+import { EditarElemento, GuardarElementos } from "../../Hooks/CRUDHooks";
+import useErrorHandler from "../../Hooks/useErrorHandler";
+import { useGlobalState } from "../../Context/GlobalStateContext";
 
 export function Coordenadas() {
-  const [datos, setDatos] = useState([]);
-  const navigation = useNavigate();
   const { ruta } = useParams();
-  const [show, setShow] = useState(false);
-  const [datosEdit, setDatosEdit] = useState(null);
-  const [limp, setLimp] = useState(false);
   const nomRuta = localStorage.getItem("nomRuta");
 
-  const [pageNumber, setPageNumber] = useState(0); // Número de página actual
+  // State variables
+  const { userData } = useGlobalState();
+  const { empresaId, empresaNombre } = userData;
 
-  const [totalElements, setTotalElements] = useState(0); // Total de elementos
-  const [currentPage, setCurrentPage] = useState(0); // Página actual
+  // Elements visibility state
+  const [show, setShow] = useState(false);
+
+  // Data for display and editing
+  const [datos, setDatos] = useState([]);
+  const [datosEdit, setDatosEdit] = useState(null);
+
+  const [limp, setLimp] = useState(false);
+
+  // Pagination state
+  const [pageNumber, setPageNumber] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  // useListarElementos(`${coordenadaxRutaURL}${ruta}`, datos, setDatos);
-  // La función de carga de datos ahora acepta pageNumber y pageSize
-  const cargarDatos = async (page, size) => {
+  // Retrieves error messages and the error handling function from the useErrorHandler hook
+  const { errorMessage, handleErrorResponse } = useErrorHandler();
+
+  // Function to retrieve and display data based on page
+  const Listar = async (page) => {
     try {
-      const response = await axios.get(`http://localhost:8087/api/coordenadas/cxr/${ruta}?pageNumber=${page}`);
+      const response = await axios.get(`${coordenadacxrURL}${ruta}?pageNumber=${page}`);
       setDatos(response.data.content);
-      setTotalPages(response.data.totalPages); // Actualiza el estado de totalPages
+      setTotalPages(response.data.totalPages);
+      setCurrentPage(response.data.number + 0);
     } catch (error) {
       console.error("Error al cargar los datos:", error);
     }
   };
 
-
+  // useEffect hook to trigger data loading when 'pageNumber' changes
   useEffect(() => {
-    cargarDatos(pageNumber);
+    Listar(pageNumber);
   }, [pageNumber]);
 
   const handleShowModal = (t) => {
@@ -53,24 +63,42 @@ export function Coordenadas() {
     }
   };
 
+  // Function to close the modal and reset data
   const handleCerrar = () => {
     setShow(false);
     setLimp(false);
   };
- 
+
+  // Function to display the modal and load data for editing
+  const datosAEditar = (camion) => {
+    setDatosEdit(camion);
+    setShow(true);
+  };
+
+  // Function to save new data and handle the response
   const handleGuardar = (datosFormulario) => {
     const requestData = buildRequestData(datosFormulario, ruta);
-    axios
-      .post(`${coordenadasURL}`, requestData)
+    GuardarElementos(`${coordenadasURL}`, requestData, datos, setDatos)
       .then((response) => {
         setDatos([...datos, response.data]);
         setShow(false);
       })
-      .catch((error) => {
-        console.error("Error al guardar los datos:", error);
-      });
+      .catch(handleErrorResponse);
   };
 
+  // Function to edit data and handle the response
+  const handleEditar = async (dato) => {
+    try {
+      const requestData = buildRequestData(dato, empresaId);
+      await EditarElemento(`${coordenadasURL}/${dato.id}`, requestData);
+      setShow(false);
+      Listar(pageNumber + 1);
+    } catch (error) {
+      handleErrorResponse(error);
+    }
+  };
+
+  // Function to perform logical deletion (disable) of data and handle the response
   const handleEliminar = (id) => {
     Swal.fire({
       title: "¿Esta seguro de eliminar este registro?",
@@ -86,57 +114,32 @@ export function Coordenadas() {
         axios
           .delete(`${coordenadasURL}/${id}`)
           .then(() => {
-            // Filtra los datos para mantener solo los registros que no tienen el ID eliminado
             const nuevosDatos = datos.filter((coordenada) => coordenada.id !== id);
-            setDatos(nuevosDatos); // Actualiza la variable de estado
+            setDatos(nuevosDatos); 
             Swal.fire("Eliminado", "El registro ha sido eliminado", "success");
           })
-          .catch((error) => {
-            console.error("Error al eliminar los datos:", error);
-            Swal.fire("Error", "Hubo un error al eliminar el registro", "error");
-          });
+          .catch(handleErrorResponse);
       }
     });
-  }; 
-
-  const datosAEditar = (camion) => {
-    setDatosEdit(camion);
-    setShow(true);
-  };
-
-
-  const handleEditar = (dato) => {
-    console.log(dato);
-    const requestData = buildRequestData(dato, ruta);
-    console.log(requestData);
-    axios
-      .put(`${coordenadasURL}/${dato.id}`, requestData)
-      .then((response) => {
-        // Actualiza los datos localmente en la lista
-        const indice = datos.findIndex((item) => item.id === dato.id);
-        if (indice !== -1) {
-          const nuevosDatos = [...datos];
-          nuevosDatos[indice] = response.data;
-          setDatos(nuevosDatos);
-        }
-
-        setShow(false);
-      })
-      .catch((error) => {
-        console.error("Error al editar los datos:", error);
-        Swal.fire("Error", "Hubo un error al editar el registro", "error");
-      });
   };
 
   return (
     <>
       <NavBar />
-      <div className="camionesMenu-contenedor" >
+      <div className="camionesMenu-contenedor">
         <CoordenadasTabla datos={datos} datosAEditar={datosAEditar} handleEliminar={handleEliminar} handleShowModal={handleShowModal} />
         <PaginacionUtils setPageNumber={setPageNumber} setCurrentPage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />
-        <DownloadTxt ruta={ruta}/>
+        <DownloadTxt ruta={ruta} />
       </div>
-      <CoordenadasModal handleGuardar={handleGuardar} mostrar={show} cerrar={handleCerrar} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} limp={limp} />
+      <CoordenadasModal
+        handleGuardar={handleGuardar}
+        mostrar={show}
+        cerrar={handleCerrar}
+        guardar={handleGuardar}
+        datosaeditar={datosEdit}
+        editar={handleEditar}
+        limp={limp}
+      />
     </>
   );
 }

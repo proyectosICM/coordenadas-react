@@ -15,7 +15,8 @@ export const rutasxEmpresaPURL = `${rutasURL}/xempresaP/`
 export const rutasDeshabilitar = `${rutasURL}/deshabilitar/`
 // Coordenadas
 export const coordenadasURL = `${base}/coordenadas`
-export const coordenadaxRutaURL = `${coordenadasURL}/ruta/`
+export const coordenadaxRutaURL = `${coordenadasURL}/ruta/`;
+export const coordenadacxrURL = `·${coordenadasURL}/cxr/`
 
 // Paises
 export const paisesURL = `${base}/paises`;

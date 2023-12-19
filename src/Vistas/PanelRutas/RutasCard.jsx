@@ -6,7 +6,7 @@ import { GrEdit } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { DownloadTxt } from "../PanelCoordenadas/DownloadTXT"; 
 import './RutasStyles.css'
-  
+   
 export function RutasCard({ ruta, empresaNombre, datosAEditar, handleEliminar }) {
   const navigation = useNavigate();
  
