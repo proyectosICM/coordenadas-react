@@ -9,6 +9,8 @@ import { SiGooglemaps } from "react-icons/si";
 import { BsSpeedometer2 } from "react-icons/bs";
 import { AiFillSound } from "react-icons/ai";
 import { BsFillSignpost2Fill } from "react-icons/bs";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { ModalBody } from "react-bootstrap";
 
 function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp, title }) {
   // Variables de estado para los campos de entrada y las coordenadas del marcador
@@ -23,6 +25,19 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     codsonidoG: "",
     codvel: "",
   });
+
+  const initialValues = {
+    id: datosaeditar ? datosaeditar.id : "",
+    coordenadas: datosaeditar ? datosaeditar.coordenadas : "",
+    radio: datosaeditar ? datosaeditar.radio : "",
+    velocidad: datosaeditar ? datosaeditar.velocidad : "",
+    velocidadValor: datosaeditar ? datosaeditar.velocidadValor : "",
+    sonidoVelocidad: datosaeditar ? datosaeditar.sonidoVelocidad : "",
+    sonidoGeocerca: datosaeditar ? datosaeditar.sonidoGeocerca : "",
+    imagenGeocerca: datosaeditar ? datosaeditar.imagenGeocerca : "",
+    codsonidoG: datosaeditar ? datosaeditar.codsonidoG : "",
+    codvel: datosaeditar ? datosaeditar.codvel : "",
+  };
 
   const [geocercaTipo, setGeocercaTipo] = useState("Todas");
 
@@ -68,293 +83,225 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     fetchData();
   }, [pais, geocercaTipo]);
 
-  const [idvelocidad, setIdvelocidad] = useState([]);
-  const [velocidadesS, setVelocidadesS] = useState([]);
-  const [geocercaD, setGeocercaD] = useState([]);
-  const [audio, setAudio] = useState([]);
-
-  useEffect(() => {
-    if (datosaeditar) {
-      setFormData({
-        id: datosaeditar.id,
-        coordenadas: datosaeditar.coordenadas,
-        radio: datosaeditar.radio,
-        velocidad: datosaeditar.sonidosVelocidadModel.id,
-        velocidadValor: datosaeditar.sonidosVelocidadModel.id,
-        codvel: datosaeditar.sonidosVelocidadModel.codvel,
-        sonidoGeocerca: datosaeditar.sonidosGeocercaModel.id,
-        codsonidoG: datosaeditar.sonidosGeocercaModel.codsonido,
-        imagenGeocerca: datosaeditar.sonidosGeocercaModel.id,
-      });
-
-      const ListarDatos = async () => {
-        try {
-          const response = await axios.get(`${sonidosVelocidadURL}/${datosaeditar.sonidosVelocidadModel.id}`);
-
-          setVelocidadesS(response.data);
-          const responseGeocercaD = await axios.get(`${GeocercaURL}/${datosaeditar.sonidosGeocercaModel.id}`);
-          setGeocercaD(responseGeocercaD.data);
-        } catch (error) {
-          console.error("Error al obtener los datos:", error);
-        }
-      }; 
-      ListarDatos();
-    }
-  }, [datosaeditar]);
-
-  useEffect(() => {
-    if (limp) {
-      limpiar();
-    }
-  }, [limp]);
-
-  const [markerPosition, setMarkerPosition] = useState({ lat: 0, lng: 0 });
-
   const handleClose = () => {
     cerrar();
-    limpiar();
   };
 
-  const handleSave = () => {
+  const handleSave = (values) => {
+    console.log(values);
     if (datosaeditar) {
-      editar(formData);
+      editar(values);
     } else {
-      guardar(formData);
+      guardar(values);
     }
     cerrar();
-    limpiar();
-  };
-
-  const limpiar = () => {
-    setFormData({
-      coordenadas: "",
-      radio: "",
-      velocidad: "10", 
-      velocidadValor: "",
-      sonidoVelocidad: "",
-      sonidoGeocerca: "",
-      imagenGeocerca: "",
-      codsonidoG: "",
-      codvel: "",
-    });
-    setVelocidadesS("");
-    setGeocercaD("");
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  
-
-  const handleSeleccionarAudio = async (e) => {
-    const { value, options } = e.target;
-    const selectedOption = options[options.selectedIndex];
-    try {
-      const response = await axios.get(`${sonidosVelocidadURL}/${value}`);
-      setVelocidadesS(response.data);
-
-      setFormData({
-        ...formData,
-        codvel: response.data.codvel,
-        velocidad: value,
-        velocidadValor: selectedOption.text,
-      });
-      setIdvelocidad(value);
-    } catch (error) {
-      console.error("Error al obtener los datos:", error);
-    }
-  };
-
-  const [codsonidoG, setSonidoG] = useState();
-  const handleSeleccionarGeocerca = async (e) => {
-    const { value, options } = e.target;
-    const selectedOption = options[options.selectedIndex];
-
-    try {
-      const response = await axios.get(`${GeocercaURL}/${value}`);
-      const codsonido = response.data.codsonido;
-
-      setSonidoG(response.data);
-
-      const responseGeocercaD = await axios.get(`${GeocercaURL}/${value}`);
-      setGeocercaD(responseGeocercaD.data);
-
-      setFormData({
-        ...formData,
-        sonidoGeocerca: selectedOption.value,
-        imagenGeocerca: selectedOption.value,
-        codsonidoG: responseGeocercaD.data.codsonido,
-      });
-    } catch (error) {
-      console.error("Error al obtener los datos:", error);
-    }
   };
 
   const openGoogleMaps = () => {
     // Aquí puedes construir la URL de Google Maps con las coordenadas ingresadas
-    // const googleMapsUrl = `https://www.google.com/maps?q=-12.046861, -77.042341`;
     const googleMapsUrl = `https://www.google.com/maps?q=-12.046861, -77.042341`;
     // Abre Google Maps en una nueva ventana
     window.open(googleMapsUrl, "_blank");
   };
- 
+
+  const [audioSrc, setAudioSrc] = useState();
+
+  const audioDeVelocidad = async (e) => {
+    const { value, options } = e.target;
+    try {
+      const response = await axios.get(`${sonidosVelocidadURL}/${value}`);
+      setAudioSrc(response.data.sonidoVelocidad);
+      return response.data.sonidoVelocidad;
+    } catch (error) {
+      console.error("Error al obtener los datos:", error);
+      return null;
+    }
+  };
+
+  const [audioGSrc, setAudioGSrc] = useState();
+  const [imagenGsrc, setImagenGSrc] = useState();
+  const audioGeocerca = async (e) => {
+    const { value, options } = e.target;
+    try {
+      const response = await axios.get(`${GeocercaURL}/${value}`);
+      setAudioGSrc(response.data.urlSonido);
+      setImagenGSrc(response.data.urlImagen);
+      console.log(response.data.urlSonido);
+    } catch (error) {
+      console.error("Error al obtener los datos:", error);
+      return null;
+    }
+  };
+
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <div>
-            <div>
-              <a href="#" onClick={openGoogleMaps} target="_blank">
-                Abrir Google Maps
-              </a>
-            </div>
-            <h5>Coloque latitud y Longuitud</h5>
-            <input type="text" name="coordenadas" value={formData.coordenadas} onChange={handleInputChange} style={{ width: "420px" }} />
-          </div>
-          <div>
-            <h5>Radio en metros</h5>
-            <input type="number" name="radio" value={formData.radio} onChange={handleInputChange} style={{ width: "420px" }} />
-          </div>
-          <div className="input-row">
-            <div className="input-column">
-              <h5>
-                <BsSpeedometer2 /> Velocidad
-              </h5>
-              <select
-                name="velocidad"
-                value={formData.velocidad}
-                onChange={handleSeleccionarAudio}
-                style={{ width: "200px", height: "40px", margin: "10px" }}
-              >
-                <option value="">Seleccione una velocidad</option>
-                {velocidades.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="input-column">
-              <AiFillSound style={{ marginRight: "10px" }} />
-              {velocidadesS.nombre && (
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <ReactAudioPlayer src={velocidadesS.sonidoVelocidad} controls style={{ width: "200px", marginTop: "15px" }} />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Agregar los radio buttons */}
-          <div className="input-row">
-            <div className="input-column">
-              <h5>Tipo de Geocerca</h5>
-              <label className="rbstyle">
-                <input type="radio" name="geocercaTipo" value="Todas" checked={geocercaTipo === "Todas"} onChange={() => setGeocercaTipo("Todas")} />
-                Todas
-              </label>
-              <label className="rbstyle">
-                <input
-                  type="radio"
-                  name="geocercaTipo"
-                  value="Reglamentarias"
-                  checked={geocercaTipo === "Reglamentarias"}
-                  onChange={() => setGeocercaTipo("Reglamentarias")}
-                />
-                Reglamentarias
-              </label>
-              <label className="rbstyle">
-                <input
-                  type="radio"
-                  name="geocercaTipo"
-                  value="Preventivas"
-                  checked={geocercaTipo === "Preventivas"}
-                  onChange={() => setGeocercaTipo("Preventivas")}
-                />
-                Preventivas
-              </label>
-              <label className="rbstyle">
-                <input
-                  type="radio"
-                  name="geocercaTipo"
-                  value="Informativas"
-                  checked={geocercaTipo === "Informativas"}
-                  onChange={() => setGeocercaTipo("Informativas")}
-                />
-                Informativas
-              </label>
-            </div>
-          </div>
-
-          <div className="input-row">
-            {/*
-            <div className="input-column">
-              <h5>
-                <BsFillSignpost2Fill /> Sonido Geocerca
-              </h5>
-              <input
-                type="text"
-                name="sonidoGeocerca"
-                value={formData.sonidoGeocerca}
-                onChange={handleInputChange}
-                style={{ width: "150px" }}
-              />
-            </div>
-              */}
-
-            <div className="input-column">
-              <h5>
-                <BsSpeedometer2 /> Geocerca
-              </h5>
-              <select
-                name="geocerca"
-                value={formData.imagenGeocerca}
-                onChange={handleSeleccionarGeocerca}
-                style={{ width: "200px", height: "40px", margin: "10px" }}
-              >
-                <option value="">Seleccione una geocerca</option>
-                {geocercas &&
-                  geocercas.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.nombre} {v.detalle && v.detalle}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <div className="input-column">
-              {geocercaD.nombre && (
-                <>
-                  <AiFillSound />
+        <Formik
+          initialValues={initialValues}
+          onSubmit={async (values) => {
+            await handleSave(values);
+          }}
+          enableReinitialize={true}
+        >
+          {(formikProps) => (
+            <Form>
+              <ModalBody>
+                <div className="input-column" style={{ width: "100%" }}>
                   <div>
-                    <ReactAudioPlayer src={geocercaD.urlSonido} controls style={{ width: "200px", marginTop: "15px" }} />
+                    <a href="#" onClick={openGoogleMaps} target="_blank">
+                      Abrir Google Maps
+                    </a>
                   </div>
-                </>
-              )}
-            </div>
-          </div>
+                  <h5>Coloque latitud y Longuitud</h5>
+                  <Field type="text" name="coordenadas" className="inp2-form" />
+                  <ErrorMessage name="coordenadas" component="div" className="error" />
+                </div>
 
-          {geocercaD.nombre && (
-            <>
-              <AiFillSound />
-              <div className="input-column">
-                <img src={geocercaD.urlImagen} alt="Logo Inicio" style={{ width: "30%", height: "30%", marginLeft: "35%" }} className="imgl" />
-              </div>
-            </>
+                <div className="input-column" style={{ width: "100%" }}>
+                  <h5>Radio en metros</h5>
+                  <Field type="text" name="radio" className="inp2-form" />
+                  <ErrorMessage name="radio" component="div" className="error" />
+                </div>
+
+                <div className="input-row">
+                  <div className="input-column">
+                    <h5>
+                      <BsSpeedometer2 /> Velocidad
+                    </h5>
+                    <Field
+                      as="select"
+                      name="velocidad"
+                      className="select-form"
+                      onChange={(e) => {
+                        formikProps.handleChange(e);
+                        audioDeVelocidad(e);
+                      }}
+                    >
+                      <option value="">Seleccione una velocidad</option>
+                      {velocidades.map((v) => (
+                        <option key={v.id} value={v.id}>
+                          {v.nombre}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
+                  <div className="input-column">
+                    <AiFillSound style={{ marginRight: "10px" }} />
+                    {formikProps.values.velocidad && typeof audioSrc === "string" && (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <ReactAudioPlayer src={audioSrc} controls style={{ width: "200px", marginTop: "15px" }} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="input-column">
+                    <h5>Tipo de Geocerca</h5>
+                    <label className="rbstyle">
+                      <input
+                        type="radio"
+                        name="geocercaTipo"
+                        value="Todas"
+                        checked={geocercaTipo === "Todas"}
+                        onChange={() => setGeocercaTipo("Todas")}
+                      />
+                      Todas
+                    </label>
+                    <label className="rbstyle">
+                      <input
+                        type="radio"
+                        name="geocercaTipo"
+                        value="Reglamentarias"
+                        checked={geocercaTipo === "Reglamentarias"}
+                        onChange={() => setGeocercaTipo("Reglamentarias")}
+                      />
+                      Reglamentarias
+                    </label>
+                    <label className="rbstyle">
+                      <input
+                        type="radio"
+                        name="geocercaTipo"
+                        value="Preventivas"
+                        checked={geocercaTipo === "Preventivas"}
+                        onChange={() => setGeocercaTipo("Preventivas")}
+                      />
+                      Preventivas
+                    </label>
+                    <label className="rbstyle">
+                      <input
+                        type="radio"
+                        name="geocercaTipo"
+                        value="Informativas"
+                        checked={geocercaTipo === "Informativas"}
+                        onChange={() => setGeocercaTipo("Informativas")}
+                      />
+                      Informativas
+                    </label>
+                  </div>
+                </div>
+
+                <div className="input-row">
+                  <div className="input-column">
+                    <h5>
+                      <BsSpeedometer2 /> Geocerca
+                    </h5>
+                    <Field
+                      as="select"
+                      name="geocerca"
+                      onChange={(e) => {
+                        formikProps.handleChange(e);
+                        audioGeocerca(e);
+                      }}
+                      style={{ width: "200px", height: "40px", margin: "10px" }}
+                    >
+                      <option value="">Seleccione una geocerca</option>
+                      {geocercas &&
+                        geocercas.map((v) => (
+                          <option key={v.id} value={v.id}>
+                            {v.nombre} {v.detalle && v.detalle}
+                          </option>
+                        ))}
+                    </Field>
+                  </div>
+
+                  <div className="input-column">
+                    <div className="input-column">
+                      <AiFillSound />
+                      {formikProps.values.geocerca && typeof audioGSrc === "string" && (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <ReactAudioPlayer src={audioGSrc} controls style={{ width: "200px", marginTop: "15px" }} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="input-column">
+                  <div className="input-column">
+                    <AiFillSound />
+                    {formikProps.values.geocerca && typeof audioGSrc === "string" && (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img src={imagenGsrc} alt="Logo Inicio" style={{ width: "30%", height: "30%", marginLeft: "35%" }} className="imgl" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <ErrorMessage name="geocerca" component="div" className="error" />
+              </ModalBody>
+              <Modal.Footer>
+                {" "}
+                <button variant="primary" type="submit">
+                  Guardar
+                </button>
+              </Modal.Footer>
+            </Form>
           )}
-
-          <button variant="primary" onClick={handleSave}>
-            Guardar
-          </button>
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
+        </Formik>
       </Modal>
     </>
   );

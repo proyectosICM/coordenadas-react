@@ -47,7 +47,7 @@ export function Rutas() {
 
   // useEffect hook to trigger data loading when 'pageNumber' changes
   useEffect(() => {
-    Listar(pageNumber + 1);
+    Listar(pageNumber);
   }, [pageNumber]);
 
   // Function to close the modal and reset data
@@ -110,7 +110,7 @@ export function Rutas() {
       }
     });
   };
-
+ 
   return (
     <div>
       <NavBar />

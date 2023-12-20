@@ -5,7 +5,7 @@ import { BsXCircleFill } from "react-icons/bs";
 import { GrEdit } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { DownloadTxt } from "../PanelCoordenadas/DownloadTXT"; 
-import './RutasStyles.css'
+import './RutasStyles.css' 
    
 export function RutasCard({ ruta, empresaNombre, datosAEditar, handleEliminar }) {
   const navigation = useNavigate();
@@ -13,7 +13,7 @@ export function RutasCard({ ruta, empresaNombre, datosAEditar, handleEliminar })
   return (
     <Card key={ruta.id} className="cardRuta">
       <Card.Body>
-        {/* <Card.Title>{index + 1}</Card.Title> */}
+        <Card.Title>{ruta.id}</Card.Title> 
         <Card.Subtitle  style={{color: "black" }}>Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
         <Card.Text>Empresa: {empresaNombre}</Card.Text>
         <Card.Text>País: {ruta.paisesModel && ruta.paisesModel.nombre}</Card.Text>

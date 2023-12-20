@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { paisesURL } from "../../API/apiurls";
+import { paisesURL, sonidosVelocidadURL } from "../../API/apiurls";
 import { useListarElementos } from "../../Hooks/CRUDHooks";
 import "../../Styles/CoordenadasModal.css";
 import Swal from "sweetalert2";
@@ -53,6 +53,8 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
     cerrar();
   };
 
+ 
+
   return (
     <Modal show={mostrar} onHide={cerrar}>
       <Modal.Header closeButton>
@@ -64,29 +66,29 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
         onSubmit={async (values) => {
           await handleSave(values);
         }}
-        enableReinitialize={true}
+        enableReinitialize={true} 
       >
         {({ isSubmitting }) => (
           <Form>
             <Modal.Body>
-              <div className="input-column" style={{width: "100%"}}>
+              <div className="input-column" style={{ width: "100%" }}>
                 <h5>Nombre de Ruta</h5>
                 <Field type="text" name="nomruta" className="inp2-form" />
                 <ErrorMessage name="nomruta" component="div" className="error" />
               </div>
 
               <div className="input-column">
-                  <h5>País</h5>
-                  <Field as="select" name="paisId" className="select-form">
-                    <option value="">Seleccione un país</option>
-                    {pais.map((country) => (
-                      <option key={country.id} value={country.id}>
-                        {country.nombre}
-                      </option>
-                    ))}
-                  </Field>
-                  <ErrorMessage name="paisId" component="div" className="error" />
-                </div>
+                <h5>País</h5>
+                <Field as="select" name="paisId" className="select-form">
+                  <option value="">Seleccione un país</option>
+                  {pais.map((country) => (
+                    <option key={country.id} value={country.id}>
+                      {country.nombre}
+                    </option>
+                  ))}
+                </Field>
+                <ErrorMessage name="paisId" component="div" className="error" />
+              </div>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="primary" type="submit" disabled={isSubmitting}>

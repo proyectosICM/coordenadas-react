@@ -4,12 +4,15 @@ const buildRequestData = (datosFormulario, ruta) => {
       radio: datosFormulario.radio,
       sonidosVelocidadModel: {
         id: datosFormulario.velocidad,
+        /*
         nombre: datosFormulario.velocidadValor,
-        codvel: datosFormulario.codvel,
+        codvel: datosFormulario.codvel,*/
       },
       sonidosGeocercaModel: {
-        id: datosFormulario.sonidoGeocerca,
+        id: datosFormulario.geocerca,
+        /*
         codsonido: datosFormulario.codsonidoG,
+        */
       },
       rutasModel: {
         id: ruta,

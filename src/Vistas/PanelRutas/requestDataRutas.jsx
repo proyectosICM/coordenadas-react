@@ -1,4 +1,4 @@
-// This requestData is for 
+// Constructs data related to the 'Route' table for a new route entry or edit
 const buildRequestData = (datosFormulario, empresaid) => {
   return {
     nomruta: datosFormulario.nomruta,

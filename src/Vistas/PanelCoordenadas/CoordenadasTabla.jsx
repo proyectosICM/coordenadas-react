@@ -14,7 +14,7 @@ export function CoordenadasTabla({ datos, datosAEditar, handleEliminar, handleSh
       <Button style={{ width: "100%" }} onClick={() => navigation("/rutas")}>
         Atras
       </Button>
-      <h1>Coordenadas de la ruta</h1>
+      <h1>Coordenadas de la ruta </h1>
       <Button variant="success" style={{ margin: "30px" }} onClick={() => handleShowModal("Nuevo")}>
         <BsPlusCircleFill /> Agregar
       </Button>
@@ -37,8 +37,8 @@ export function CoordenadasTabla({ datos, datosAEditar, handleEliminar, handleSh
                 <td>{coordenada.id}</td>
                 <td>{coordenada.coordenadas}</td>
                 <td>{coordenada.radio}</td>
-                <td>{coordenada.sonidosVelocidadModel.nombre}</td>
-                <td>{coordenada.sonidosVelocidadModel.codvel}</td>
+                <td>{coordenada.sonidosVelocidadModel ? coordenada.sonidosVelocidadModel.nombre : ""}</td>
+                <td>{coordenada.sonidosVelocidadModel ? coordenada.sonidosVelocidadModel.codvel : ""}</td>
                 <td>{coordenada.sonidosGeocercaModel.codsonido}</td>
                 <td>
                   <Button variant="warning" style={{ marginInline: "10px" }} onClick={() => datosAEditar(coordenada)}>

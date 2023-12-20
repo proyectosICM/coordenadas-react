@@ -13,7 +13,7 @@ import { PaginacionUtils } from "../../Hooks/PaginacionUtils";
 import { EditarElemento, GuardarElementos } from "../../Hooks/CRUDHooks";
 import useErrorHandler from "../../Hooks/useErrorHandler";
 import { useGlobalState } from "../../Context/GlobalStateContext";
-
+ 
 export function Coordenadas() {
   const { ruta } = useParams();
   const nomRuta = localStorage.getItem("nomRuta");
@@ -42,10 +42,12 @@ export function Coordenadas() {
   // Function to retrieve and display data based on page
   const Listar = async (page) => {
     try {
-      const response = await axios.get(`${coordenadacxrURL}${ruta}?pageNumber=${page}`);
+      console.log(`${coordenadacxrURL}${ruta}?pageNumber=${page}`);
+      const response = await axios.get(`http://localhost:8087/api/coordenadas/cxr/${ruta}?pageNumber=${page}`);
       setDatos(response.data.content);
+      console.log(response.data.content)
       setTotalPages(response.data.totalPages);
-      setCurrentPage(response.data.number + 0);
+      // setCurrentPage(response.data.number + 0);
     } catch (error) {
       console.error("Error al cargar los datos:", error);
     }
@@ -56,7 +58,7 @@ export function Coordenadas() {
     Listar(pageNumber);
   }, [pageNumber]);
 
-  const handleShowModal = (t) => {
+  const handleShowModal = (t) => { 
     setShow(true);
     if (t == "Nuevo") {
       setLimp(true);
@@ -77,10 +79,11 @@ export function Coordenadas() {
 
   // Function to save new data and handle the response
   const handleGuardar = (datosFormulario) => {
+    console.log(datosFormulario)
     const requestData = buildRequestData(datosFormulario, ruta);
     GuardarElementos(`${coordenadasURL}`, requestData, datos, setDatos)
-      .then((response) => {
-        setDatos([...datos, response.data]);
+      .then(() => {
+        Listar(pageNumber + 1);
         setShow(false);
       })
       .catch(handleErrorResponse);
@@ -115,7 +118,7 @@ export function Coordenadas() {
           .delete(`${coordenadasURL}/${id}`)
           .then(() => {
             const nuevosDatos = datos.filter((coordenada) => coordenada.id !== id);
-            setDatos(nuevosDatos); 
+            setDatos(nuevosDatos);
             Swal.fire("Eliminado", "El registro ha sido eliminado", "success");
           })
           .catch(handleErrorResponse);
