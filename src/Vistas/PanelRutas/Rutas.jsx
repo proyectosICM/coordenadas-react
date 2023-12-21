@@ -100,7 +100,7 @@ export function Rutas() {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        EditarElemento(`${rutasDeshabilitar}${id}`)
+        EditarElemento(`${rutasDeshabilitar}${id}/0`)
           .then(() => {
             const nuevosDatos = datos.filter((ruta) => ruta.id !== id);
             setDatos(nuevosDatos);

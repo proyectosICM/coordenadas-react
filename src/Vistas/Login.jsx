@@ -13,7 +13,7 @@ export function Login() {
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState("");
   const navigation = useNavigate();
-
+ 
   // Redirect to main page ('/rutas') if a session is already active
   useEffect(() => {
     let empresa = localStorage.getItem("empresa");

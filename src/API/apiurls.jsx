@@ -12,7 +12,7 @@ export const loginURL = `${base}/empresas/login`
 export const rutasURL = `${base}/rutas`;
 export const rutasxEmpresaURL = `${rutasURL}/xempresa/`
 export const rutasxEmpresaPURL = `${rutasURL}/xempresaP/`
-export const rutasDeshabilitar = `${rutasURL}/deshabilitar/`
+export const rutasDeshabilitar = `${rutasURL}/estado/`
 // Coordenadas
 export const coordenadasURL = `${base}/coordenadas`
 export const coordenadaxRutaURL = `${coordenadasURL}/ruta/`;

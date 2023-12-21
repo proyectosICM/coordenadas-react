@@ -112,7 +112,6 @@ export function GaleriaDeCercas() {
           </Form.Control>
         </Form.Group>
       </div>
-      {/* Galería de Cercas */}
       <div
         style={{
           display: "flex",

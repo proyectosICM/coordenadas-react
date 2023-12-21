@@ -3,7 +3,7 @@ import { Button, Table } from "react-bootstrap";
 import { BsPlusCircleFill } from "react-icons/bs";
 import { ListarElementos } from "../../../Hooks/CRUDHooks";
 import { useNavigate } from "react-router-dom";
-import { EmpresasURL, rutasURL, rutasxEmpresaURL } from "../../../API/apiurls";
+import { EmpresasURL, rutasDeshabilitar, rutasURL, rutasxEmpresaURL } from "../../../API/apiurls";
 import axios from "axios";
 import Swal from "sweetalert2";
  
@@ -29,7 +29,7 @@ export function RutasAdminTabla({ handleShowModal }) {
 
   const handleHabilitar = async (id) => {
     try {
-      await axios.put(`${rutasURL}/habilitar/${id}`);
+      await axios.put(`${rutasDeshabilitar}${id}/1`);
       cargarDatos(); 
     } catch (error) {
       console.error("Error al habilitar ruta:", error);

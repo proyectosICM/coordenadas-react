@@ -92,7 +92,7 @@ export function Coordenadas() {
   // Function to edit data and handle the response
   const handleEditar = async (dato) => {
     try {
-      const requestData = buildRequestData(dato, empresaId);
+      const requestData = buildRequestData(dato, ruta);
       await EditarElemento(`${coordenadasURL}/${dato.id}`, requestData);
       setShow(false);
       Listar(pageNumber + 1);
