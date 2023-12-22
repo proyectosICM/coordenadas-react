@@ -11,8 +11,8 @@ export function RutasCard({ ruta, empresaNombre, datosAEditar, handleEliminar })
   const navigation = useNavigate();
  
   return (
-    <Card key={ruta.id} className="cardRuta">
-      <Card.Body>
+    <Card key={ruta.id} className="cardRuta" >
+      <Card.Body> 
         <Card.Title>{ruta.id}</Card.Title> 
         <Card.Subtitle  style={{color: "black" }}>Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
         <Card.Text>Empresa: {empresaNombre}</Card.Text>
@@ -23,10 +23,10 @@ export function RutasCard({ ruta, empresaNombre, datosAEditar, handleEliminar })
       </Button>
       <DownloadTxt ruta={ruta.id} />
       <ButtonGroup className="contenedor-botones">
-        <Button variant="warning" onClick={() => datosAEditar(ruta)} className="boton-editar">
+        <Button onClick={() => datosAEditar(ruta)} className="boton-editar">
           <GrEdit /> Editar
         </Button>
-        <Button variant="danger" onClick={() => handleEliminar(ruta.id)} className="boton-eliminar">
+        <Button onClick={() => handleEliminar(ruta.id)} className="boton-eliminar">
           <BsXCircleFill /> Eliminar
         </Button>
       </ButtonGroup>

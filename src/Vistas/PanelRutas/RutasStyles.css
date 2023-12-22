@@ -6,12 +6,20 @@
     padding: 10px;
     background-color: black;
     color: black;
+    background: #878787 !important;
 }
 
 .boton-ver {
-    background-Color: "#40609F";
     border-color: "black";
     color: "white";
+    background: #00496e !important;
+    border-color: #00496e;
+
+}
+
+.boton-ver:hover {
+    background: #0d6b92 !important;
+    border-color: #0d6b92 !important;
 }
 
 .boton-eliminar,
