@@ -14,7 +14,7 @@ export function PaginacionUtils({ setPageNumber, setCurrentPage, currentPage, to
   };
 
   return (
-    <div style={{ marginTop: "30px", width: "100%", userSelect: "none" }}>
+    <div style={{ marginTop: "8px", width: "100%", userSelect: "none", color: "white" }}>
       <Button onClick={goToPreviousPage} disabled={currentPage === 0}>
         Anterior
       </Button>

@@ -136,7 +136,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
-        <Modal.Header closeButton>
+        <Modal.Header closeButton style={{ backgroundColor: '#9e9e9e', color: 'white' }}>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Formik
@@ -148,7 +148,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
         >
           {(formikProps) => (
             <Form>
-              <ModalBody>
+              <ModalBody style={{ backgroundColor: '#9e9e9e', color: 'black' }}>
                 <div className="input-column" style={{ width: "100%" }}>
                   <div>
                     <a href="#" onClick={openGoogleMaps} target="_blank">
@@ -293,7 +293,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
 
                 <ErrorMessage name="geocerca" component="div" className="error" />
               </ModalBody>
-              <Modal.Footer>
+              <Modal.Footer style={{ backgroundColor: '#9e9e9e', color: 'white' }}>
                 {" "}
                 <button variant="primary" type="submit">
                   Guardar

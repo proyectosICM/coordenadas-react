@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export function InicioAdmin() {
 
   const navigation = useNavigate();
-
+ 
   useEffect(() => {
     showWarning();
   }, []);
@@ -19,6 +19,8 @@ export function InicioAdmin() {
       text: 'Las modificaciones en este panel son sensibles y pueden afectar el sistema. continue solo si esta seguro',
       icon: 'warning',
       confirmButtonText: 'Entendido',
+      background: "black",
+      color: "white"
     });
   };
 
@@ -28,7 +30,7 @@ export function InicioAdmin() {
       <NavBar />
       <h1>Panel Administrador</h1>
       <div className="camionesMenu-contenedor">
-        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}> 
+        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px", background: "#878787" }}> 
           <Card.Body>
             <Card.Title>Agregar Dispositivos</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">Agregue o edite los dispositivos que genero</Card.Subtitle>
@@ -38,7 +40,7 @@ export function InicioAdmin() {
           </Card.Footer>
         </Card>
 
-        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}> 
+        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px", background: "#878787" }}> 
           <Card.Body>
             <Card.Title>Agregar Empresas</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">Configure el acceso para nuevas empresas</Card.Subtitle>
@@ -48,7 +50,7 @@ export function InicioAdmin() {
           </Card.Footer>
         </Card>
 
-        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}> 
+        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px", background: "#878787" }}> 
           <Card.Body>
             <Card.Title>Rehabilitar rutas  </Card.Title>
             <Card.Subtitle className="mb-2 text-muted">Revise las rutas eliminadas por las empresas y rehabilitelas si es necesario</Card.Subtitle>
@@ -58,7 +60,7 @@ export function InicioAdmin() {
           </Card.Footer>
         </Card>
 
-        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}> 
+        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px", background: "#878787" }}> 
           <Card.Body>
             <Card.Title>Cambiar servidor de Imagenes y audios </Card.Title>
             <Card.Subtitle className="mb-2 text-muted">Cambie el de origen de los datos</Card.Subtitle>
@@ -68,7 +70,7 @@ export function InicioAdmin() {
           </Card.Footer>
         </Card>
 
-        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}> 
+        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px", background: "#878787" }}> 
           <Card.Body>
             <Card.Title>Editar imagenes o audios </Card.Title>
             <Card.Subtitle className="mb-2 text-muted">Cambie o edite las imagenes o audios de las geocercas</Card.Subtitle>

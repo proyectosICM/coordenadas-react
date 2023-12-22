@@ -11,7 +11,7 @@ export function GaleriaDeCercas() {
   const [paises, setPaises] = useState([]);
   const [tipoS, setTipoS] = useState([]);
   const [filtroPais, setFiltroPais] = useState("");
-  const [filtroCategoria, setFiltroCategoria] = useState(""); // Estado para el filtro de categoría
+  const [filtroCategoria, setFiltroCategoria] = useState(""); 
 
   useListarElementos(GeocercaURL, cercas, setCercas);
   useListarElementos(paisesURL, paises, setPaises);
@@ -74,12 +74,12 @@ export function GaleriaDeCercas() {
   useEffect(() => {}, [filtroCategoria]);
 
   return (
-    <div>
+    <div style={{color: "white"}}>
       <NavBar />
       <h1>Galería de Cercas</h1>
 
       {/* Filtros */}
-      <div style={{ width: "300px", margin: "0 auto" }}>
+      <div style={{ width: "300px", margin: "0 auto", color: "white" }}>
         <Form.Group as={Col} controlId="filtroPais">
           <Form.Label>Filtrar por País: </Form.Label>
           <Form.Control

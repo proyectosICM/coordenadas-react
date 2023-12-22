@@ -100,10 +100,10 @@ export function EmpresasModel({ mostrar, cerrar, guardar, editar, datosaeditar
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
-        <Modal.Header closeButton>
+        <Modal.Header closeButton style={{ backgroundColor: '#9e9e9e', color: 'white' }}>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{ backgroundColor: '#9e9e9e', color: 'black' }}>
           <div>
             <h5>Ingrese el nombre de la empresa</h5>
             <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} style={{ width: "420px" }} />
@@ -121,7 +121,7 @@ export function EmpresasModel({ mostrar, cerrar, guardar, editar, datosaeditar
             <input type="password" name="password" value={formData.password} onChange={handleChange} style={{ width: "420px" }} />
           </div>
         </Modal.Body> 
-        <Modal.Footer>
+        <Modal.Footer style={{ backgroundColor: '#9e9e9e', color: 'white' }}>
           <button onClick={handleClose}>Cancelar</button>
           <button onClick={() => handleSave(formData)} disabled={disableGuardar}>Guardar</button>
         </Modal.Footer>

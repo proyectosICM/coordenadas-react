@@ -1,5 +1,5 @@
 export const base = 'http://localhost:8087/api';
-//export const base = 'http://192.168.1.232:8081/api';
+// export const base = 'http://192.168.1.232:8087/api';
 
 
 // export const base = "http://192.168.1.232:8087/api";

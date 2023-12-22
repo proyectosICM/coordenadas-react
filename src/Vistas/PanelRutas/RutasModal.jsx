@@ -56,8 +56,8 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
  
 
   return (
-    <Modal show={mostrar} onHide={cerrar}>
-      <Modal.Header closeButton>
+    <Modal show={mostrar} onHide={cerrar} >
+      <Modal.Header closeButton style={{ backgroundColor: '#9e9e9e', color: 'white' }}>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Formik
@@ -70,7 +70,7 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Modal.Body>
+            <Modal.Body style={{ backgroundColor: '#9e9e9e', color: 'black' }}>
               <div className="input-column" style={{ width: "100%" }}>
                 <h5>Nombre de Ruta</h5>
                 <Field type="text" name="nomruta" className="inp2-form" />
@@ -90,8 +90,8 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
                 <ErrorMessage name="paisId" component="div" className="error" />
               </div>
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="primary" type="submit" disabled={isSubmitting}>
+            <Modal.Footer  style={{ backgroundColor: '#9e9e9e', color: 'white' }}>
+              <Button variant="primary" type="submit" disabled={isSubmitting} >
                 Guardar
               </Button>
             </Modal.Footer>

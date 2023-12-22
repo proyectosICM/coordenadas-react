@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useGlobalState } from "../Context/GlobalStateContext";
 
+
 export function useListarElementos(url, dato, setDatos) {
 
   const { userData } = useGlobalState(); 
@@ -76,7 +77,7 @@ export function EditarElemento(url, requestData) {
         reject(error); 
         Swal.fire("Error", "Hubo un error al editar el registro", "error");
       });
-  });
+  }); 
 }
 
 export function EliminarElemento(url, requestData) {
@@ -89,14 +90,22 @@ export function EliminarElemento(url, requestData) {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      background: 'black',  // Fondo negro
+      color: 'white', 
     }).then((result) => {
       if (result.isConfirmed) {
         axios
           .delete(`${url}`, requestData)
           .then((response) => {
             resolve(response.data);
-            Swal.fire("Eliminado", "El registro ha sido eliminado", "success");
+            Swal.fire({
+              title:"Eliminado",
+              text: "El registro ha sido eliminado", 
+              icon: "success",
+              background: 'black', // Fondo negro para el segundo alerta
+              color: 'white', // Color de texto blanco para el segundo alerta
+            });
           })
           .catch((error) => {
             console.error("Error al eliminar los datos:", error);

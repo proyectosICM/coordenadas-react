@@ -50,6 +50,8 @@ export function Empresas() {
         title: "Cargando...",
         timer: 500,
         timerProgressBar: true,
+        background: "black",
+        color: "white",
         didOpen: () => {
           Swal.showLoading();
         },

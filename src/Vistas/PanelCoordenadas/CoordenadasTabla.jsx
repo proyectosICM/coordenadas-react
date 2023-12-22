@@ -8,7 +8,7 @@ import { Empresas } from './../PanelAdministrador/EmpresasAdmin/Empresas';
 
 export function CoordenadasTabla({ datos, datosAEditar, handleEliminar, handleShowModal }) {
   const navigation = useNavigate(); 
-
+ 
   return (
     <>
       <Button style={{ width: "100%" }} onClick={() => navigation("/rutas")}>
@@ -18,7 +18,7 @@ export function CoordenadasTabla({ datos, datosAEditar, handleEliminar, handleSh
       <Button variant="success" style={{ margin: "30px" }} onClick={() => handleShowModal("Nuevo")}>
         <BsPlusCircleFill /> Agregar
       </Button>
-      <Table striped bordered hover>
+      <Table striped bordered hover variant="dark">
         <thead>
           <tr>
             <th>ID</th>

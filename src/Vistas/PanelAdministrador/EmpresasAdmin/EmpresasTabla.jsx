@@ -34,13 +34,14 @@ export function EmpresasTabla({ handleShowModal, show, guardar, cerrar,  datos, 
         <BsPlusCircleFill /> Agregar
       </Button>
 
-      <Table striped bordered hover>
+      <Table striped bordered hover variant="dark">
         <thead>
           <tr>
             <th>Codigo</th>
             <th>Nombre</th>
             <th>Usuario</th>
             <th>Contraseña</th>
+            <th>Opciones</th>
           </tr>
         </thead>
         <tbody>

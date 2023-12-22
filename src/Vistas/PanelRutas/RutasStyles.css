@@ -1,8 +1,7 @@
 .cardRuta {
     width: 18rem;
-    margin-bottom: 20px;
     border-color: #333333;
-    margin: 20px;
+    margin: 10px 15px;
     padding: 10px;
     background-color: black;
     color: black;
@@ -27,6 +26,7 @@
     background-color: #727273 !important;
     border-color: black !important;
     color: black !important;
+    text-size-adjust: 2px;
 }
 
 /* Estilo adicional para el botón de editar */
@@ -38,3 +38,64 @@
     margin-top: 10px
 }
 
+.boton-editar .content-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease; /* Transición suave para los cambios */
+    flex-direction: row;
+}
+
+.boton-eliminar .content-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Mantén el contenido centrado */
+    transition: 0.3s ease; /* Transición suave para los cambios */
+    flex-direction: row;
+}
+
+.icono-boton,
+.texto-boton {
+    transition: margin 0.3s ease, transform 0.3s ease; /* Suaviza la transición de los márgenes y la transformación */
+}
+
+.texto-boton{
+    width: 20px;
+}
+
+.icono-boton{
+    width: 80px;
+}
+
+
+
+/*
+
+
+.boton-editar:hover .icono-boton {
+    order: -1; 
+    margin-right: 5px; 
+    margin-left: 0;
+    transform: translateX(0); 
+}
+
+.boton-editar:hover .texto-boton {
+    margin-left: 5px; 
+    margin-right: 0;
+    transform: translateX(0); 
+}
+
+
+.boton-eliminar:hover .icono-boton {
+    order: -1; 
+    margin-right: 5px; 
+    margin-left: 0;
+    transform: translateX(0); 
+}
+
+.boton-eliminar:hover .texto-boton {
+    margin-left: 5px; 
+    margin-right: 0;
+    transform: translateX(0); 
+}
+*/

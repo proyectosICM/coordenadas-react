@@ -102,7 +102,7 @@ export function Coordenadas() {
   };
 
   // Function to perform logical deletion (disable) of data and handle the response
-  const handleEliminar = (id) => {
+  const handleEliminar = (id) => { 
     Swal.fire({
       title: "¿Esta seguro de eliminar este registro?",
       text: "Esta acción no se puede deshacer.",
@@ -112,6 +112,8 @@ export function Coordenadas() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminarlo",
       cancelButtonText: "Cancelar",
+      background: 'black',  // Fondo negro para el primer alerta
+      color: 'white', // Color de texto blanco para el primer alerta
     }).then((result) => {
       if (result.isConfirmed) {
         axios
@@ -119,7 +121,13 @@ export function Coordenadas() {
           .then(() => {
             const nuevosDatos = datos.filter((coordenada) => coordenada.id !== id);
             setDatos(nuevosDatos);
-            Swal.fire("Eliminado", "El registro ha sido eliminado", "success");
+            Swal.fire({
+              title: "Eliminado",
+              text: "El registro ha sido eliminado",
+              icon: "success",
+              background: 'black', // Fondo negro para el segundo alerta
+              color: 'white', // Color de texto blanco para el segundo alerta
+            });
           })
           .catch(handleErrorResponse);
       }

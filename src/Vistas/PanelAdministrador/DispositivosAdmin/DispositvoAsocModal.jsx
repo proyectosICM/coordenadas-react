@@ -82,11 +82,11 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
   return (
     <>
       <Modal show={mostrar} onHide={handleClose}>
-        <ModalHeader closeButton>
+        <ModalHeader closeButton style={{ backgroundColor: '#9e9e9e', color: 'white' }}>
           <ModalTitle></ModalTitle>
         </ModalHeader>
-        <ModalBody>
-          <div>
+        <ModalBody style={{ backgroundColor: '#9e9e9e', color: 'black' }}>
+          <div> 
             <h5>Ingrese el codigo del dispositivo</h5>
             <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} style={{ width: "420px" }} />
           </div>
@@ -102,7 +102,7 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
                       {empresa.nombre}
                     </option>
                   ))}
-              </Form.Select>
+              </Form.Select> 
             </div>
           </FormGroup>
 
@@ -143,7 +143,7 @@ export function DispositivoAsocModal({ mostrar, cerrar, datosaeditar, editar, gu
             )}
           </Form.Group>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter style={{ backgroundColor: '#9e9e9e', color: 'black' }}>
           <button>Cancelar</button>
           <button onClick={handleSave}>Guardar</button>
         </ModalFooter>
