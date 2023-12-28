@@ -42,10 +42,9 @@ export function Coordenadas() {
   // Function to retrieve and display data based on page
   const Listar = async (page) => {
     try {
-      console.log(`${coordenadacxrURL}${ruta}?pageNumber=${page}`);
-      const response = await axios.get(`http://localhost:8087/api/coordenadas/cxr/${ruta}?pageNumber=${page}`);
+      //const response = await axios.get(`http://localhost:8087/api/coordenadas/cxr/${ruta}?pageNumber=${page}`);
+      const response = await axios.get(`${coordenadasURL}/cxr/${ruta}?pageNumber=${page}`);
       setDatos(response.data.content);
-      console.log(response.data.content)
       setTotalPages(response.data.totalPages);
       // setCurrentPage(response.data.number + 0);
     } catch (error) {
@@ -112,8 +111,8 @@ export function Coordenadas() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminarlo",
       cancelButtonText: "Cancelar",
-      background: 'black',  // Fondo negro para el primer alerta
-      color: 'white', // Color de texto blanco para el primer alerta
+      background: 'black',  
+      color: 'white', 
     }).then((result) => {
       if (result.isConfirmed) {
         axios
@@ -125,8 +124,8 @@ export function Coordenadas() {
               title: "Eliminado",
               text: "El registro ha sido eliminado",
               icon: "success",
-              background: 'black', // Fondo negro para el segundo alerta
-              color: 'white', // Color de texto blanco para el segundo alerta
+              background: 'black',
+              color: 'white', 
             });
           })
           .catch(handleErrorResponse);

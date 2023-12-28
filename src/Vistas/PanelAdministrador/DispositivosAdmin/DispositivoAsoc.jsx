@@ -85,9 +85,6 @@ export function DispositivoAsoc() {
     console.log(camion);
   };
 
-
-
-
   return (
     <div>
       <NavBar />

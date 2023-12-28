@@ -97,8 +97,8 @@ export function Rutas() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar ruta",
-      background: 'black',  // Fondo negro para el primer alerta
-      color: 'white', // Color de texto blanco para el primer alerta
+      background: 'black', 
+      color: 'white', 
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -106,13 +106,12 @@ export function Rutas() {
           .then(() => {
             const nuevosDatos = datos.filter((ruta) => ruta.id !== id);
             setDatos(nuevosDatos);
-            // Asegúrate de aplicar los estilos personalizados aquí también
             Swal.fire({
               title: "Eliminado",
               text: "La ruta ha sido eliminada",
               icon: "success",
-              background: 'black', // Fondo negro para el segundo alerta
-              color: 'white', // Color de texto blanco para el segundo alerta
+              background: 'black', 
+              color: 'white', 
             });
           })
           .catch(handleErrorResponse);

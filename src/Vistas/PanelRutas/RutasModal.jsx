@@ -53,8 +53,6 @@ function RutasModal({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
     cerrar();
   };
 
- 
-
   return (
     <Modal show={mostrar} onHide={cerrar} >
       <Modal.Header closeButton style={{ backgroundColor: '#9e9e9e', color: 'white' }}>
