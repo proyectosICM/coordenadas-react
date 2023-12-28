@@ -4,10 +4,11 @@ import { Button, Card } from "react-bootstrap";
 import { BsGearFill, BsPlusCircleFill } from "react-icons/bs";
 import { useNavigate, useNavigation } from "react-router-dom";
 import { DispositivosModal } from "./DispositivosModal";
-import { axios } from 'axios';
+
 import { coordenadasURL } from "../../API/apiurls";
 import buildRequestData from "../PanelCoordenadas/requestDataCoordenadas";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 export function Dispositivos() {
   const navigation = useNavigate();
