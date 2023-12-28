@@ -57,7 +57,7 @@ export function Empresas() {
         const requestData = requestDataEmpresa(datos);
 
         GuardarElementos(EmpresasURL, requestData, datos, setDatos).then(() => {
-          console.log("Datos guardados"), cargarDatos();
+          cargarDatos();
         });
         handleCerrar();
       });
