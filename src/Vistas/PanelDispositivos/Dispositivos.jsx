@@ -35,7 +35,7 @@ export function Dispositivos() {
   };
 
   const handleGuardar = (datosFormulario) => {
-    const requestData = buildRequestData(datosFormulario, ruta);
+    /*const requestData = buildRequestData(datosFormulario, ruta);
         axios
           .post(`${coordenadasURL}`, requestData)
           .then((response) => {
@@ -46,9 +46,11 @@ export function Dispositivos() {
             console.error("Error al guardar los datos:", error);
           });
     console.log("Ed");
+    */
   }; 
 
   const handleEditar = (dato) => {
+    /*
     console.log(dato);
     const requestData = buildRequestData(dato, ruta);
     console.log(requestData);
@@ -68,7 +70,7 @@ export function Dispositivos() {
       .catch((error) => {
         console.error("Error al editar los datos:", error);
         Swal.fire("Error", "Hubo un error al editar el registro", "error");
-      });
+      });*/
   };
 
   return (
