@@ -4,12 +4,17 @@ import { Button, Card } from "react-bootstrap";
 import { BsGearFill, BsPlusCircleFill } from "react-icons/bs";
 import { useNavigate, useNavigation } from "react-router-dom";
 import { DispositivosModal } from "./DispositivosModal";
+import { axios } from 'axios';
+import { coordenadasURL } from "../../API/apiurls";
+import buildRequestData from "../PanelCoordenadas/requestDataCoordenadas";
+import Swal from "sweetalert2";
 
 export function Dispositivos() {
   const navigation = useNavigate();
   const [show, setShow] = useState(false);
   const [datosEdit, setDatosEdit] = useState(null);
   const [limp, setLimp] = useState(false);
+  const [datos, setDatos] = useState();
 
   const handleShowModal = (t) => {
     setShow(true);
@@ -29,7 +34,7 @@ export function Dispositivos() {
   };
 
   const handleGuardar = (datosFormulario) => {
-    /*const requestData = buildRequestData(datosFormulario, ruta);
+    const requestData = buildRequestData(datosFormulario, ruta);
         axios
           .post(`${coordenadasURL}`, requestData)
           .then((response) => {
@@ -38,9 +43,9 @@ export function Dispositivos() {
           })
           .catch((error) => {
             console.error("Error al guardar los datos:", error);
-          });*/
+          });
     console.log("Ed");
-  };
+  }; 
 
   const handleEditar = (dato) => {
     console.log(dato);
