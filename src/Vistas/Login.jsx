@@ -33,27 +33,44 @@ export function Login() {
     try {
       const dataInicio = { usuario, password: contrasena };
       const response = await axios.post(loginURL, dataInicio);
-      // Load data into global state
-      setUserData({
-        empresaId: response.data.id,
-        empresaNombre: response.data.nombre,
-        empresaUsuario: response.data.usuario,
+
+      axios
+      .post(loginURL, dataInicio)
+      .then((response) => {
+        localStorage.setItem("empresaid", response.data.id);
+        localStorage.setItem("empresaNombre", response.data.nombre);
+
+        setUserData({
+          empresaId: response.data.id,
+          empresaNombre: response.data.nombre,
+          empresaUsuario: response.data.usuario,
+        });
+
+        navigation("/rutas");
+        console.log("hol")
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError("Error en inicio de sesión");
       });
+
+
       // Load data into global state
-      localStorage.setItem("empresaid", response.data.id);
-      localStorage.setItem("empresaNombre", response.data.nombre);
+
+      // Load data into global state
+
       // Redirect to routes page
-      navigation("/rutas");
+      //navigation("/rutas");
     } catch (error) {
       console.error("Error:", error);
-
+/*
       if (error.response && error.response.status === 401) {
         setError("Credenciales incorrectas. Por favor, inténtelo de nuevo.");
       } else if (error.message === "Network Error") {
         setError("Error de conexión. Comprueba tu conexión a internet.");
       } else {
         setError("Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.");
-      }
+      }*/
     }
   };
 

@@ -43,7 +43,7 @@ export function Coordenadas() {
   const Listar = async (page) => {
     try {
       console.log(`${coordenadacxrURL}${ruta}?pageNumber=${page}`);
-      const response = await axios.get(`http://localhost:8087/api/coordenadas/cxr/${ruta}?pageNumber=${page}`);
+      const response = await axios.get(`http://telemetriaperu.com:8087/api/coordenadas/cxr/${ruta}?pageNumber=${page}`);
       setDatos(response.data.content);
       console.log(response.data.content)
       setTotalPages(response.data.totalPages);
