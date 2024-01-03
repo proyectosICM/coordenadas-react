@@ -11,20 +11,14 @@ import { AiFillSound } from "react-icons/ai";
 import { BsFillSignpost2Fill } from "react-icons/bs";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { ModalBody } from "react-bootstrap";
+import Select from "react-select";
 
 function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp, title }) {
   // Variables de estado para los campos de entrada y las coordenadas del marcador
-  const [formData, setFormData] = useState({
-    coordenadas: "",
-    radio: "",
-    velocidad: "10",
-    velocidadValor: "",
-    sonidoVelocidad: "",
-    sonidoGeocerca: "",
-    imagenGeocerca: "",
-    codsonidoG: "",
-    codvel: "",
-  });
+
+
+  const [selectedGeocerca, setSelectedGeocerca] = useState(null);
+  const [geocercaOptions, setGeocercaOptions] = useState([]);
 
   const initialValues = {
     id: datosaeditar ? datosaeditar.id : "",
@@ -53,7 +47,11 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
         setGeocercas("");
         try {
           const response = await axios.get(`${GeocercaxPaisURL}${pais}`);
-          setGeocercas(response.data);
+          const options = response.data.map((geocerca) => ({
+            label: `${geocerca.nombre} - ${geocerca.detalle}`, // Combina nombre y detalle
+            value: geocerca.id, // Debes proporcionar un valor único, por ejemplo, el ID
+          }));
+          setGeocercaOptions(options);
         } catch (error) {
           console.error("Error al cargar datos:", error, `${GeocercaxPaisURL}${pais}`);
         }
@@ -70,13 +68,21 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
             tc = 3;
           }
           const response = await axios.get(`${GeocercaxPaisxTipoURL}${pais}/${tc}`);
-          setGeocercas(response.data);
+          const options = response.data.map((geocerca) => ({
+            label: `${geocerca.nombre} - ${geocerca.detalle}`,
+            value: geocerca.id,
+          }));
+          setGeocercaOptions(options);
         } catch (error) {
           console.error("Error al cargar datos:", error, `${GeocercaxPaisURL}${pais}`);
         }
       } else {
         const response = await axios.get(`${GeocercaURL}`);
-        setGeocercas(response.data);
+        const options = response.data.map((geocerca) => ({
+          label: `${geocerca.nombre} - ${geocerca.detalle}`,
+          value: geocerca.id,
+        }));
+        setGeocercaOptions(options);
       }
     };
 
@@ -94,6 +100,13 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
     } else {
       guardar(values);
     }
+    resetForm();
+    setSelectedGeocerca(null);
+    setAudioSrc(null);
+    setAudioGSrc(null);
+    setImagenGSrc(null);
+  
+    resetForm(); // Esto restablecerá el formulario a los valores iniciales
     cerrar();
   };
 
@@ -120,13 +133,16 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
 
   const [audioGSrc, setAudioGSrc] = useState();
   const [imagenGsrc, setImagenGSrc] = useState();
+
   const audioGeocerca = async (e) => {
-    const { value, options } = e.target;
+    console.log(e);
+
     try {
-      const response = await axios.get(`${GeocercaURL}/${value}`);
+      const response = await axios.get(`${GeocercaURL}/${e.value}`);
       setAudioGSrc(response.data.urlSonido);
       setImagenGSrc(response.data.urlImagen);
-      console.log(response.data.urlSonido);
+
+      console.log(response.data.id)
     } catch (error) {
       console.error("Error al obtener los datos:", error);
       return null;
@@ -141,8 +157,8 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
         </Modal.Header>
         <Formik
           initialValues={initialValues}
-          onSubmit={async (values) => {
-            await handleSave(values);
+          onSubmit={async (values, { resetForm }) => {
+            await handleSave(values, resetForm);
           }}
           enableReinitialize={true}
         >
@@ -249,29 +265,26 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
                     <h5>
                       <BsSpeedometer2 /> Geocerca
                     </h5>
-                    <Field
-                      as="select"
+                    <Select
+                      options={geocercaOptions} // Opciones de geocercas
+                      value={selectedGeocerca} // Valor seleccionado
                       name="geocerca"
-                      onChange={(e) => {
-                        formikProps.handleChange(e);
-                        audioGeocerca(e);
+                      onChange={(selectedOption) => {
+                        setSelectedGeocerca(selectedOption);
+                        audioGeocerca(selectedOption);
+                        //console.log(selectedOption.value)
+                        //formikProps.handleChange(selectedOption.value);
+                        formikProps.setFieldValue('geocerca', selectedOption.value);
+                        // Puedes manejar la selección aquí si lo necesitas
                       }}
-                      style={{ width: "200px", height: "40px", margin: "10px" }}
-                    >
-                      <option value="">Seleccione una geocerca</option>
-                      {geocercas &&
-                        geocercas.map((v) => (
-                          <option key={v.id} value={v.id}>
-                            {v.nombre} {v.detalle && v.detalle}
-                          </option>
-                        ))}
-                    </Field>
+                      placeholder="Seleccione una geocerca"
+                      isSearchable // Habilita la barra de búsqueda
+                    />
                   </div>
-
                   <div className="input-column">
                     <div className="input-column">
                       <AiFillSound />
-                      {formikProps.values.geocerca && typeof audioGSrc === "string" && (
+                      {selectedGeocerca && typeof audioGSrc === "string" && (
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <ReactAudioPlayer src={audioGSrc} controls style={{ width: "200px", marginTop: "15px" }} />
                         </div>
@@ -283,7 +296,7 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, limp
                 <div className="input-column">
                   <div className="input-column">
                     <AiFillSound />
-                    {formikProps.values.geocerca && typeof audioGSrc === "string" && (
+                    {selectedGeocerca && typeof audioGSrc === "string" && (
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <img src={imagenGsrc} alt="Logo Inicio" style={{ width: "30%", height: "30%", marginLeft: "35%" }} className="imgl" />
                       </div>

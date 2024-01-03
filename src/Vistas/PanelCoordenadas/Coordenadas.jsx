@@ -76,7 +76,7 @@ export function Coordenadas() {
     setDatosEdit(camion);
     setShow(true);
   };
-
+ 
   // Function to save new data and handle the response
   const handleGuardar = (datosFormulario) => {
     console.log(datosFormulario)
