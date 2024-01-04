@@ -69,6 +69,7 @@ export function Coordenadas() {
   const handleCerrar = () => {
     setShow(false);
     setLimp(false);
+    setDatosEdit("");
   };
 
   // Function to display the modal and load data for editing
@@ -79,12 +80,13 @@ export function Coordenadas() {
  
   // Function to save new data and handle the response
   const handleGuardar = (datosFormulario) => {
-    console.log(datosFormulario)
+    console.log(datosFormulario);
     const requestData = buildRequestData(datosFormulario, ruta);
     GuardarElementos(`${coordenadasURL}`, requestData, datos, setDatos)
       .then(() => {
         Listar(pageNumber + 1);
         setShow(false);
+        //datosEdit(null);
       })
       .catch(handleErrorResponse);
   };
@@ -93,9 +95,12 @@ export function Coordenadas() {
   const handleEditar = async (dato) => {
     try {
       const requestData = buildRequestData(dato, ruta);
-      await EditarElemento(`${coordenadasURL}/${dato.id}`, requestData);
+      await EditarElemento(`${coordenadasURL}/${dato.id}`, requestData).then(() => {
+        // datosEdit(null);
+      });
       setShow(false);
       Listar(pageNumber + 1);
+
     } catch (error) {
       handleErrorResponse(error);
     }
