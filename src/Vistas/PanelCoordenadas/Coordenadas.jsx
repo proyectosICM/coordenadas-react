@@ -137,7 +137,7 @@ export function Coordenadas() {
       <div className="camionesMenu-contenedor">
         <CoordenadasTabla datos={datos} datosAEditar={datosAEditar} handleEliminar={handleEliminar} handleShowModal={handleShowModal} />
         <PaginacionUtils setPageNumber={setPageNumber} setCurrentPage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />
-        <DownloadTxt ruta={ruta} />
+   { /*    <DownloadTxt ruta={ruta} /> */}
       </div>
       <CoordenadasModal
         handleGuardar={handleGuardar}
