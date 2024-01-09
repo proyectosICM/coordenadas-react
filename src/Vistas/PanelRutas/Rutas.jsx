@@ -68,7 +68,7 @@ export function Rutas() {
     GuardarElementos(`${rutasURL}`, requestData, datos, setDatos)
       .then(() => {
         setShow(false);
-        Listar(pageNumber + 1);
+        Listar(pageNumber);
       })
       .catch(handleErrorResponse);
   };
@@ -80,7 +80,7 @@ export function Rutas() {
       const requestData = buildRequestData(dato, empresaId);
       await EditarElemento(`${rutasURL}/${dato.id}`, requestData);
       setShow(false);
-      Listar(pageNumber + 1);
+      Listar(pageNumber);
     } catch (error) {
       console.log("ds")
       handleErrorResponse(error);

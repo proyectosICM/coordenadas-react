@@ -84,7 +84,7 @@ export function Coordenadas() {
     const requestData = buildRequestData(datosFormulario, ruta);
     GuardarElementos(`${coordenadasURL}`, requestData, datos, setDatos)
       .then(() => {
-        Listar(pageNumber + 1);
+        Listar(pageNumber);
         setShow(false);
         //datosEdit(null);
       })
@@ -99,7 +99,7 @@ export function Coordenadas() {
         // datosEdit(null);
       });
       setShow(false);
-      Listar(pageNumber + 1);
+      Listar(pageNumber);
 
     } catch (error) {
       handleErrorResponse(error);

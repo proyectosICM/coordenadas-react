@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const NavBar = () => {
     const navigation = useNavigate();
     const handleEliminar = () => {
-        // localStorage.removeItem("empresa");
+        localStorage.removeItem("empresa");
         navigation('/')
     }
   return (
