@@ -10,7 +10,7 @@ export const loginURL = `${base}/empresas/login`
  
 // Ruta
 export const rutasURL = `${base}/rutas`;
-export const rutasxEmpresaURL = `${rutasURL}/xempresa/`
+export const rutasxEmpresaURL = `${rutasURL}/xempresa`
 export const rutasxEmpresaPURL = `${rutasURL}/xempresaP/`
 export const rutasDeshabilitar = `${rutasURL}/estado/`
 // Coordenadas
@@ -37,6 +37,8 @@ export const TipoSURL = `${base}/tipoS`
 export const DispositivosURL = `${base}/dispositivos`
 export const VerificarDisp = `${DispositivosURL}/verificar`
 export const ReasignarDisp = `${DispositivosURL}/reasignar`
+
+export const DisxEmp = `${DispositivosURL}/empresax`
 
 //Empresas 
 export const EmpresasURL = `${base}/empresas`

@@ -1,23 +1,34 @@
-// Importar useState y useEffect si aún no lo has hecho
 import React, { useState, useEffect } from "react";
 import { Form, Modal } from "react-bootstrap";
-import { ReasignarDisp, VerificarDisp, rutasxEmpresaURL } from "../../API/apiurls";
+import { DispositivosURL, ReasignarDisp, VerificarDisp, coordenadasURL, rutasxEmpresaURL } from "../../API/apiurls";
 import { ListarElementos } from "../../Hooks/CRUDHooks";
 import axios from "axios";
 
 export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaeditar, limpiar, title }) {
   const handleClose = () => {
     cerrar();
-    limpiarFormulario();
+    //limpiarFormulario();
   };
 
   const empresaid = 1;
 
   const [existeCodigo, setExisteCodigo] = useState(false);
+  const [rutas, setRutas] = useState([]);
 
-  const [rutas, setRutas] = useState();
+  // Function to retrieve and display data based on page
+  const Listar = async () => {
+    try {
+      const response = await axios.get(`${rutasxEmpresaURL}?empresaId=1&estado=${empresaid}`);
+      setRutas(response.data);
+    } catch (error) {
+      console.error("Error al listar", error);
+    }
+  };
 
-  ListarElementos(`${rutasxEmpresaURL}1/${empresaid}`, setRutas);
+  // useEffect hook to trigger data loading when 'pageNumber' changes
+  useEffect(() => {
+    Listar();
+  }, []);
 
   const handleVerificar = async (nombre, empresa) => {
     try {
@@ -37,15 +48,29 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
     setFormData({
       codigo: "",
       ruta: "",
-      agregarARuta: null,
+      velocidad: "",
+      volumen: "",
     });
   };
 
   const [formData, setFormData] = useState({
     codigo: "",
     ruta: "",
-    agregarARuta: null,
+    velocidad: "",
+    volumen: "",
   });
+
+  useEffect(() => {
+    // Si hay datos para editar, inicializa el formulario con esos datos
+    if (datosaeditar) {
+      setFormData({
+        codigo: datosaeditar.codigo || "",
+        ruta: datosaeditar.rutasModel.id || "",
+        velocidad: datosaeditar.velocidad || "",
+        volumen: datosaeditar.volumen || "",
+      });
+    }
+  }, [datosaeditar]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,13 +80,6 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
     });
   };
 
-  const handleAgregarRutaChange = (e) => {
-    const { value } = e.target;
-    setFormData({
-      ...formData,
-      agregarARuta: value === "si" ? true : null,
-    });
-  };
 
   useEffect(() => {
     if (formData.codigo) {
@@ -69,17 +87,33 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
     }
   }, [formData.codigo, empresaid]);
 
-  const handleGuardar = (datos) => {
-    const requestData = {
-      rutasModel: {
-        id: datos.ruta,
-      },
-      empresasModel: {
-        id: empresaid,
-      },
-    };
-    axios.get(`${ReasignarDisp}/`)
-    console.log(datos);
+  const handleGuardar = async () => {
+    try {
+      const requestData = {
+        id: datosaeditar.id,
+        rutasModel: {
+          id: formData.ruta,
+        },
+        empresasModel: {
+          id: empresaid,
+        },
+        velocidad: formData.velocidad,
+        volumen: formData.volumen,
+      };
+
+      // Verifica si es una edición o creación
+      if (datosaeditar) {
+        await editar(requestData);
+      } else {
+        await guardar(requestData);
+      }
+
+      // Cierra el modal después de guardar o actualizar
+      cerrar();
+      limpiarFormulario();
+    } catch (error) {
+      console.error("Error al guardar o actualizar los datos:", error);
+    }
   };
 
   return (
@@ -89,50 +123,31 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>
-            <h5>Coloque el código del dispositivo</h5>
-            <input type="text" name="codigo" value={formData.codigo} onChange={handleInputChange} style={{ width: "420px" }} />
-            {existeCodigo ? <p>El dispositivo existe</p> : <p>El dispositivo no existe</p>}
-          </div>
           <Form.Group>
-            <Form.Label>Desea agregar el dispositivo a una ruta</Form.Label>
-            <div>
-              <Form.Check
-                inline
-                label="Sí"
-                type="radio"
-                name="agregarARuta"
-                value="si"
-                checked={formData.agregarARuta === true}
-                onChange={handleAgregarRutaChange}
-              />
-              <Form.Check
-                inline
-                label="No"
-                type="radio"
-                name="agregarARuta"
-                value="no"
-                checked={formData.agregarARuta === null}
-                onChange={handleAgregarRutaChange}
-              />
-            </div>
-            {formData.agregarARuta && (
-              <Form.Control as="select" name="ruta" value={formData.ruta} onChange={handleInputChange}>
-                <option value="">Seleccionar ruta</option>
-                {rutas.map((ruta) => (
-                  <option key={ruta.id} value={ruta.id}>
-                    {ruta.nomruta}
-                  </option>
-                ))}
-              </Form.Control>
-            )}
+            <Form.Label>Ruta</Form.Label>
+            <Form.Control as="select" name="ruta" value={formData.ruta} onChange={handleInputChange}>
+              <option value="">Seleccionar ruta</option>
+              {rutas.map((ruta) => (
+                <option key={ruta.id} value={ruta.id}>
+                  {ruta.nomruta}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Velocidad</Form.Label>
+            <input type="text" name="velocidad" value={formData.velocidad} onChange={handleInputChange} />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Volumen</Form.Label>
+            <input type="text" name="volumen" value={formData.volumen} onChange={handleInputChange} />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <button variant="secondary" onClick={handleClose}>
             Cerrar
           </button>
-          <button variant="primary" onClick={() => handleGuardar(formData)} disabled={!existeCodigo}>
+          <button variant="primary" onClick={handleGuardar}>
             Guardar
           </button>
         </Modal.Footer>

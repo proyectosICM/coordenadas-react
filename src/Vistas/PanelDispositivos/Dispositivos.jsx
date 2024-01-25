@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../../Common/NavBar";
 import { Button, Card } from "react-bootstrap";
 import { BsGearFill, BsPlusCircleFill } from "react-icons/bs";
 import { useNavigate, useNavigation } from "react-router-dom";
 import { DispositivosModal } from "./DispositivosModal";
 
-import { coordenadasURL } from "../../API/apiurls";
+import { DispositivosURL, DisxEmp, coordenadasURL } from "../../API/apiurls";
 import buildRequestData from "../PanelCoordenadas/requestDataCoordenadas";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { EditarElemento } from "../../Hooks/CRUDHooks";
 
 export function Dispositivos() {
   const navigation = useNavigate();
@@ -17,60 +18,80 @@ export function Dispositivos() {
   const [limp, setLimp] = useState(false);
   const [datos, setDatos] = useState();
 
+  const [pageNumber, setPageNumber] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [dispositivos, setDispositivos] = useState([]);
+
+  // Function to retrieve and display data based on page
+  const Listar = async (page) => {
+    try {
+      const response = await axios.get(`${DisxEmp}?empresaId=${1}&estado=${1}&pageNumber=${page}`);
+      setDispositivos(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setCurrentPage(response.data.number + 0);
+    } catch (error) {
+      console.error("Error al listar", error);
+    }
+  };
+
+  // useEffect hook to trigger data loading when 'pageNumber' changes
+  useEffect(() => {
+    Listar(pageNumber);
+  }, [pageNumber]);
+
   const handleShowModal = (t) => {
     setShow(true);
-    if (t == "Nuevo") {
+    if (t === "Nuevo") {
       setLimp(true);
     }
   };
 
   const handleCerrar = () => {
     setShow(false);
-    setLimp(false);
+   // setLimp(false);
   };
 
-  const datosAEditar = (camion) => {
-    setDatosEdit(camion);
+  const datosAEditar = (dispositivo) => {
+    setDatosEdit(dispositivo);
     setShow(true);
   };
 
-  const handleGuardar = (datosFormulario) => {
-    /*const requestData = buildRequestData(datosFormulario, ruta);
-        axios
-          .post(`${coordenadasURL}`, requestData)
-          .then((response) => {
-            setDatos([...datos, response.data]);
-            setShow(false);
-          })
-          .catch((error) => {
-            console.error("Error al guardar los datos:", error);
-          });
-    console.log("Ed");
-    */
-  }; 
+  const handleGuardar = async(dato) => {
+    console.log(dato)
+    try {
+      const requestData = buildRequestData(dato, empresaId);
+      await EditarElemento(`${DispositivosURL}/prop/${dato.id}`, requestData);
+      setShow(false);
+      Listar(pageNumber);
+    } catch (error) {
+      console.log("ds")
+      handleErrorResponse(error);
+    }
+  };
 
-  const handleEditar = (dato) => {
-    /*
-    console.log(dato);
-    const requestData = buildRequestData(dato, ruta);
-    console.log(requestData);
-    axios
-      .put(`${coordenadasURL}/${dato.id}`, requestData)
-      .then((response) => {
-        // Actualiza los datos localmente en la lista
-        const indice = datos.findIndex((item) => item.id === dato.id);
-        if (indice !== -1) {
-          const nuevosDatos = [...datos];
-          nuevosDatos[indice] = response.data;
-          setDatos(nuevosDatos);
-        }
+  const handleEditar = async (dato) => {
 
-        setShow(false);
-      })
-      .catch((error) => {
-        console.error("Error al editar los datos:", error);
-        Swal.fire("Error", "Hubo un error al editar el registro", "error");
-      });*/
+    console.log(`${DispositivosURL}/prop/${dato.id}`)
+
+
+    try {
+      const requestData = {
+        rutasModel: {
+          id: dato.rutasModel.id,
+        },
+        velocidad: dato.velocidad,
+        volumen: dato.volumen,
+      };
+      console.log(requestData)
+      await EditarElemento(`${DispositivosURL}/prop/${dato.id}`, requestData);
+      setShow(false);
+      Listar(pageNumber);
+    } catch (error) {
+      console.log("ds")
+      handleErrorResponse(error);
+    }
   };
 
   return (
@@ -78,39 +99,33 @@ export function Dispositivos() {
       <NavBar />
       <h1>Dispositivos de la empresa</h1>
 
-      <Button onClick={() => handleShowModal("Nuevo")}>
+{ /*     <Button onClick={() => handleShowModal("Nuevo")}>
         <BsPlusCircleFill /> Reasigne dispositivos
       </Button>
-      <div className="camionesMenu-contenedor">
-        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
-          <Card.Body>
-            <Card.Title>Dispositivos de la ruta ADC-009</Card.Title>
-            <Card.Subtitle className="mb-2 text-muted"> </Card.Subtitle>
-            <Card.Text>33 Dispositivos actualizados </Card.Text>
-          </Card.Body>
-          <Button
-            variant="danger"
-            onClick={() => navigation("/configuracion-dispositivos")}
-            style={{ backgroundColor: "#727273", borderColor: "black", color: "black" }}
-          >
-            <BsGearFill /> Configuracion
-          </Button>
-        </Card>
 
-        <Card style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
-          <Card.Body>
-            <Card.Title>Dispositivos libres de la empresa</Card.Title>
-            <Card.Subtitle className="mb-2 text-muted"> </Card.Subtitle>
-            <Card.Text>33 Dispositivos actualizados </Card.Text>
-          </Card.Body>
-          <Button
-            variant="danger"
-            onClick={() => navigation("/configuracion-dispositivos")}
-            style={{ backgroundColor: "#727273", borderColor: "black", color: "black" }}
-          >
-            <BsGearFill /> Configuracion
-          </Button>
-        </Card>
+  <span> Filtrar por: </span> */ }
+
+      <div className="camionesMenu-contenedor">
+        {dispositivos &&
+          dispositivos.map((dispositivo) => (
+            <Card key={dispositivo.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
+              <Card.Body>
+                <Card.Title>Identificador de dispositivo: {dispositivo.id}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted"> </Card.Subtitle>
+                <Card.Text>Empresa: {dispositivo.rutasModel.empresasModel.nombre}</Card.Text>
+                <Card.Text>Ruta: {dispositivo.rutasModel.nomruta}</Card.Text>
+                <Card.Text>Velocidad: {dispositivo.velocidad} KM/h</Card.Text>
+                <Card.Text>Volumen: {dispositivo.volumen}</Card.Text>
+              </Card.Body>
+              <Button
+                variant="danger"
+                onClick={() => datosAEditar(dispositivo)}
+                style={{ backgroundColor: "#727273", borderColor: "black", color: "black" }}
+              >
+                <BsGearFill /> Configuracion
+              </Button>
+            </Card>
+          ))}
       </div>
 
       <DispositivosModal mostrar={show} cerrar={handleCerrar} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} limp={limp} />
