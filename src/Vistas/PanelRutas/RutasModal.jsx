@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { paisesURL, sonidosVelocidadURL } from "../../API/apiurls";
+import { paisesURL } from "../../API/apiurls";
 import { useListarElementos } from "../../Hooks/CRUDHooks";
 import "../../Styles/CoordenadasModal.css";
 import Swal from "sweetalert2";

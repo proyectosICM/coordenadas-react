@@ -14,14 +14,14 @@ import "../../Styles/Rutas.css";
 import useErrorHandler from "../../Hooks/useErrorHandler";
 
 export function Rutas() {
-  // State variables
+  // User data from global state
   const { userData } = useGlobalState();
   const { empresaId, empresaNombre } = userData;
 
-  // Elements visibility state
+  // Visibility state for the modal
   const [show, setShow] = useState(false);
 
-  // Data for display and editing
+  // Data loading and editing state
   const [datos, setDatos] = useState([]);
   const [datosEdit, setDatosEdit] = useState(null);
 
@@ -30,7 +30,7 @@ export function Rutas() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  // Retrieves error messages and the error handling function from the useErrorHandler hook
+// Error handling using the useErrorHandler hook
   const { errorMessage, handleErrorResponse } = useErrorHandler();
 
   // Function to retrieve and display data based on page
@@ -75,14 +75,14 @@ export function Rutas() {
 
   // Function to edit data and handle the response
   const handleEditar = async (dato) => {
-    console.log(dato)
+    console.log(dato);
     try {
       const requestData = buildRequestData(dato, empresaId);
       await EditarElemento(`${rutasURL}/${dato.id}`, requestData);
       setShow(false);
       Listar(pageNumber);
     } catch (error) {
-      console.log("ds")
+      console.log("ds");
       handleErrorResponse(error);
     }
   };
@@ -110,7 +110,7 @@ export function Rutas() {
       }
     });
   };
- 
+
   return (
     <div>
       <NavBar />
@@ -121,7 +121,14 @@ export function Rutas() {
       <div className="camionesMenu-contenedor">
         {datos &&
           datos.map((ruta, index) => (
-            <RutasCard key={ruta.id} index={index} ruta={ruta} empresaNombre={empresaNombre} datosAEditar={datosAEditar} handleEliminar={handleEliminar} />
+            <RutasCard
+              key={ruta.id}
+              index={index}
+              ruta={ruta}
+              empresaNombre={empresaNombre}
+              datosAEditar={datosAEditar}
+              handleEliminar={handleEliminar}
+            />
           ))}
         {datos == undefined || (datos.length == 0 && <h1 style={{ textAlign: "center" }}>Su empresa no tiene rutas, por favor agregue una</h1>)}
         <PaginacionUtils setPageNumber={setPageNumber} setCurrentPage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />
