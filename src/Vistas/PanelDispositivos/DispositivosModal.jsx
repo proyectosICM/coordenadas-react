@@ -85,7 +85,7 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
 
   useEffect(() => {
     if (formData.codigo) {
-      handleVerificar(formData.codigo, empresaid);
+      handleVerificar(formData.codigo, empresaId);
     }
   }, [formData.codigo, empresaId]);
 
