@@ -20,7 +20,7 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
   // Function to retrieve and display data based on page
   const Listar = async () => {
     try {
-      const response = await axios.get(`${rutasxEmpresaURL}?empresaId=1&estado=${empresaId}`);
+      const response = await axios.get(`${rutasxEmpresaURL}?empresaId=${empresaId}&estado=${1}`);
       setRutas(response.data);
     } catch (error) {
       console.error("Error al listar", error);
