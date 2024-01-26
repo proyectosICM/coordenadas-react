@@ -10,6 +10,8 @@ import buildRequestData from "../PanelCoordenadas/requestDataCoordenadas";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { EditarElemento } from "../../Hooks/CRUDHooks";
+import { useGlobalState } from "../../Context/GlobalStateContext";
+import useErrorHandler from "../../Hooks/useErrorHandler";
 
 export function Dispositivos() {
   const navigation = useNavigate();
@@ -17,6 +19,9 @@ export function Dispositivos() {
   const [datosEdit, setDatosEdit] = useState(null);
   const [limp, setLimp] = useState(false);
   const [datos, setDatos] = useState();
+
+  const { userData } = useGlobalState();
+  const { empresaId, empresaNombre } = userData;
 
   const [pageNumber, setPageNumber] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -27,7 +32,7 @@ export function Dispositivos() {
   // Function to retrieve and display data based on page
   const Listar = async (page) => {
     try {
-      const response = await axios.get(`${DisxEmp}?empresaId=${1}&estado=${1}&pageNumber=${page}`);
+      const response = await axios.get(`${DisxEmp}?empresaId=${empresaId}&estado=${1}&pageNumber=${page}`);
       setDispositivos(response.data.content);
       setTotalPages(response.data.totalPages);
       setCurrentPage(response.data.number + 0);
