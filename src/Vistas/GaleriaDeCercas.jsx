@@ -76,7 +76,7 @@ export function GaleriaDeCercas() {
   return (
     <div>
       <NavBar />
-      <h1>Galería de Cercas</h1>
+      <h1 style={{color: "white"}}>Galería de Cercas</h1>
 
       {/* Filtros */}
       <div style={{ width: "300px", margin: "0 auto" }}>
@@ -135,7 +135,7 @@ export function GaleriaDeCercas() {
                 padding: "2%",
               }}
             >
-              <h2>{cerca.nombre}</h2>
+              <h2 style={{color: "white"}}>{cerca.nombre}</h2>
               <img
                 src={cerca.urlImagen}
                 alt="Imagen de Cerca"
