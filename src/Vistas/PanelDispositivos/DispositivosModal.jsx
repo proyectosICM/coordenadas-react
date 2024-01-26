@@ -10,7 +10,8 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
     //limpiarFormulario();
   };
 
-  const empresaid = 1;
+  const { userData } = useGlobalState();
+  const { empresaId, empresaNombre } = userData;
 
   const [existeCodigo, setExisteCodigo] = useState(false);
   const [rutas, setRutas] = useState([]);
@@ -18,7 +19,7 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
   // Function to retrieve and display data based on page
   const Listar = async () => {
     try {
-      const response = await axios.get(`${rutasxEmpresaURL}?empresaId=1&estado=${empresaid}`);
+      const response = await axios.get(`${rutasxEmpresaURL}?empresaId=1&estado=${empresaId}`);
       setRutas(response.data);
     } catch (error) {
       console.error("Error al listar", error);
@@ -85,7 +86,7 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
     if (formData.codigo) {
       handleVerificar(formData.codigo, empresaid);
     }
-  }, [formData.codigo, empresaid]);
+  }, [formData.codigo, empresaId]);
 
   const handleGuardar = async () => {
     try {
@@ -95,7 +96,7 @@ export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaedit
           id: formData.ruta,
         },
         empresasModel: {
-          id: empresaid,
+          id: empresaId,
         },
         velocidad: formData.velocidad,
         volumen: formData.volumen,
