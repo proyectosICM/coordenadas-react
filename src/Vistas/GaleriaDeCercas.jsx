@@ -141,8 +141,8 @@ export function GaleriaDeCercas() {
                 alt="Imagen de Cerca"
                 style={{ width: "150px", height: "150px" }}
               />
-              <p style={{ margin:"0" }}>Codigo de sonido: {cerca.codsonido}</p>
-              <p>Nombre: {cerca.detalle && cerca.detalle}</p>
+              <p style={{ margin:"0", color: "white" }}>Codigo de sonido: {cerca.codsonido}</p>
+              <p style={{color: "white"}}>Nombre: {cerca.detalle && cerca.detalle}</p>
             </div>
           ))}
       </div>
