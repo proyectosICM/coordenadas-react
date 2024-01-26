@@ -3,6 +3,7 @@ import { Form, Modal } from "react-bootstrap";
 import { DispositivosURL, ReasignarDisp, VerificarDisp, coordenadasURL, rutasxEmpresaURL } from "../../API/apiurls";
 import { ListarElementos } from "../../Hooks/CRUDHooks";
 import axios from "axios";
+import { useGlobalState } from "../../Context/GlobalStateContext";
 
 export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaeditar, limpiar, title }) {
   const handleClose = () => {
