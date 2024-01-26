@@ -34,6 +34,8 @@ export function Dispositivos() {
   const Listar = async (page) => {
     try {
       const response = await axios.get(`${DisxEmp}?empresaId=${empresaId}&estado=${1}&pageNumber=${page}`);
+      console.log(response.data.content);
+      console.log(`${DisxEmp}?empresaId=${empresaId}&estado=${1}&pageNumber=${page}`);
       setDispositivos(response.data.content);
       setTotalPages(response.data.totalPages);
       setCurrentPage(response.data.number + 0);
@@ -53,7 +55,7 @@ export function Dispositivos() {
       setLimp(true);
     }
   };
-  console.log(dispositivos);
+
   const handleCerrar = () => {
     setShow(false);
     // setLimp(false);
