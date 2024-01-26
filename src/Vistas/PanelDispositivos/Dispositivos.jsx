@@ -34,7 +34,7 @@ export function Dispositivos() {
   // Function to retrieve and display data based on page
   const Listar = async (page) => {
     try {
-      const response = await axios.get(`${DisxEmp}?empresaId=${empresaId}&estado=${1}&pageNumber=${page}`);
+      const response = await axios.get(`${DisxEmp}?empresaId=${empresaId}&estado=${1}&page=${page}`);
       console.log(response.data.content);
       console.log(`${DisxEmp}?empresaId=${empresaId}&estado=${1}&pageNumber=${page}`);
       setDispositivos(response.data.content);
@@ -45,7 +45,6 @@ export function Dispositivos() {
     }
   };
 
-  // useEffect hook to trigger data loading when 'pageNumber' changes
   useEffect(() => {
     Listar(pageNumber);
   }, [pageNumber]);
