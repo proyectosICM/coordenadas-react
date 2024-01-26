@@ -22,6 +22,7 @@ export function Dispositivos() {
 
   const { userData } = useGlobalState();
   const { empresaId, empresaNombre } = userData;
+  const { errorMessage, handleErrorResponse } = useErrorHandler();
 
   const [pageNumber, setPageNumber] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
