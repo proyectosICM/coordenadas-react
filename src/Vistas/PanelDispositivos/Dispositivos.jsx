@@ -103,7 +103,7 @@ export function Dispositivos() {
   return (
     <div>
       <NavBar />
-      <h1>Dispositivos de la empresa</h1>
+      <h1 style={{color: "white"}}>Dispositivos de la empresa</h1>
 
       {/*     <Button onClick={() => handleShowModal("Nuevo")}>
         <BsPlusCircleFill /> Reasigne dispositivos

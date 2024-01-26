@@ -18,7 +18,7 @@ export function PaginacionUtils({ setPageNumber, setCurrentPage, currentPage, to
       <Button onClick={goToPreviousPage} disabled={currentPage === 0}>
         Anterior
       </Button>
-      <span style={{ margin: "0 10px" }}>
+      <span style={{ margin: "0 10px", color: "white" }}>
         Página {currentPage + 1} de {totalPages}
       </span>
       <Button onClick={goToNextPage} disabled={currentPage === totalPages - 1}>
