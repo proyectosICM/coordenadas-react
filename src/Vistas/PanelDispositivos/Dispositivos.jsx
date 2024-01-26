@@ -53,10 +53,10 @@ export function Dispositivos() {
       setLimp(true);
     }
   };
-
+  console.log(dispositivos);
   const handleCerrar = () => {
     setShow(false);
-   // setLimp(false);
+    // setLimp(false);
   };
 
   const datosAEditar = (dispositivo) => {
@@ -64,23 +64,21 @@ export function Dispositivos() {
     setShow(true);
   };
 
-  const handleGuardar = async(dato) => {
-    console.log(dato)
+  const handleGuardar = async (dato) => {
+    console.log(dato);
     try {
       const requestData = buildRequestData(dato, empresaId);
       await EditarElemento(`${DispositivosURL}/prop/${dato.id}`, requestData);
       setShow(false);
       Listar(pageNumber);
     } catch (error) {
-      console.log("ds")
+      console.log("ds");
       handleErrorResponse(error);
     }
   };
 
   const handleEditar = async (dato) => {
-
-    console.log(`${DispositivosURL}/prop/${dato.id}`)
-
+    console.log(`${DispositivosURL}/prop/${dato.id}`);
 
     try {
       const requestData = {
@@ -90,12 +88,12 @@ export function Dispositivos() {
         velocidad: dato.velocidad,
         volumen: dato.volumen,
       };
-      console.log(requestData)
+      console.log(requestData);
       await EditarElemento(`${DispositivosURL}/prop/${dato.id}`, requestData);
       setShow(false);
       Listar(pageNumber);
     } catch (error) {
-      console.log("ds")
+      console.log("ds");
       handleErrorResponse(error);
     }
   };
@@ -105,11 +103,11 @@ export function Dispositivos() {
       <NavBar />
       <h1>Dispositivos de la empresa</h1>
 
-{ /*     <Button onClick={() => handleShowModal("Nuevo")}>
+      {/*     <Button onClick={() => handleShowModal("Nuevo")}>
         <BsPlusCircleFill /> Reasigne dispositivos
       </Button>
 
-  <span> Filtrar por: </span> */ }
+  <span> Filtrar por: </span> */}
 
       <div className="camionesMenu-contenedor">
         {dispositivos &&
@@ -120,8 +118,8 @@ export function Dispositivos() {
                 <Card.Subtitle className="mb-2 text-muted"> </Card.Subtitle>
                 <Card.Text>Empresa: {dispositivo.rutasModel.empresasModel.nombre}</Card.Text>
                 <Card.Text>Ruta: {dispositivo.rutasModel.nomruta}</Card.Text>
-                <Card.Text>Velocidad: {dispositivo.velocidad} KM/h</Card.Text>
-                <Card.Text>Volumen: {dispositivo.volumen}</Card.Text>
+                <Card.Text>Velocidad: {dispositivo.velocidad != null ? `${dispositivo.velocidad} KM/h` : "N/A"}</Card.Text>
+                <Card.Text>Volumen: {dispositivo.volumen != null ? dispositivo.volumen : "N/A"}</Card.Text>
               </Card.Body>
               <Button
                 variant="danger"
