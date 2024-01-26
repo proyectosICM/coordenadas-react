@@ -12,6 +12,7 @@ import axios from "axios";
 import { EditarElemento } from "../../Hooks/CRUDHooks";
 import { useGlobalState } from "../../Context/GlobalStateContext";
 import useErrorHandler from "../../Hooks/useErrorHandler";
+import { PaginacionUtils } from "../../Hooks/PaginacionUtils";
 
 export function Dispositivos() {
   const navigation = useNavigate();
@@ -132,6 +133,7 @@ export function Dispositivos() {
               </Button>
             </Card>
           ))}
+        <PaginacionUtils setPageNumber={setPageNumber} setCurrentPage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />
       </div>
 
       <DispositivosModal mostrar={show} cerrar={handleCerrar} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} limp={limp} />
