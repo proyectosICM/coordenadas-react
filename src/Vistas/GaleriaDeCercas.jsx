@@ -130,7 +130,7 @@ export function GaleriaDeCercas() {
               style={{
                 width: "300px",
                 height: "300px",
-                border: "2px solid black",
+                border: "2px solid white",
                 margin: "2%",
                 padding: "2%",
               }}
