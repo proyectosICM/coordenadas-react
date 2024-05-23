@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { coordenadacxrURL, coordenadasURL } from "../../API/apiurls";
+import { base, coordenadacxrURL, coordenadasURL } from "../../API/apiurls";
 import CoordenadasModal from "./CoordenadasModal";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -43,7 +43,7 @@ export function Coordenadas() {
   const Listar = async (page) => {
     try {
       console.log(`${coordenadacxrURL}${ruta}?pageNumber=${page}`);
-      const response = await axios.get(`http://telemetriaperu.com:8087/api/coordenadas/cxr/${ruta}?pageNumber=${page}`);
+      const response = await axios.get(`${base}/coordenadas/cxr/${ruta}?pageNumber=${page}`);
       setDatos(response.data.content);
       console.log(response.data.content)
       setTotalPages(response.data.totalPages);
