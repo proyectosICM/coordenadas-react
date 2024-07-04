@@ -23,4 +23,4 @@ export const routes = [
     { path: '/dispositivo-asoc', component: <DispositivoAsoc />},
     { path: '/empresas-admin', component: <Empresas />},
     { path: '/rutas-admin', component: <RutasAdmin />}
-]
+] 

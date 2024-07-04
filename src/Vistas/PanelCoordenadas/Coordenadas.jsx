@@ -43,8 +43,9 @@ export function Coordenadas() {
   const Listar = async (page) => {
     try {
       console.log(`${coordenadacxrURL}${ruta}?pageNumber=${page}`);
-      const response = await axios.get(`${base}/coordenadas/cxr/${ruta}?pageNumber=${page}`);
+      const response = await axios.get(`${base}/coordenadas/cxr/${ruta}?pageNumber=${page}&pageSize=10`);
       setDatos(response.data.content);
+      console.log(`${base}/coordenadas/cxr/${ruta}?pageNumber=${page}&pageSize=10`)
       console.log(response.data.content)
       setTotalPages(response.data.totalPages);
       // setCurrentPage(response.data.number + 0);

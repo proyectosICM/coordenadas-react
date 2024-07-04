@@ -11,7 +11,7 @@ export function GaleriaDeCercas() {
   const [paises, setPaises] = useState([]);
   const [tipoS, setTipoS] = useState([]);
   const [filtroPais, setFiltroPais] = useState("");
-  const [filtroCategoria, setFiltroCategoria] = useState(""); // Estado para el filtro de categoría
+  const [filtroCategoria, setFiltroCategoria] = useState(""); 
 
   useListarElementos(GeocercaURL, cercas, setCercas);
   useListarElementos(paisesURL, paises, setPaises);

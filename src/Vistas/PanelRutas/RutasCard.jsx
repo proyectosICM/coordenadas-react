@@ -13,7 +13,7 @@ export function RutasCard({ ruta, empresaNombre, datosAEditar, handleEliminar })
   return (
     <Card key={ruta.id} className="cardRuta">
       <Card.Body>
-        <Card.Title>{ruta.id}</Card.Title> 
+        <Card.Title>Id de ruta {ruta.id}</Card.Title> 
         <Card.Subtitle  style={{color: "black" }}>Nombre de Ruta: {ruta.nomruta}</Card.Subtitle>
         <Card.Text>Empresa: {empresaNombre}</Card.Text>
         <Card.Text>País: {ruta.paisesModel && ruta.paisesModel.nombre}</Card.Text>

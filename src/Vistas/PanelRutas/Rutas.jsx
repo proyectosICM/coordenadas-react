@@ -14,26 +14,21 @@ import "../../Styles/Rutas.css";
 import useErrorHandler from "../../Hooks/useErrorHandler";
 
 export function Rutas() {
-  // User data from global state
   const { userData } = useGlobalState();
   const { empresaId, empresaNombre } = userData;
 
   // Visibility state for the modal
   const [show, setShow] = useState(false);
 
-  // Data loading and editing state
   const [datos, setDatos] = useState([]);
   const [datosEdit, setDatosEdit] = useState(null);
 
-  // Pagination state
   const [pageNumber, setPageNumber] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-// Error handling using the useErrorHandler hook
   const { errorMessage, handleErrorResponse } = useErrorHandler();
 
-  // Function to retrieve and display data based on page
   const Listar = async (page) => {
     try {
       const response = await axios.get(`${rutasxEmpresaPURL}1/${empresaId}?pageNumber=${page}`);

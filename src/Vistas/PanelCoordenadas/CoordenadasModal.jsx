@@ -40,7 +40,6 @@ function CoordenadasModal({ mostrar, cerrar, guardar, editar, datosaeditar, titl
 
   useEffect(() => {
     if(datosaeditar){
-      console.log("dx  ")
       setAudioSrc(datosaeditar.sonidoVelocidad);
       setAudioGSrc(datosaeditar.sonidosGeocercaModel.urlSonido);
       setImagenGSrc(datosaeditar.sonidosGeocercaModel.urlImagen);

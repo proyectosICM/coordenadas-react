@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const port = process.env.PORT || 3000; // Puedes usar un puerto personalizado
+const port = process.env.PORT || 3006; // Puedes usar un puerto personalizado
 
 // Servir archivos estáticos desde la carpeta 'build'
 app.use(express.static(path.join(__dirname, 'build')));
