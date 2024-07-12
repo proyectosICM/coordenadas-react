@@ -6,7 +6,7 @@
 
 // export const base = "http://telemetriaperu.com:8089/api";
 
-export const base = "http://samloto.com:8087/api";
+export const base = "http://telemetriaperu.com:8087/api";
 
 export const loginURL = `${base}/empresas/login`
  
