@@ -2,20 +2,21 @@ import { Button, Nav, Navbar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
-    const navigation = useNavigate();
-    const handleEliminar = () => {
-        localStorage.removeItem("empresa");
-        navigation('/')
-    }
+  const navigation = useNavigate();
+  const handleEliminar = () => {
+    localStorage.removeItem("empresa");
+    navigation('/')
+  }
   return (
     <Navbar bg="dark" variant="dark" className="justify-content-between">
-      <Navbar.Brand style={{marginLeft: "25px", cursor:"pointer"}} onClick={() => navigation("/")}>Ruta Segura</Navbar.Brand>
+      <Navbar.Brand style={{ marginLeft: "25px", cursor: "pointer" }} onClick={() => navigation("/")}>Ruta Segura</Navbar.Brand>
       <Nav>
         <Nav.Link onClick={() => navigation("/rutas")} >Rutas</Nav.Link>
         <Nav.Link onClick={() => navigation("/galeria")}>Galería de Cercas</Nav.Link>
         <Nav.Link onClick={() => navigation("/dispositivos")}>Dispositivos</Nav.Link>
+        <Nav.Link onClick={() => navigation("/panel-administrador")}>Administracion</Nav.Link>
       </Nav>
-      <Button onClick={() => handleEliminar() } style={{marginRight: "25px"}} variant="outline-light">Cerrar Sesión</Button>
+      <Button onClick={() => handleEliminar()} style={{ marginRight: "25px" }} variant="outline-light">Cerrar Sesión</Button>
     </Navbar>
   );
 };
