@@ -203,9 +203,9 @@ export function DispositivoAsocModal({
 
       <Modal.Body>
         <div style={{ marginBottom: 12, opacity: 0.9 }}>
-          <div>
+          {/*   <div>
             <b>Nombre (auto):</b> {empresaNombreAuto || "(sin nombre)"}
-          </div>
+          </div>*/}
           <div style={{ fontSize: 13, opacity: 0.85 }}>
             Defaults: Velocidad 67 KM/h • Volumen 27
           </div>
@@ -229,7 +229,7 @@ export function DispositivoAsocModal({
             >
               {empresas.map((e) => (
                 <option key={e.id} value={String(e.id)}>
-                  {e.nombre} (ID: {e.id})
+                  {e.nombre}
                 </option>
               ))}
             </Form.Select>
@@ -257,7 +257,7 @@ export function DispositivoAsocModal({
               ) : (
                 rutas.map((r) => (
                   <option key={r.id} value={String(r.id)}>
-                    {r.nomruta} (ID: {r.id})
+                    {r.nomruta}
                   </option>
                 ))
               )}

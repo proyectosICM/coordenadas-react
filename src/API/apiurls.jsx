@@ -28,6 +28,7 @@ export const sonidosVelocidadURL = `${base}/sonidosVelocidad`
 
 // GeoCerca
 export const GeocercaURL = `${base}/SonidoGeo`
+export const GeocercaPageURL = `${GeocercaURL}/page`;
 export const GeocercaxPaisURL = `${base}/SonidoGeo/xpais/`
 export const GeocercaxTipoSURL = `${base}/SonidoGeo/xtipoS/`
 export const GeocercaxPaisxTipoURL = `${base}/SonidoGeo/xpaisxtipo/`

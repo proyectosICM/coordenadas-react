@@ -8,19 +8,22 @@ import { InicioAdmin } from "./Vistas/PanelAdministrador/InicioAdmin";
 import { DispositivoAsoc } from "./Vistas/PanelAdministrador/DispositivosAdmin/DispositivoAsoc";
 import { Empresas } from "./Vistas/PanelAdministrador/EmpresasAdmin/Empresas";
 import { RutasAdmin } from "./Vistas/PanelAdministrador/RutasAdmin/RutasAdmin";
+import { SonidosGeocerca } from "./Vistas/PanelAdministrador/GeocercasAdmin/Geocercas";
 
 
 export const routes = [
     { path: '/', component: <Login /> },
     { path: '/rutas', component: <Rutas /> },
     { path: '/coordenadas/:ruta', component: <Coordenadas /> },
-    { path: '/galeria', component: <GaleriaDeCercas /> }, 
-    { path: '/dispositivos', component: <Dispositivos />},
-    { path: '/configuracion-dispositivos', component: <ConfiguracionDispositivos />},
+    { path: '/galeria', component: <GaleriaDeCercas /> },
+    { path: '/dispositivos', component: <Dispositivos /> },
+    { path: '/configuracion-dispositivos', component: <ConfiguracionDispositivos /> },
 
     //Administracion
-    { path: '/panel-administrador', component: <InicioAdmin />},
-    { path: '/dispositivo-asoc', component: <DispositivoAsoc />},
-    { path: '/empresas-admin', component: <Empresas />},
-    { path: '/rutas-admin', component: <RutasAdmin />}
+    { path: '/panel-administrador', component: <InicioAdmin /> },
+    { path: '/dispositivo-asoc', component: <DispositivoAsoc /> },
+    { path: '/empresas-admin', component: <Empresas /> },
+    { path: '/rutas-admin', component: <RutasAdmin /> },
+    { path: '/geo-admin', component: <SonidosGeocerca /> }
+
 ] 

@@ -1,159 +1,148 @@
 import React, { useState, useEffect } from "react";
-import { Form, Modal } from "react-bootstrap";
-import { DispositivosURL, ReasignarDisp, VerificarDisp, coordenadasURL, rutasxEmpresaURL } from "../../API/apiurls";
-import { ListarElementos } from "../../Hooks/CRUDHooks";
+import { Form, Modal, Button, Spinner } from "react-bootstrap";
 import axios from "axios";
+import { rutasxEmpresaURL } from "../../API/apiurls";
 import { useGlobalState } from "../../Context/GlobalStateContext";
 
-export function DispositivosModal({ mostrar, cerrar, guardar, editar, datosaeditar, limpiar, title }) {
-  const handleClose = () => {
-    cerrar();
-    //limpiarFormulario();
-  };
-
+export function DispositivosModal({
+  mostrar,
+  cerrar,
+  guardar,
+  editar,
+  datosaeditar,
+  limp,
+  title,
+}) {
   const { userData } = useGlobalState();
-  const { empresaId, empresaNombre } = userData;
+  const empresaId = userData?.empresaId;
 
-  const [existeCodigo, setExisteCodigo] = useState(false);
+  const isEdit = Boolean(datosaeditar?.id);
+
+  const [loadingRutas, setLoadingRutas] = useState(false);
   const [rutas, setRutas] = useState([]);
 
-  // Function to retrieve and display data based on page
-  const Listar = async () => {
-    try {
-      const response = await axios.get(`${rutasxEmpresaURL}?empresaId=${empresaId}&estado=${1}`);
-      setRutas(response.data);
-    } catch (error) {
-      console.error("Error al listar", error);
-    }
-  };
-
-  // useEffect hook to trigger data loading when 'pageNumber' changes
-  useEffect(() => {
-    Listar();
-  }, []);
-
-  const handleVerificar = async (nombre, empresa) => {
-    try {
-      const url = `${VerificarDisp}/${nombre}/${empresa}`;
-      const response = await fetch(url);
-      if (response.ok) {
-        setExisteCodigo(true);
-      } else {
-        setExisteCodigo(false);
-      }
-    } catch (error) {
-      console.error("Error al verificar el código:", error);
-    }
-  };
-
-  const limpiarFormulario = () => {
-    setFormData({
-      codigo: "",
-      ruta: "",
-      velocidad: "",
-      volumen: "",
-    });
-  };
-
   const [formData, setFormData] = useState({
-    codigo: "",
     ruta: "",
     velocidad: "",
     volumen: "",
   });
 
+  const handleClose = () => cerrar();
+
+  // ✅ cargar rutas cuando ABRES el modal y cuando ya existe empresaId
+  const cargarRutas = async () => {
+    if (!empresaId) return;
+
+    try {
+      setLoadingRutas(true);
+      const response = await axios.get(rutasxEmpresaURL, {
+        params: { empresaId, estado: 1 },
+      });
+
+      setRutas(response.data || []);
+    } catch (error) {
+      console.error("Error al listar rutas", error);
+      setRutas([]);
+    } finally {
+      setLoadingRutas(false);
+    }
+  };
+
   useEffect(() => {
-    // Si hay datos para editar, inicializa el formulario con esos datos
-    if (datosaeditar) {
+    if (!mostrar) return;
+    cargarRutas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mostrar, empresaId]);
+
+  // ✅ precargar form al editar / limpiar al crear
+  useEffect(() => {
+    if (!mostrar) return;
+
+    if (isEdit) {
       setFormData({
-        codigo: datosaeditar.codigo || "",
-        ruta: datosaeditar.rutasModel.id || "",
-        velocidad: datosaeditar.velocidad || "",
-        volumen: datosaeditar.volumen || "",
+        ruta: datosaeditar?.rutasModel?.id ? String(datosaeditar.rutasModel.id) : "",
+        velocidad: datosaeditar?.velocidad ?? "",
+        volumen: datosaeditar?.volumen ?? "",
+      });
+    } else {
+      setFormData({
+        ruta: "",
+        velocidad: "",
+        volumen: "",
       });
     }
-  }, [datosaeditar]);
+  }, [mostrar, isEdit, datosaeditar]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-
-  useEffect(() => {
-    if (formData.codigo) {
-      handleVerificar(formData.codigo, empresaId);
-    }
-  }, [formData.codigo, empresaId]);
 
   const handleGuardar = async () => {
     try {
-      const requestData = {
-        id: datosaeditar.id,
-        rutasModel: {
-          id: formData.ruta,
-        },
-        empresasModel: {
-          id: empresaId,
-        },
+      const payload = {
+        id: datosaeditar?.id,
+        rutasModel: { id: Number(formData.ruta) },
         velocidad: formData.velocidad,
         volumen: formData.volumen,
       };
 
-      // Verifica si es una edición o creación
-      if (datosaeditar) {
-        await editar(requestData);
-      } else {
-        await guardar(requestData);
-      }
+      if (isEdit) await editar(payload);
+      else await guardar(payload);
 
-      // Cierra el modal después de guardar o actualizar
       cerrar();
-      limpiarFormulario();
     } catch (error) {
-      console.error("Error al guardar o actualizar los datos:", error);
+      console.error("Error al guardar/editar dispositivo:", error);
     }
   };
 
+  const disableSave = !formData.ruta;
+
   return (
-    <>
-      <Modal show={mostrar} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group>
-            <Form.Label>Ruta</Form.Label>
-            <Form.Control as="select" name="ruta" value={formData.ruta} onChange={handleInputChange}>
-              <option value="">Seleccionar ruta</option>
-              {rutas.map((ruta) => (
-                <option key={ruta.id} value={ruta.id}>
-                  {ruta.nomruta}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Velocidad</Form.Label>
-            <input type="text" name="velocidad" value={formData.velocidad} onChange={handleInputChange} />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Volumen</Form.Label>
-            <input type="text" name="volumen" value={formData.volumen} onChange={handleInputChange} />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <button variant="secondary" onClick={handleClose}>
-            Cerrar
-          </button>
-          <button variant="primary" onClick={handleGuardar}>
-            Guardar
-          </button>
-        </Modal.Footer>
-      </Modal>
-    </>
+    <Modal show={mostrar} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{title || (isEdit ? "Editar dispositivo" : "Nuevo dispositivo")}</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        {loadingRutas && (
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <Spinner size="sm" /> <span>Cargando rutas...</span>
+          </div>
+        )}
+
+        <Form.Group className="mb-3">
+          <Form.Label>Ruta</Form.Label>
+          <Form.Select name="ruta" value={formData.ruta} onChange={handleInputChange} disabled={!empresaId || loadingRutas}>
+            <option value="">Seleccionar ruta</option>
+            {rutas.map((ruta) => (
+              <option key={ruta.id} value={String(ruta.id)}>
+                {ruta.nomruta}
+              </option>
+            ))}
+          </Form.Select>
+          {!empresaId && <div style={{ fontSize: 12, opacity: 0.75, marginTop: 6 }}>Cargando empresa...</div>}
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Velocidad</Form.Label>
+          <Form.Control type="number" name="velocidad" value={formData.velocidad} onChange={handleInputChange} />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Volumen</Form.Label>
+          <Form.Control type="number" name="volumen" value={formData.volumen} onChange={handleInputChange} />
+        </Form.Group>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Cerrar
+        </Button>
+        <Button variant="primary" onClick={handleGuardar} disabled={disableSave}>
+          Guardar
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 }

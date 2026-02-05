@@ -1,64 +1,77 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../../Common/NavBar";
 import { Button, Card } from "react-bootstrap";
-import { BsGearFill, BsPlusCircleFill } from "react-icons/bs";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { BsGearFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 import { DispositivosModal } from "./DispositivosModal";
 
-import { DispositivosURL, DisxEmp, coordenadasURL } from "../../API/apiurls";
-import buildRequestData from "../PanelCoordenadas/requestDataCoordenadas";
-import Swal from "sweetalert2";
-import axios from "axios";
+import { DispositivosURL, DisxEmp } from "../../API/apiurls";
 import { EditarElemento } from "../../Hooks/CRUDHooks";
 import { useGlobalState } from "../../Context/GlobalStateContext";
 import useErrorHandler from "../../Hooks/useErrorHandler";
 import { PaginacionUtils } from "../../Hooks/PaginacionUtils";
+import axios from "axios";
 
 export function Dispositivos() {
   const navigation = useNavigate();
+
   const [show, setShow] = useState(false);
   const [datosEdit, setDatosEdit] = useState(null);
   const [limp, setLimp] = useState(false);
-  const [datos, setDatos] = useState();
 
   const { userData } = useGlobalState();
-  const { empresaId, empresaNombre } = userData;
-  const { errorMessage, handleErrorResponse } = useErrorHandler();
+  const empresaId = userData?.empresaId;
+  const { handleErrorResponse } = useErrorHandler();
 
   const [pageNumber, setPageNumber] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   const [dispositivos, setDispositivos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Function to retrieve and display data based on page
   const Listar = async (page) => {
+    if (!empresaId) return; // ✅ evita request con undefined
+
     try {
-      const response = await axios.get(`${DisxEmp}?empresaId=${empresaId}&estado=${1}&page=${page}`);
-      console.log(response.data.content);
-      console.log(`${DisxEmp}?empresaId=${empresaId}&estado=${1}&pageNumber=${page}`);
-      setDispositivos(response.data.content);
-      setTotalPages(response.data.totalPages);
-      setCurrentPage(response.data.number + 0);
+      setLoading(true);
+
+      // ✅ mejor con params (evitas typos en querystring)
+      const response = await axios.get(DisxEmp, {
+        params: {
+          empresaId,
+          estado: 1, // o true si tu backend usa boolean
+          page,      // si tu endpoint usa "page"
+        },
+      });
+
+      const data = response.data || {};
+      setDispositivos(data.content || []);
+      setTotalPages(data.totalPages ?? 0);
+      setCurrentPage(data.number ?? page);
     } catch (error) {
-      console.error("Error al listar", error);
+      console.error("Error al listar dispositivos", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // ✅ ahora depende de empresaId también (cuando el contexto carga, re-lista)
   useEffect(() => {
+    if (!empresaId) return;
     Listar(pageNumber);
-  }, [pageNumber]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empresaId, pageNumber]);
 
   const handleShowModal = (t) => {
     setShow(true);
-    if (t === "Nuevo") {
-      setLimp(true);
-    }
+    if (t === "Nuevo") setLimp(true);
+    else setLimp(false);
   };
 
   const handleCerrar = () => {
     setShow(false);
-    // setLimp(false);
+    setDatosEdit(null);
   };
 
   const datosAEditar = (dispositivo) => {
@@ -67,35 +80,35 @@ export function Dispositivos() {
   };
 
   const handleGuardar = async (dato) => {
-    console.log(dato);
     try {
-      const requestData = buildRequestData(dato, empresaId);
+      // OJO: aquí tú estabas usando buildRequestData(dato, empresaId) (no lo incluiste completo)
+      // Si tu endpoint /prop solo edita ruta/velocidad/volumen, guarda igual que editar.
+      const requestData = {
+        rutasModel: { id: Number(dato?.rutasModel?.id) },
+        velocidad: dato.velocidad,
+        volumen: dato.volumen,
+      };
+
       await EditarElemento(`${DispositivosURL}/prop/${dato.id}`, requestData);
       setShow(false);
       Listar(pageNumber);
     } catch (error) {
-      console.log("ds");
       handleErrorResponse(error);
     }
   };
 
   const handleEditar = async (dato) => {
-    console.log(`${DispositivosURL}/prop/${dato.id}`);
-
     try {
       const requestData = {
-        rutasModel: {
-          id: dato.rutasModel.id,
-        },
+        rutasModel: { id: Number(dato?.rutasModel?.id) },
         velocidad: dato.velocidad,
         volumen: dato.volumen,
       };
-      console.log(requestData);
+
       await EditarElemento(`${DispositivosURL}/prop/${dato.id}`, requestData);
       setShow(false);
       Listar(pageNumber);
     } catch (error) {
-      console.log("ds");
       handleErrorResponse(error);
     }
   };
@@ -103,39 +116,90 @@ export function Dispositivos() {
   return (
     <div>
       <NavBar />
-      <h1 style={{color: "white"}}>Dispositivos de la empresa</h1>
-
-      {/*     <Button onClick={() => handleShowModal("Nuevo")}>
-        <BsPlusCircleFill /> Reasigne dispositivos
-      </Button>
-
-  <span> Filtrar por: </span> */}
+      <h1 style={{ color: "white" }}>Dispositivos de la empresa</h1>
 
       <div className="camionesMenu-contenedor">
-        {dispositivos &&
-          dispositivos.map((dispositivo) => (
-            <Card key={dispositivo.id} style={{ width: "18rem", marginBottom: "20px", margin: "20px", padding: "10px" }}>
+        {!empresaId && (
+          <div style={{ color: "white", opacity: 0.85, padding: 12 }}>
+            Cargando empresa...
+          </div>
+        )}
+
+        {empresaId && loading && (
+          <div style={{ color: "white", opacity: 0.85, padding: 12 }}>
+            Cargando dispositivos...
+          </div>
+        )}
+
+        {empresaId && !loading && (!dispositivos || dispositivos.length === 0) && (
+          <div style={{ color: "white", opacity: 0.85, padding: 12 }}>
+            No hay dispositivos para esta empresa.
+          </div>
+        )}
+
+        {dispositivos?.map((dispositivo) => {
+          // ✅ evita crashear si viene sin ruta
+          const empresaLabel =
+            dispositivo?.rutasModel?.empresasModel?.nombre ?? "Sin empresa";
+          const rutaLabel =
+            dispositivo?.rutasModel?.nomruta ?? "Sin ruta asignada";
+
+          return (
+            <Card
+              key={dispositivo.id}
+              style={{
+                width: "18rem",
+                marginBottom: "20px",
+                margin: "20px",
+                padding: "10px",
+              }}
+            >
               <Card.Body>
-                <Card.Title>Identificador de dispositivo: {dispositivo.id}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted"> </Card.Subtitle>
-                <Card.Text>Empresa: {dispositivo.rutasModel.empresasModel.nombre}</Card.Text>
-                <Card.Text>Ruta: {dispositivo.rutasModel.nomruta}</Card.Text>
-                <Card.Text>Velocidad: {dispositivo.velocidad != null ? `${dispositivo.velocidad} KM/h` : "N/A"}</Card.Text>
-                <Card.Text>Volumen: {dispositivo.volumen != null ? dispositivo.volumen : "N/A"}</Card.Text>
+                <Card.Title>
+                  Identificador de dispositivo: {dispositivo.id}
+                </Card.Title>
+
+                <Card.Text>Empresa: {empresaLabel}</Card.Text>
+                <Card.Text>Ruta: {rutaLabel}</Card.Text>
+                <Card.Text>
+                  Velocidad:{" "}
+                  {dispositivo.velocidad != null
+                    ? `${dispositivo.velocidad} KM/h`
+                    : "N/A"}
+                </Card.Text>
+                <Card.Text>
+                  Volumen: {dispositivo.volumen != null ? dispositivo.volumen : "N/A"}
+                </Card.Text>
               </Card.Body>
+
               <Button
-                variant="danger"
+                variant="secondary"
                 onClick={() => datosAEditar(dispositivo)}
                 style={{ backgroundColor: "#727273", borderColor: "black", color: "black" }}
               >
-                <BsGearFill /> Configuracion
+                <BsGearFill /> Configuración
               </Button>
             </Card>
-          ))}
-        <PaginacionUtils setPageNumber={setPageNumber} setCurrentPage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />
+          );
+        })}
+
+        <PaginacionUtils
+          setPageNumber={setPageNumber}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+          totalPages={totalPages}
+        />
       </div>
 
-      <DispositivosModal mostrar={show} cerrar={handleCerrar} guardar={handleGuardar} datosaeditar={datosEdit} editar={handleEditar} limp={limp} />
+      <DispositivosModal
+        mostrar={show}
+        cerrar={handleCerrar}
+        guardar={handleGuardar}
+        datosaeditar={datosEdit}
+        editar={handleEditar}
+        limp={limp}  // ✅ el modal debe recibir "limp" si vas a usarlo
+        title={datosEdit ? "Editar dispositivo" : "Nuevo dispositivo"}
+      />
     </div>
   );
 }
