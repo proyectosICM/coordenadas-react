@@ -1,0 +1,74 @@
+.empresas-dark {
+  background: #000;
+  min-height: 100vh;
+  padding: 16px;
+  color: #e6eaf2;
+}
+
+.empresas-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.btn-back {
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.btn-add {
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.table-wrap {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+
+.empresas-table {
+  margin: 0;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+
+.empresas-table thead th {
+  background: #0b0b0b !important;
+  border-color: rgba(255,255,255,0.10) !important;
+  color: #f3f6ff;
+  font-weight: 900;
+}
+
+.empresas-table tbody td {
+  border-color: rgba(255,255,255,0.08) !important;
+  color: rgba(230,234,242,0.90);
+  vertical-align: middle;
+}
+
+.empresas-table tbody tr:hover > td {
+  background: rgba(255,255,255,0.06) !important;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  border-radius: 10px;
+  font-weight: 800;
+  padding: 7px 10px;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.empty {
+  text-align: center;
+  padding: 18px !important;
+  color: rgba(230,234,242,0.65);
+}

@@ -1,101 +1,128 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import Swal from "sweetalert2"; 
-import { GuardarElementos } from "../../../Hooks/CRUDHooks";
-import { EmpresaFNombre, EmpresaFUsuario, EmpresasURL } from "../../../API/apiurls";
-import { requestDataEmpresa } from "./requestDataEmpresa";
 import axios from "axios";
+import { EmpresaFNombre, EmpresaFUsuario } from "../../../API/apiurls";
 
-export function EmpresasModel({ mostrar, cerrar, guardar, editar, datosaeditar
-  , title }) {
+export function EmpresasModel({ mostrar, cerrar, guardar, editar, datosaeditar, title }) {
   const [formData, setFormData] = useState({
+    id: null,
     nombre: "",
     usuario: "",
     password: "",
   });
-  console.log(datosaeditar)
+
+  // Guardamos valores originales para saber si el usuario cambió algo al editar
+  const [original, setOriginal] = useState({ nombre: "", usuario: "" });
+
   const [disableGuardar, setDisableGuardar] = useState(false);
   const [nombreEnUso, setNombreEnUso] = useState(false);
   const [usuarioEnUso, setUsuarioEnUso] = useState(false);
 
+  // Cargar datos cuando se edita / limpiar cuando es nuevo
   useEffect(() => {
     if (datosaeditar) {
-      setFormData({
-        nombre: datosaeditar.nombre,
-        usuario: datosaeditar.usuario,
-        password: datosaeditar.password,
-      });
-    }
-  }, [datosaeditar]);
+      const nombre = datosaeditar.nombre ?? "";
+      const usuario = datosaeditar.usuario ?? "";
 
+      setFormData({
+        id: datosaeditar.id ?? null,
+        nombre,
+        usuario,
+        password: datosaeditar.password ?? "",
+      });
+
+      setOriginal({ nombre, usuario });
+    } else {
+      setFormData({ id: null, nombre: "", usuario: "", password: "" });
+      setOriginal({ nombre: "", usuario: "" });
+    }
+
+    // Reset flags cada vez que se abre o cambia el modo
+    setNombreEnUso(false);
+    setUsuarioEnUso(false);
+    setDisableGuardar(false);
+  }, [datosaeditar, mostrar]);
+
+  // Validar nombre duplicado (solo si cambió cuando editas)
   useEffect(() => {
     const handleBuscarNombre = async () => {
+      if (!formData.nombre) {
+        setNombreEnUso(false);
+        return;
+      }
+
+      // Si estás editando y no cambió el nombre, no validar / no bloquear
+      if (datosaeditar && formData.nombre === original.nombre) {
+        setNombreEnUso(false);
+        return;
+      }
+
       try {
-        if (formData.nombre != "") {
-          const response = await axios.get(`${EmpresaFNombre}/${formData.nombre}`);
-          if (response.status === 200) {
-            setDisableGuardar(true);
-            setNombreEnUso(true); 
-          }
-        }
-      } catch (error) {
-        //console.log("No hay coincidencias");
-        setNombreEnUso(false); 
+        await axios.get(`${EmpresaFNombre}/${formData.nombre}`);
+        // Si devuelve 200, existe alguien con ese nombre
+        setNombreEnUso(true);
+      } catch {
+        setNombreEnUso(false);
       }
     };
 
     handleBuscarNombre();
-  }, [formData.nombre]);
+  }, [formData.nombre, datosaeditar, original.nombre]);
 
+  // Validar usuario duplicado (solo si cambió cuando editas)
   useEffect(() => {
-    const handleBuscarUsuario = async() => {
+    const handleBuscarUsuario = async () => {
+      if (!formData.usuario) {
+        setUsuarioEnUso(false);
+        return;
+      }
+
+      if (datosaeditar && formData.usuario === original.usuario) {
+        setUsuarioEnUso(false);
+        return;
+      }
+
       try {
-        if (formData.usuario != "") {
-          const response = await axios.get(`${EmpresaFUsuario}/${formData.usuario}`);
-          if (response.status === 200) {
-            setDisableGuardar(true);
-            setUsuarioEnUso(true);
-          }
-        }
-      } catch (error) {
-        setUsuarioEnUso(false)
+        await axios.get(`${EmpresaFUsuario}/${formData.usuario}`);
+        setUsuarioEnUso(true);
+      } catch {
+        setUsuarioEnUso(false);
       }
     };
 
     handleBuscarUsuario();
-  }, [formData.usuario]);
+  }, [formData.usuario, datosaeditar, original.usuario]);
+
+  // El botón depende SOLO de los flags actuales
+  useEffect(() => {
+    setDisableGuardar(nombreEnUso || usuarioEnUso);
+  }, [nombreEnUso, usuarioEnUso]);
+
+  const limpiar = () => {
+    setFormData({ id: null, nombre: "", usuario: "", password: "" });
+    setOriginal({ nombre: "", usuario: "" });
+    setNombreEnUso(false);
+    setUsuarioEnUso(false);
+    setDisableGuardar(false);
+  };
 
   const handleClose = () => {
     cerrar();
     limpiar();
   };
 
-  const limpiar = () => {
-    setFormData({
-      nombre: "",
-      usuario: "",
-      password: "",
-    });
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = () => {
-    if (datosaeditar) {
-      editar(formData);
-    } else {
-      guardar(formData); 
-    }
+    if (datosaeditar) editar(formData);
+    else guardar(formData);
+
     cerrar();
     limpiar();
   };
-
 
   return (
     <>
@@ -103,27 +130,49 @@ export function EmpresasModel({ mostrar, cerrar, guardar, editar, datosaeditar
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
           <div>
             <h5>Ingrese el nombre de la empresa</h5>
-            <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} style={{ width: "420px" }} />
+            <input
+              type="text"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleChange}
+              style={{ width: "420px" }}
+            />
             {nombreEnUso && <p style={{ color: "red" }}>Este nombre de empresa ya está en uso</p>}
           </div>
 
           <div>
             <h5>Ingrese el usuario para la empresa</h5>
-            <input type="text" name="usuario" value={formData.usuario} onChange={handleChange} style={{ width: "420px" }} />
+            <input
+              type="text"
+              name="usuario"
+              value={formData.usuario}
+              onChange={handleChange}
+              style={{ width: "420px" }}
+            />
             {usuarioEnUso && <p style={{ color: "red" }}>Este usuario ya está en uso</p>}
           </div>
 
           <div>
             <h5>Ingrese la contraseña</h5>
-            <input type="password" name="password" value={formData.password} onChange={handleChange} style={{ width: "420px" }} />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              style={{ width: "420px" }}
+            />
           </div>
-        </Modal.Body> 
+        </Modal.Body>
+
         <Modal.Footer>
           <button onClick={handleClose}>Cancelar</button>
-          <button onClick={() => handleSave(formData)} disabled={disableGuardar}>Guardar</button>
+          <button onClick={handleSave} disabled={disableGuardar}>
+            Guardar
+          </button>
         </Modal.Footer>
       </Modal>
     </>

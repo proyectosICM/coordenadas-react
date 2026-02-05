@@ -7,25 +7,21 @@ import { loginURL } from "../API/apiurls";
 import "../Styles/login.css";
 
 export function Login() {
-  // State variables and navigation functions definition
   const { userData, setUserData } = useGlobalState();
   const [usuario, setUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState("");
   const navigation = useNavigate();
  
-  // Redirect to main page ('/rutas') if a session is already active
   useEffect(() => {
-    let empresa = localStorage.getItem("empresa");
+    let empresa = localStorage.getItem("empresaid");
     if (empresa) {
       navigation("/rutas");
     }
   }, [navigation]);
 
-  // Login function
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Input fields validation
     if (!usuario || !contrasena) {
       setError("Por favor, complete todos los campos.");
       return;
@@ -47,19 +43,11 @@ export function Login() {
         });
 
         navigation("/rutas");
-        console.log("hol")
       })
       .catch((error) => {
         console.error("Error:", error);
         setError("Error en inicio de sesión");
       });
-
-
-      // Load data into global state
-
-      // Load data into global state
-
-      // Redirect to routes page
       //navigation("/rutas");
     } catch (error) {
       console.error("Error:", error);

@@ -18,7 +18,7 @@ export const rutasDeshabilitar = `${rutasURL}/estado/`
 // Coordenadas
 export const coordenadasURL = `${base}/coordenadas`
 export const coordenadaxRutaURL = `${coordenadasURL}/ruta/`;
-export const coordenadacxrURL = `·${coordenadasURL}/cxr/`
+export const coordenadacxrURL = `${coordenadasURL}/cxr/`
 
 // Paises
 export const paisesURL = `${base}/paises`;

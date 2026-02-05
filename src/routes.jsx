@@ -14,7 +14,7 @@ export const routes = [
     { path: '/', component: <Login /> },
     { path: '/rutas', component: <Rutas /> },
     { path: '/coordenadas/:ruta', component: <Coordenadas /> },
-    { path: '/galeria', component: <GaleriaDeCercas /> },
+    { path: '/galeria', component: <GaleriaDeCercas /> }, 
     { path: '/dispositivos', component: <Dispositivos />},
     { path: '/configuracion-dispositivos', component: <ConfiguracionDispositivos />},
 

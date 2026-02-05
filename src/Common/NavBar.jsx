@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const navigation = useNavigate();
+  const empresaId = Number(localStorage.getItem("empresaid"));
+
   const handleEliminar = () => {
-    localStorage.removeItem("empresa");
-    navigation('/')
+    localStorage.removeItem("empresaid");
+    localStorage.removeItem("empresaNombre");
+    navigation("/", { replace: true });
   }
   return (
     <Navbar bg="dark" variant="dark" className="justify-content-between">
@@ -14,7 +17,11 @@ const NavBar = () => {
         <Nav.Link onClick={() => navigation("/rutas")} >Rutas</Nav.Link>
         <Nav.Link onClick={() => navigation("/galeria")}>Galería de Cercas</Nav.Link>
         <Nav.Link onClick={() => navigation("/dispositivos")}>Dispositivos</Nav.Link>
-        <Nav.Link onClick={() => navigation("/panel-administrador")}>Administracion</Nav.Link>
+        {empresaId === 1 && (
+          <Nav.Link onClick={() => navigation("/panel-administrador")}>
+            Administracion
+          </Nav.Link>
+        )}
       </Nav>
       <Button onClick={() => handleEliminar()} style={{ marginRight: "25px" }} variant="outline-light">Cerrar Sesión</Button>
     </Navbar>
